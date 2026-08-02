@@ -193,26 +193,6 @@ const INITIAL_PLACEMENT_DATA = {
         level: "All Levels",
         category: "Core CS / OS",
         description: "Comprehensive engineering curriculum, Digital Logic, OS, Network basics, and placement preparation series by Neso Academy."
-      },
-      {
-        id: "user-dsa-05",
-        title: "Placement Hub – Placement Coding & Aptitude Prep",
-        youtubeId: "PL8p2I9GklV454LdGfDOw0KkNazKuA-6B2",
-        youtubeUrl: "https://www.youtube.com/playlist?list=PL8p2I9GklV454LdGfDOw0KkNazKuA-6B2",
-        duration: "Full Playlist",
-        level: "Placement Ready",
-        category: "Placement Coding",
-        description: "Curated collection of campus placement coding questions, aptitude tests, and interview technical rounds."
-      },
-      {
-        id: "user-dsa-06",
-        title: "Placement Masterclass – Placement & Coding",
-        youtubeId: "PLBG_hRMQjgpwN2WhFoFZG_jad1fLgKSnZ",
-        youtubeUrl: "https://www.youtube.com/playlist?list=PLBG_hRMQjgpwN2WhFoFZG_jad1fLgKSnZ",
-        duration: "Full Playlist",
-        level: "Placement Ready",
-        category: "Placement Preparation",
-        description: "Comprehensive placement preparation video series with core programming concepts and problem solving."
       }
     ]
   },
@@ -252,6 +232,26 @@ const INITIAL_PLACEMENT_DATA = {
         level: "All Levels",
         category: "Quantitative Aptitude",
         description: "Speed math shortcuts, topic-wise solved placement test problems, and company aptitude test preparation by CareerRide."
+      },
+      {
+        id: "user-aptitude-03",
+        title: "Placement Hub – Placement Coding & Aptitude Prep",
+        youtubeId: "PL8p2I9GklV454LdGfDOw0KkNazKuA-6B2",
+        youtubeUrl: "https://www.youtube.com/playlist?list=PL8p2I9GklV454LdGfDOw0KkNazKuA-6B2",
+        duration: "Full Playlist",
+        level: "Placement Ready",
+        category: "Placement Coding",
+        description: "Curated collection of campus placement coding questions, aptitude tests, and interview technical rounds."
+      },
+      {
+        id: "user-aptitude-04",
+        title: "Placement Masterclass – Placement & Coding",
+        youtubeId: "PLBG_hRMQjgpwN2WhFoFZG_jad1fLgKSnZ",
+        youtubeUrl: "https://www.youtube.com/playlist?list=PLBG_hRMQjgpwN2WhFoFZG_jad1fLgKSnZ",
+        duration: "Full Playlist",
+        level: "Placement Ready",
+        category: "Placement Preparation",
+        description: "Comprehensive placement preparation video series with core programming concepts and problem solving."
       }
     ]
   },
