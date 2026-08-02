@@ -162,14 +162,18 @@ class VideoPlayerController {
     const isWatched = this.watchedVideos.has(video.id);
     this.updateMarkWatchedButton(isWatched);
 
-    // Re-highlight active playlist item in sidebar
-    this.highlightActivePlaylistItem();
+    // Re-render sidebar fully so sub-lectures expand for the active playlist item
+    if (typeof window.renderPlaylistSidebar === 'function') {
+      window.renderPlaylistSidebar(trackId);
+    }
 
     // Scroll active item into view inside sidebar
-    const activeItem = document.querySelector(`.playlist-item[data-video-id="${video.id}"]`);
-    if (activeItem) {
-      activeItem.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-    }
+    setTimeout(() => {
+      const activeItem = document.querySelector('.playlist-item-wrapper.is-active');
+      if (activeItem) {
+        activeItem.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }
+    }, 100);
   }
 
   jumpToPlaylistLecture(lectureIndex) {
