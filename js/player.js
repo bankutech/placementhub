@@ -370,15 +370,27 @@ class VideoPlayerController {
   }
 
   scrollToActivePlaylistItem() {
-    // Scroll active item into view WITHIN the sidebar only (not the whole page)
+    // Scroll active item into view
     setTimeout(() => {
-      const activeItem = document.querySelector('.playlist-sub-lecture.active') || document.querySelector('.playlist-item-wrapper.is-active');
+      // 1. Scroll inner container if the active item is a sub-lecture
+      const activeSubLec = document.querySelector('.playlist-sub-lecture.active');
+      if (activeSubLec) {
+        const subContainer = activeSubLec.closest('.playlist-sub-lectures-container');
+        if (subContainer) {
+          const subRect = activeSubLec.getBoundingClientRect();
+          const containerRect = subContainer.getBoundingClientRect();
+          const relativeTop = subRect.top - containerRect.top;
+          const targetScroll = subContainer.scrollTop + relativeTop - 20;
+          subContainer.scrollTo({ top: targetScroll, behavior: 'smooth' });
+        }
+      }
+
+      // 2. Scroll outer sidebar for the main playlist item wrapper
+      const activeItem = activeSubLec ? activeSubLec.closest('.playlist-item-wrapper') : document.querySelector('.playlist-item-wrapper.is-active');
       const sidebar = document.getElementById('playlistItemsContainer');
       if (activeItem && sidebar) {
         const itemRect = activeItem.getBoundingClientRect();
         const sidebarRect = sidebar.getBoundingClientRect();
-        
-        // Calculate scroll target using absolute scroll + relative diff
         const relativeTop = itemRect.top - sidebarRect.top;
         const targetScrollTop = sidebar.scrollTop + relativeTop - 20;
         
