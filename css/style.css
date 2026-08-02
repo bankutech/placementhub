@@ -488,7 +488,7 @@ textarea:focus {
 .playlist-sub-lecture {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.6rem;
   padding: 0.35rem 0.55rem;
   border-radius: var(--radius-sm);
   color: var(--text-secondary);
@@ -498,18 +498,37 @@ textarea:focus {
   transition: all 0.15s ease;
 }
 
-.playlist-sub-lecture i {
-  font-size: 0.75rem;
-  color: rgba(255, 255, 255, 0.35);
-  transition: color 0.15s ease;
+.playlist-sub-lecture-thumb {
+  width: 38px;
+  height: 24px;
+  border-radius: 4px;
+  overflow: hidden;
+  flex-shrink: 0;
+  background: #000;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+.playlist-sub-lecture-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.playlist-sub-lecture-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.sub-lecture-title {
+  display: block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .playlist-sub-lecture:hover {
   background: rgba(255, 255, 255, 0.04);
   color: #fff;
-}
-.playlist-sub-lecture:hover i {
-  color: var(--accent-secondary);
 }
 
 .playlist-sub-lecture.active {

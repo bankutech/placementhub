@@ -57,6 +57,9 @@
       <button class="btn-header" onclick="window.playlistManager.resetToDefaults()" title="Reset to Defaults">
         <i class="fa-solid fa-rotate-left"></i>
       </button>
+      <button class="btn-header" onclick="window.openModal('settingsModal')" title="Settings & YouTube API Key">
+        <i class="fa-solid fa-gear"></i>
+      </button>
     </div>
   </header>
 
@@ -534,6 +537,34 @@
       </div>
       <div class="modal-footer">
         <button class="btn btn-secondary" onclick="window.closeModal('shortcutsModal')">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       MODAL: SETTINGS & YOUTUBE API
+       ======================================================================== -->
+  <div class="modal-backdrop" id="settingsModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3><i class="fa-solid fa-gear" style="color: var(--accent-secondary);"></i> Settings & YouTube API</h3>
+        <button class="modal-close-btn" onclick="window.closeModal('settingsModal')">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label for="ytApiKeyInput">YouTube Data API v3 Key (Optional)</label>
+          <input type="password" id="ytApiKeyInput" class="form-control" placeholder="Paste your Google API key here..." />
+          <span class="form-help">
+            Enter a YouTube API Key to dynamically fetch and display real lecture titles, thumbnails, and descriptions like Udemy.
+            <a href="https://console.cloud.google.com/apis/library/youtube.googleapis.com" target="_blank" rel="noopener noreferrer" style="color: var(--accent-secondary); text-decoration: underline;">Get a free API key here</a>.
+          </span>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="window.closeModal('settingsModal')">Cancel</button>
+        <button class="btn btn-primary" onclick="window.saveSettings()"><i class="fa-solid fa-floppy-disk"></i> Save Key</button>
       </div>
     </div>
   </div>

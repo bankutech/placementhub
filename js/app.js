@@ -6,7 +6,8 @@
 window.appState = {
   tracks: {},
   currentTrackId: 'java',
-  searchQuery: ''
+  searchQuery: '',
+  playlistItemsCache: {}
 };
 
 // Global Toast Dispatcher
@@ -105,20 +106,38 @@ window.renderPlaylistSidebar = function(trackId, filterText = '') {
 
     let nestedLecturesHtml = '';
     if (isActive && isPlaylist) {
-      const currentLecIndex = window.playerController.currentPlaylistLectureIndex || 0;
-      nestedLecturesHtml = `
-        <div class="playlist-sub-lectures-container">
-          ${Array.from({ length: 40 }).map((_, lIdx) => {
-            const isLecActive = (currentLecIndex === lIdx);
-            return `
-              <div class="playlist-sub-lecture ${isLecActive ? 'active' : ''}" onclick="event.stopPropagation(); window.playerController.jumpToPlaylistLecture(${lIdx})">
-                <i class="fa-solid ${isLecActive ? 'fa-circle-play' : 'fa-play'}"></i>
-                <span class="sub-lecture-title">Lecture #${lIdx + 1}</span>
-              </div>
-            `;
-          }).join('')}
-        </div>
-      `;
+      const cached = window.appState.playlistItemsCache[video.youtubeId];
+      if (cached) {
+        const currentLecIndex = window.playerController.currentPlaylistLectureIndex || 0;
+        const filteredLec = filterText ? cached.filter(c => c.title.toLowerCase().includes(filterText.toLowerCase())) : cached;
+        nestedLecturesHtml = `
+          <div class="playlist-sub-lectures-container">
+            ${filteredLec.map(lec => {
+              const isLecActive = (currentLecIndex === lec.index);
+              return `
+                <div class="playlist-sub-lecture ${isLecActive ? 'active' : ''}" onclick="event.stopPropagation(); window.selectPlaylistLecture('${video.id}', '${video.youtubeId}', ${lec.index}, '${lec.id}', '${lec.title}')">
+                  <div class="playlist-sub-lecture-thumb">
+                    <img src="${lec.thumbnail}" alt="" />
+                  </div>
+                  <div class="playlist-sub-lecture-info">
+                    <span class="sub-lecture-title">${lec.title}</span>
+                  </div>
+                </div>
+              `;
+            }).join('')}
+          </div>
+        `;
+      } else {
+        nestedLecturesHtml = `
+          <div class="playlist-sub-lectures-container loading-state">
+            <div class="sidebar-loader" style="padding: 0.75rem; text-align: center; color: var(--text-secondary); font-size: 0.8rem;">
+              <i class="fa-solid fa-circle-notch fa-spin" style="color: var(--accent-secondary); margin-right: 0.4rem;"></i> Loading Udemy-style lectures...
+            </div>
+          </div>
+        `;
+        // Trigger background load
+        window.loadPlaylistItems(video.youtubeId, trackId);
+      }
     }
 
     return `
@@ -441,9 +460,114 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // 9. Initial Render
+  // 9. Pre-populate Settings API Key
+  const savedKey = localStorage.getItem('placementhub_yt_api_key') || '';
+  const ytInput = document.getElementById('ytApiKeyInput');
+  if (ytInput) ytInput.value = savedKey;
+
+  // 10. Initial Render
   window.renderTrackView('java');
   window.updateTrackChips();
   window.updateOverallProgress();
   window.showToast("🚀 Welcome to PlacementHub! Ready to crack your placement interviews.", "success");
 });
+
+// ----------------------------------------------------------------------------
+// Settings & YouTube API Settings Handler
+// ----------------------------------------------------------------------------
+window.saveSettings = function() {
+  const key = document.getElementById('ytApiKeyInput').value.trim();
+  localStorage.setItem('placementhub_yt_api_key', key);
+  window.showToast("API key settings saved successfully! 💾", "success");
+  window.closeModal('settingsModal');
+  
+  // Clear playlist cache to force fresh pull
+  window.appState.playlistItemsCache = {};
+  window.renderPlaylistSidebar(window.appState.currentTrackId);
+};
+
+// ----------------------------------------------------------------------------
+// Async Playlist Items Fetcher (YouTube API v3 or local fallback)
+// ----------------------------------------------------------------------------
+window.loadPlaylistItems = async function(playlistId, trackId) {
+  if (window.appState.playlistItemsCache[playlistId]) return;
+
+  const apiKey = localStorage.getItem('placementhub_yt_api_key');
+  
+  if (apiKey) {
+    try {
+      let allItems = [];
+      let nextPageToken = '';
+      let pagesToFetch = 2; // Fetch up to 100 items (50 per page)
+      
+      for (let page = 0; page < pagesToFetch; page++) {
+        const url = `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&maxResults=50&playlistId=${playlistId}&key=${apiKey}${nextPageToken ? '&pageToken=' + nextPageToken : ''}`;
+        const res = await fetch(url);
+        if (!res.ok) {
+          throw new Error(`YouTube API returned HTTP status ${res.status}`);
+        }
+        const data = await res.json();
+        if (data.items) {
+          allItems.push(...data.items);
+        }
+        nextPageToken = data.nextPageToken;
+        if (!nextPageToken) break;
+      }
+
+      const mapped = allItems.map((item, index) => ({
+        id: item.snippet.resourceId.videoId,
+        title: item.snippet.title || `Lecture #${index + 1}`,
+        thumbnail: item.snippet.thumbnails?.medium?.url || item.snippet.thumbnails?.default?.url || 'https://img.youtube.com/vi/0/mqdefault.jpg',
+        index: index
+      }));
+
+      window.appState.playlistItemsCache[playlistId] = mapped;
+      window.renderPlaylistSidebar(trackId);
+      return;
+    } catch (err) {
+      console.warn("YouTube API call failed, falling back to mock builder:", err);
+    }
+  }
+
+  // Fallback: If no API key or API fails, build 40 mock lecture cards dynamically
+  const fallbackList = Array.from({ length: 40 }).map((_, index) => ({
+    id: `fallback-${playlistId}-${index}`,
+    title: `Lecture #${index + 1} (Live Playlist Video)`,
+    thumbnail: `https://img.youtube.com/vi/0/mqdefault.jpg`,
+    index: index
+  }));
+
+  window.appState.playlistItemsCache[playlistId] = fallbackList;
+  window.renderPlaylistSidebar(trackId);
+};
+
+// ----------------------------------------------------------------------------
+// Switch between playlist sub-lectures
+// ----------------------------------------------------------------------------
+window.selectPlaylistLecture = function(parentId, playlistId, index, videoIdReal, title) {
+  window.playerController.currentPlaylistLectureIndex = index;
+  
+  const BASE = 'https://www.youtube.com/embed';
+  // Standard load series index in the embedded player
+  const embedUrl = `${BASE}/videoseries?list=${playlistId}&rel=0&index=${index}&autoplay=1`;
+  
+  if (window.playerController.videoIframe) {
+    window.playerController.videoIframe.src = '';
+    window.playerController.videoIframe.src = embedUrl;
+  }
+  
+  if (window.playerController.playlistCurrentLectureText) {
+    window.playerController.playlistCurrentLectureText.textContent = `Playing Lecture #${index + 1}`;
+  }
+  if (window.playerController.lectureIndexSelect) {
+    window.playerController.lectureIndexSelect.value = index;
+  }
+  if (window.playerController.videoTitleElem) {
+    window.playerController.videoTitleElem.textContent = title;
+  }
+  
+  window.showToast(`Playing Lecture #${index + 1}: ${title.substring(0, 30)}...`, 'info');
+  
+  // Refresh sidebar to update highlight
+  window.renderPlaylistSidebar(window.appState.currentTrackId);
+};
