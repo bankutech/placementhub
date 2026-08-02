@@ -36,27 +36,7 @@ window.showToast = function(message, type = 'info') {
   }, 3500);
 };
 
-// Switch Toolkit Sub-Tabs (Overview, Sandbox, Notes, Interview)
-window.switchToolkitTab = function(tabId) {
-  const tabBtns = document.querySelectorAll('.toolkit-tab-btn');
-  const tabPanes = document.querySelectorAll('.tab-pane');
 
-  tabBtns.forEach(btn => {
-    if (btn.getAttribute('data-tab') === tabId) {
-      btn.classList.add('active');
-    } else {
-      btn.classList.remove('active');
-    }
-  });
-
-  tabPanes.forEach(pane => {
-    if (pane.id === tabId) {
-      pane.classList.add('active');
-    } else {
-      pane.classList.remove('active');
-    }
-  });
-};
 
 // ----------------------------------------------------------------------------
 // Render Playlist Sidebar
@@ -241,19 +221,7 @@ window.renderTrackView = function(trackId) {
     `).join('');
   }
 
-  // 5. Update Code Sandbox language to match track
-  if (window.codeSandbox) {
-    if (trackId === 'java' || trackId === 'cpp' || trackId === 'c' || trackId === 'python') {
-      window.codeSandbox.setLanguage(trackId);
-    }
-  }
-
-  // 6. Update Interview Prep language filter
-  if (window.interviewPrepManager) {
-    window.interviewPrepManager.setLanguageFilter(trackId === 'custom' ? 'all' : trackId);
-  }
-
-  // 7. Load first video in track if available
+  // 5. Load first video in track if available
   if (track.videos && track.videos.length > 0) {
     window.playerController.loadVideo(track.videos[0], trackId, 0);
   } else {
@@ -345,9 +313,6 @@ document.addEventListener('DOMContentLoaded', () => {
   window.appState.tracks = window.playlistManager.initData();
 
   window.playerController = new VideoPlayerController();
-  window.codeSandbox = new CodeSandbox();
-  window.notesManager = new NotesManager();
-  window.interviewPrepManager = new InterviewPrepManager();
 
   // 2. Setup Track Switching Chips
   const trackChips = document.querySelectorAll('.track-chip');
@@ -358,15 +323,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // 3. Setup Toolkit Tabs
-  const toolkitTabBtns = document.querySelectorAll('.toolkit-tab-btn');
-  toolkitTabBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
-      window.switchToolkitTab(btn.getAttribute('data-tab'));
-    });
-  });
-
-  // 4. Video Player Control Buttons
+  // 3. Video Player Control Buttons
   const btnPrev = document.getElementById('btnPrevVideo');
   const btnNext = document.getElementById('btnNextVideo');
   const btnTheater = document.getElementById('btnTheaterMode');
