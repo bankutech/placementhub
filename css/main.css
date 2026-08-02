@@ -46,6 +46,8 @@
   --track-python-glow: rgba(234, 179, 8, 0.25);
   --track-dsa: #a855f7;
   --track-dsa-glow: rgba(168, 85, 247, 0.25);
+  --track-aptitude: #10b981;
+  --track-aptitude-glow: rgba(16, 185, 129, 0.25);
   --track-custom: #ec4899;
   --track-custom-glow: rgba(236, 72, 153, 0.25);
 
@@ -363,6 +365,14 @@ button, input, select, textarea {
 }
 .track-chip.active[data-track="dsa"] i { color: var(--track-dsa); }
 
+.track-chip.active[data-track="aptitude"] {
+  background: rgba(16, 185, 129, 0.15);
+  border-color: var(--track-aptitude);
+  color: #d1fae5;
+  box-shadow: 0 0 15px var(--track-aptitude-glow);
+}
+.track-chip.active[data-track="aptitude"] i { color: var(--track-aptitude); }
+
 .track-chip.active[data-track="custom"] {
   background: rgba(236, 72, 153, 0.15);
   border-color: var(--track-custom);
@@ -442,6 +452,7 @@ button, input, select, textarea {
 .track-banner.track-c::before { background: var(--track-c); }
 .track-banner.track-python::before { background: var(--track-python); }
 .track-banner.track-dsa::before { background: var(--track-dsa); }
+.track-banner.track-aptitude::before { background: var(--track-aptitude); }
 .track-banner.track-custom::before { background: var(--track-custom); }
 
 .track-info-left {

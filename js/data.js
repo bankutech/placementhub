@@ -167,13 +167,11 @@ const INITIAL_PLACEMENT_DATA = {
     icon: "fa-solid fa-diagram-project",
     color: "var(--track-dsa)",
     badge: "Interview Essential",
-    description: "Complete Data Structures, Algorithms, Core CS Subjects (OS, DBMS, CN), and Quantitative Aptitude for cracking campus & product placements.",
+    description: "Complete Data Structures, Algorithms, and Core CS Subjects (OS, DBMS, CN) for cracking campus & product placements.",
     roadmap: [
       { step: 1, title: "A2Z Data Structures & Algorithms", desc: "Arrays, Strings, Linked Lists, Stacks, Queues, Trees, BST, Graphs, Dynamic Programming." },
       { step: 2, title: "Core Computer Science Fundamentals", desc: "Operating Systems (Process, Threads, Memory), DBMS (SQL, Normalization, ACID), Computer Networks." },
-      { step: 3, title: "Quantitative Aptitude Mastery", desc: "Percentages, Profit & Loss, Time & Work, Speed Distance & Time, Permutations & Combinations." },
-      { step: 4, title: "Logical Reasoning & Data Interpretation", desc: "Blood relations, Syllogisms, Seating arrangement, Series, Tables and Bar Charts." },
-      { step: 5, title: "Company-Specific Mock Rounds", desc: "TCS NQT, Infosys, Capgemini, Accenture, Cognizant, Wipro, and Tier-1 product test patterns." }
+      { step: 3, title: "Company-Specific Mock Rounds", desc: "TCS NQT, Infosys, Capgemini, Accenture, Cognizant, Wipro, and Tier-1 product test patterns." }
     ],
     videos: [
       {
@@ -195,26 +193,6 @@ const INITIAL_PLACEMENT_DATA = {
         level: "All Levels",
         category: "Core CS / OS",
         description: "Comprehensive engineering curriculum, Digital Logic, OS, Network basics, and placement preparation series by Neso Academy."
-      },
-      {
-        id: "user-dsa-03",
-        title: "Amit Khurana – Complete Aptitude & Reasoning",
-        youtubeId: "PLC36xJgs4dxE43Au1FGRQvwHTr7NbgDCS",
-        youtubeUrl: "https://www.youtube.com/playlist?list=PLC36xJgs4dxE43Au1FGRQvwHTr7NbgDCS",
-        duration: "Full Playlist",
-        level: "All Levels",
-        category: "Aptitude & Reasoning",
-        description: "Complete Quantitative Aptitude and Logical Reasoning syllabus for campus placements and competitive exams by Amit Khurana."
-      },
-      {
-        id: "user-dsa-04",
-        title: "CareerRide – Quantitative Aptitude",
-        youtubeId: "PLpyc33gOcbVA4qXMoQ5vmhefTruk5t9lt",
-        youtubeUrl: "https://www.youtube.com/playlist?list=PLpyc33gOcbVA4qXMoQ5vmhefTruk5t9lt",
-        duration: "Full Playlist",
-        level: "All Levels",
-        category: "Quantitative Aptitude",
-        description: "Speed math shortcuts, topic-wise solved placement test problems, and company aptitude test preparation by CareerRide."
       },
       {
         id: "user-dsa-05",
@@ -240,7 +218,46 @@ const INITIAL_PLACEMENT_DATA = {
   },
 
   // --------------------------------------------------------------------------
-  // TRACK 6: ALL MY PLAYLISTS (USER CURATED COLLECTION)
+  // TRACK 6: APTITUDE & REASONING
+  // --------------------------------------------------------------------------
+  aptitude: {
+    id: "aptitude",
+    name: "Aptitude Track",
+    icon: "fa-solid fa-brain",
+    color: "var(--track-aptitude)",
+    badge: "Logical Thinking",
+    description: "Master Quantitative Aptitude, Logical Reasoning, and Data Interpretation for cracking initial campus screening rounds.",
+    roadmap: [
+      { step: 1, title: "Quantitative Aptitude Mastery", desc: "Percentages, Profit & Loss, Time & Work, Speed Distance & Time, Permutations & Combinations." },
+      { step: 2, title: "Logical Reasoning & Data Interpretation", desc: "Blood relations, Syllogisms, Seating arrangement, Series, Tables and Bar Charts." },
+      { step: 3, title: "Company Aptitude Tests", desc: "TCS NQT, Infosys, Capgemini, Accenture, Cognizant, Wipro aptitude patterns." }
+    ],
+    videos: [
+      {
+        id: "user-aptitude-01",
+        title: "Amit Khurana – Complete Aptitude & Reasoning",
+        youtubeId: "PLC36xJgs4dxE43Au1FGRQvwHTr7NbgDCS",
+        youtubeUrl: "https://www.youtube.com/playlist?list=PLC36xJgs4dxE43Au1FGRQvwHTr7NbgDCS",
+        duration: "Full Playlist",
+        level: "All Levels",
+        category: "Aptitude & Reasoning",
+        description: "Complete Quantitative Aptitude and Logical Reasoning syllabus for campus placements and competitive exams by Amit Khurana."
+      },
+      {
+        id: "user-aptitude-02",
+        title: "CareerRide – Quantitative Aptitude",
+        youtubeId: "PLpyc33gOcbVA4qXMoQ5vmhefTruk5t9lt",
+        youtubeUrl: "https://www.youtube.com/playlist?list=PLpyc33gOcbVA4qXMoQ5vmhefTruk5t9lt",
+        duration: "Full Playlist",
+        level: "All Levels",
+        category: "Quantitative Aptitude",
+        description: "Speed math shortcuts, topic-wise solved placement test problems, and company aptitude test preparation by CareerRide."
+      }
+    ]
+  },
+
+  // --------------------------------------------------------------------------
+  // TRACK 7: ALL MY PLAYLISTS (USER CURATED COLLECTION)
   // --------------------------------------------------------------------------
   custom: {
     id: "custom",
