@@ -34,7 +34,7 @@ class CodeSandbox {
     // Clear Console
     if (this.btnClearConsole) {
       this.btnClearConsole.addEventListener('click', () => {
-        this.outputConsole.textContent = "// Output terminal ready. Click 'Preview Output (Simulated)' to test.";
+        this.outputConsole.textContent = "// Output terminal ready. Click 'Run Code' to execute.";
         this.outputConsole.className = 'sandbox-output-console';
       });
     }
@@ -70,73 +70,91 @@ class CodeSandbox {
     if (this.langSelect) this.langSelect.value = lang;
     if (this.codeEditor) this.codeEditor.value = CODE_TEMPLATES[lang];
     if (this.outputConsole) {
-      this.outputConsole.textContent = `// [Simulated Mode] Loaded ${lang.toUpperCase()} environment. Ready to preview output.`;
+      this.outputConsole.textContent = `// Loaded ${lang.toUpperCase()} environment. Write code and click 'Run Code' to execute.`;
       this.outputConsole.className = 'sandbox-output-console';
     }
   }
 
-  runCode() {
+  async runCode() {
     const code = this.codeEditor.value;
     const lang = this.currentLanguage;
 
-    this.outputConsole.textContent = `[Simulating ${lang.toUpperCase()} compilation & test cases...]`;
-    this.outputConsole.className = 'sandbox-output-console';
-
-    setTimeout(() => {
-      const startTime = performance.now();
-      try {
-        const executionResult = this.simulateExecution(lang, code);
-        const endTime = performance.now();
-        const elapsed = (endTime - startTime).toFixed(2);
-
-        this.outputConsole.className = 'sandbox-output-console success';
-        this.outputConsole.textContent = `--- Simulated Output (${lang.toUpperCase()}) ---
-${executionResult}
-
---------------------------------------
-✨ Simulation: Successful
-⏱️ Simulated Runtime: ${elapsed} ms
-💾 Memory Profile: ~12.4 MB (Standard JRE / GCC)
-ℹ️ Note: For real backend execution, compile in your local IDE or terminal.`;
-        window.showToast("Output preview generated (Simulated)! 🚀", "success");
-      } catch (err) {
-        this.outputConsole.className = 'sandbox-output-console has-error';
-        this.outputConsole.textContent = `❌ Compilation / Runtime Error:
-${err.message || err}`;
-        window.showToast("Execution error detected", "warning");
-      }
-    }, 450);
-  }
-
-  simulateExecution(lang, code) {
-    // Basic syntax checking and smart extraction of print statements
     if (!code.trim()) {
-      throw new Error("Source file is empty.");
+      window.showToast("Source code is empty!", "warning");
+      return;
     }
 
-    if (lang === 'java') {
-      if (!code.includes('class') || !code.includes('main')) {
-        throw new Error("Main method not found: public static void main(String[] args)");
-      }
-      return `🚀 Welcome to Java Placement Prep!\nTwo Sum Indices: [0, 1]\nTest Case Passed (Target 9 found at indices 0 and 1)`;
-    } 
-    else if (lang === 'cpp') {
-      if (!code.includes('main')) {
-        throw new Error("Function 'int main()' was not defined.");
-      }
-      return `⚡ C++ Placement Code Runner Ready!\nIndices found: [0, 1]\nOptimized O(N) Hash Table Lookups: 4 iterations`;
-    }
-    else if (lang === 'c') {
-      if (!code.includes('main')) {
-        throw new Error("Undefined reference to 'main'");
-      }
-      return `🚀 C Language Placement Sandbox\nReversed Array: 50 40 30 20 10\nIn-place reversal completed with 0 extra memory allocation.`;
-    }
-    else if (lang === 'python') {
-      return `🐍 Python Placement Sandbox Ready!\nTarget 9 formed by indices: [0, 1]\nDictionary lookup time: O(1) average`;
+    // Display loader in console
+    if (this.outputConsole) {
+      this.outputConsole.textContent = `[Compiling and executing ${lang.toUpperCase()} via Piston Sandbox...]`;
+      this.outputConsole.className = 'sandbox-output-console running';
     }
 
-    return "Executed successfully with return code 0.";
+    // Map editor languages to Piston runtimes
+    const pistonLangMap = {
+      'java': { language: 'java', version: '15.0.2', filename: 'Main.java' },
+      'cpp': { language: 'c++', version: '10.2.0', filename: 'main.cpp' },
+      'c': { language: 'c', version: '10.2.0', filename: 'main.c' },
+      'python': { language: 'python', version: '3.10.0', filename: 'main.py' }
+    };
+
+    const runtime = pistonLangMap[lang] || { language: lang, version: '*', filename: 'main' };
+
+    try {
+      const response = await fetch('https://emkc.org/api/v2/piston/execute', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          language: runtime.language,
+          version: runtime.version,
+          files: [
+            {
+              name: runtime.filename,
+              content: code
+            }
+          ]
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error(`Execution service returned status ${response.status}`);
+      }
+
+      const data = await response.json();
+      const runResult = data.run;
+
+      if (!runResult) {
+        throw new Error("No output received from the execution sandbox.");
+      }
+
+      // Check if compilation failed or runtime error occurred
+      const hasError = runResult.stderr || runResult.code !== 0;
+
+      if (this.outputConsole) {
+        if (hasError) {
+          this.outputConsole.className = 'sandbox-output-console has-error';
+          let errorText = `--- Code Execution Failed (Exit Code ${runResult.code}) ---\n`;
+          if (data.compile && data.compile.stderr) {
+            errorText += `[Compilation Error]\n${data.compile.stderr}\n`;
+          }
+          if (runResult.stderr) {
+            errorText += `[Runtime Error]\n${runResult.stderr}`;
+          }
+          this.outputConsole.textContent = errorText;
+          window.showToast("Execution finished with errors", "warning");
+        } else {
+          this.outputConsole.className = 'sandbox-output-console success';
+          this.outputConsole.textContent = `--- Output (${lang.toUpperCase()}) ---\n${runResult.stdout || '(No standard output)'}\n\n--------------------------------------\n✨ Execution Successful (Code 0)`;
+          window.showToast("Code executed successfully! 🚀", "success");
+        }
+      }
+    } catch (err) {
+      if (this.outputConsole) {
+        this.outputConsole.className = 'sandbox-output-console has-error';
+        this.outputConsole.textContent = `❌ API / Network Error: Could not reach compile sandbox.\n${err.message || err}`;
+      }
+      window.showToast("Execution failed", "warning");
+    }
   }
 }
 

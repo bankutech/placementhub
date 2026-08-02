@@ -329,12 +329,12 @@
                   </select>
                 </div>
                 <div style="display: flex; gap: 0.5rem; align-items: center;">
-                  <span class="badge badge-simulated" title="In-browser simulated compilation"><i class="fa-solid fa-flask"></i> Simulated</span>
+                  <span class="badge badge-simulated" id="sandboxStatusBadge" title="Live execution via Piston API"><i class="fa-solid fa-bolt"></i> Piston Sandbox</span>
                   <button class="btn btn-secondary btn-sm" id="btnResetCode" title="Reset to template">
                     <i class="fa-solid fa-rotate-left"></i> Reset
                   </button>
-                  <button class="btn-run-code" id="btnRunCode" title="Run simulated test cases">
-                    <i class="fa-solid fa-play"></i> Preview Output (Simulated)
+                  <button class="btn-run-code" id="btnRunCode" title="Compile and run code on live servers">
+                    <i class="fa-solid fa-play"></i> Run Code
                   </button>
                 </div>
               </div>
@@ -349,12 +349,12 @@
               <div class="sandbox-output-header">
                 <div style="display: flex; align-items: center; gap: 0.5rem;">
                   <i class="fa-solid fa-terminal" style="color: var(--accent-secondary);"></i>
-                  <span>Simulated Terminal Output</span>
+                  <span>Live Sandbox Output</span>
                 </div>
                 <button class="btn btn-secondary btn-sm" id="btnClearConsole">Clear</button>
               </div>
               <div id="sandboxOutputConsole" class="sandbox-output-console">
-                // Output terminal ready. Click 'Preview Output (Simulated)' to execute test cases.
+                // Output terminal ready. Click 'Run Code' to execute.
               </div>
             </div>
           </div>

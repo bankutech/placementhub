@@ -322,8 +322,145 @@ h1, h2, h3, h4, .brand-name, .track-heading, .current-video-title {
 }
 
 /* --------------------------------------------------------------------------
-   ACCESSIBILITY: Reduced Motion
+   CYBER-DARK GLASSMORPHISM OVERLAY THEME
    -------------------------------------------------------------------------- */
+
+/* Custom global variables override */
+:root {
+  --bg-primary: #0b0f19;
+  --bg-secondary: rgba(17, 24, 39, 0.7);
+  --bg-tertiary: rgba(31, 41, 55, 0.65);
+  --border-subtle: rgba(255, 255, 255, 0.08);
+  --accent-primary: #6366f1; /* Indigo */
+  --accent-secondary: #06b6d4; /* Cyan */
+  --accent-success: #10b981; /* Emerald */
+  --text-primary: #f8fafc;
+  --text-secondary: #cbd5e1;
+  --glow-primary: rgba(99, 102, 241, 0.4);
+  --glow-secondary: rgba(6, 182, 212, 0.45);
+}
+
+/* Glassmorphic Cards & Layouts */
+.player-container-card,
+.playlist-sidebar-wrapper,
+.toolkit-tabs-container,
+.overview-card,
+.code-sandbox-container,
+.notes-container,
+.interview-prep-container,
+.modal-card {
+  background: rgba(15, 23, 42, 0.55) !important;
+  backdrop-filter: blur(16px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(16px) saturate(180%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5) !important;
+  border-radius: var(--radius-md) !important;
+}
+
+/* Dynamic glow effect on player frame container */
+.player-container-card {
+  border: 1px solid rgba(99, 102, 241, 0.25) !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6), 0 0 15px rgba(99, 102, 241, 0.08) !important;
+}
+.player-container-card:hover {
+  border-color: rgba(99, 102, 241, 0.45) !important;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.7), 0 0 25px rgba(99, 102, 241, 0.2) !important;
+}
+
+/* Track chip upgrades */
+.track-chip {
+  background: rgba(255, 255, 255, 0.04) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  color: var(--text-secondary) !important;
+  padding: 0.6rem 1.1rem !important;
+  font-weight: 600 !important;
+  border-radius: 999px !important;
+}
+.track-chip:hover {
+  background: rgba(255, 255, 255, 0.08) !important;
+  border-color: rgba(99, 102, 241, 0.4) !important;
+  color: #fff !important;
+  box-shadow: 0 0 15px rgba(99, 102, 241, 0.15) !important;
+}
+.track-chip.active {
+  background: linear-gradient(135deg, var(--accent-primary) 0%, rgba(99, 102, 241, 0.75) 100%) !important;
+  border-color: rgba(99, 102, 241, 0.6) !important;
+  color: #fff !important;
+  box-shadow: 0 0 18px rgba(99, 102, 241, 0.4) !important;
+}
+
+/* Input & Select glow styling */
+input[type="text"],
+select,
+textarea {
+  background: rgba(15, 23, 42, 0.7) !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  color: #fff !important;
+  transition: all 0.2s ease !important;
+}
+input[type="text"]:focus,
+select:focus,
+textarea:focus {
+  border-color: var(--accent-secondary) !important;
+  box-shadow: 0 0 12px rgba(6, 182, 212, 0.25) !important;
+}
+
+/* Modern Cyber Scrollbars */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #090d16;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(99, 102, 241, 0.25);
+  border-radius: 999px;
+  border: 2px solid #090d16;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent-secondary);
+}
+
+/* Piston compiler execution animation */
+.sandbox-output-console.running {
+  border-color: var(--accent-secondary) !important;
+  background: #020617 !important;
+  color: var(--accent-secondary) !important;
+  position: relative;
+  overflow: hidden;
+}
+.sandbox-output-console.running::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(6, 182, 212, 0.12), transparent);
+  animation: scanline 1.2s infinite linear;
+}
+
+@keyframes scanline {
+  0% { left: -100%; }
+  100% { left: 100%; }
+}
+
+.sandbox-output-console.success {
+  border-color: rgba(16, 185, 129, 0.4) !important;
+  background: rgba(2, 6, 23, 0.9) !important;
+  color: #34d399 !important;
+  box-shadow: inset 0 0 10px rgba(16, 185, 129, 0.1) !important;
+}
+
+.sandbox-output-console.has-error {
+  border-color: rgba(239, 68, 68, 0.4) !important;
+  background: rgba(2, 6, 23, 0.9) !important;
+  color: #f87171 !important;
+  box-shadow: inset 0 0 10px rgba(239, 68, 68, 0.1) !important;
+}
+
+/* ACCESSIBILITY: Reduced Motion */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: 0.01ms !important;
