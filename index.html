@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PlacementHub - All-in-One Placement Learning & Video Portal</title>
+  <meta name="description" content="Master Java, C++, C, Python, and DSA with seamless in-page video playlists, live code sandbox, timestamped notes, and interview prep." />
+
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+
+  <!-- Application Master Stylesheet -->
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+  <!-- ========================================================================
+       TOP HEADER & NAVIGATION
+       ======================================================================== -->
+  <header class="app-header">
+    <div class="brand-wrapper">
+      <div class="brand-icon-box">
+        <i class="fa-solid fa-graduation-cap"></i>
+      </div>
+      <div class="brand-text">
+        <span class="brand-title">PlacementHub</span>
+        <span class="brand-tagline">Campus & Tech Placement Portal</span>
+      </div>
+    </div>
+
+    <div class="header-search">
+      <i class="fa-solid fa-magnifying-glass"></i>
+      <input type="text" id="headerSearchInput" placeholder="Search concepts, lectures, or questions..." />
+    </div>
+
+    <div class="header-actions">
+      <div class="track-stats-quick">
+        <div class="stat-item" title="Completed Lessons">
+          <i class="fa-solid fa-circle-check" style="color: var(--accent-success);"></i>
+          <span id="totalWatchedStat">0/0 Lessons</span>
+        </div>
+        <div class="stat-item" title="Preparation Streak">
+          <i class="fa-solid fa-fire" style="color: var(--track-java);"></i>
+          <span>7-Day Streak</span>
+        </div>
+      </div>
+
+      <button class="btn-header btn-accent" id="btnHeaderAddVideo" onclick="window.openAddVideoModal()">
+        <i class="fa-solid fa-plus"></i>
+        <span>Add Video / Link</span>
+      </button>
+
+      <button class="btn-header" onclick="window.playlistManager.exportData()" title="Backup & Export Playlists">
+        <i class="fa-solid fa-download"></i>
+      </button>
+
+      <button class="btn-header" onclick="window.openModal('shortcutsModal')" title="Keyboard Shortcuts">
+        <i class="fa-solid fa-keyboard"></i>
+      </button>
+
+      <button class="btn-header" onclick="window.playlistManager.resetToDefaults()" title="Reset to Defaults">
+        <i class="fa-solid fa-rotate-left"></i>
+      </button>
+    </div>
+  </header>
+
+  <!-- ========================================================================
+       SUBJECT TRACKS NAVIGATION BAR
+       ======================================================================== -->
+  <nav class="track-nav-container">
+    <div class="track-chips" id="trackChipsContainer">
+      <button class="track-chip active" data-track="java">
+        <i class="fa-brands fa-java"></i>
+        <span>Java Placement</span>
+        <span class="track-badge">6</span>
+      </button>
+
+      <button class="track-chip" data-track="cpp">
+        <i class="fa-solid fa-code"></i>
+        <span>C++ & STL</span>
+        <span class="track-badge">5</span>
+      </button>
+
+      <button class="track-chip" data-track="c">
+        <i class="fa-solid fa-c"></i>
+        <span>C Language</span>
+        <span class="track-badge">5</span>
+      </button>
+
+      <button class="track-chip" data-track="python">
+        <i class="fa-brands fa-python"></i>
+        <span>Python Track</span>
+        <span class="track-badge">4</span>
+      </button>
+
+      <button class="track-chip" data-track="dsa">
+        <i class="fa-solid fa-sitemap"></i>
+        <span>DSA & Roadmap</span>
+        <span class="track-badge">6</span>
+      </button>
+
+      <button class="track-chip" data-track="custom">
+        <i class="fa-solid fa-bookmark"></i>
+        <span>My Custom Links</span>
+        <span class="track-badge">4</span>
+      </button>
+    </div>
+
+    <div style="font-size: 0.78rem; color: var(--text-muted); display: flex; align-items: center; gap: 0.4rem;">
+      <i class="fa-solid fa-bolt" style="color: var(--accent-secondary);"></i>
+      <span>Zero tab switching • Instant In-Page Player</span>
+    </div>
+  </nav>
+
+  <!-- ========================================================================
+       MAIN WORKSPACE
+       ======================================================================== -->
+  <main class="main-workspace">
+
+    <!-- Active Track Banner -->
+    <section class="track-banner track-java" id="trackBanner">
+      <div class="track-info-left">
+        <h2 class="track-heading" id="trackHeading">
+          <i class="fa-brands fa-java"></i> Java Placement Track
+        </h2>
+        <p class="track-desc" id="trackDesc">
+          Complete Java masterclass for software engineering & campus placement interviews.
+        </p>
+      </div>
+
+      <div class="track-progress-box">
+        <div class="track-progress-label">
+          <span>Track Progress</span>
+          <strong id="trackProgressText">0%</strong>
+        </div>
+        <div class="track-progress-bar-bg">
+          <div class="track-progress-fill" id="trackProgressFill"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Learning Stage: Video Player + Playlist Syllabus Sidebar -->
+    <section class="learning-stage-grid" id="learningStageGrid">
+      
+      <!-- Video Player Card -->
+      <div class="player-container-card">
+        <div class="video-frame-wrapper" id="videoFrameWrapper">
+          <div class="video-placeholder-overlay" id="videoPlaceholder" style="display: none;">
+            <i class="fa-solid fa-circle-play"></i>
+            <h3>Select a lecture from the syllabus</h3>
+            <p>Click any course in the right sidebar to start watching directly inside PlacementHub.</p>
+          </div>
+          <iframe 
+            id="videoIframe" 
+            src="" 
+            title="Placement Video Player"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen"
+            referrerpolicy="strict-origin-when-cross-origin"
+            allowfullscreen
+            loading="lazy">
+          </iframe>
+        </div>
+
+        <!-- Video Player Action Toolbar -->
+        <div class="player-control-bar">
+          <div class="player-controls-left">
+            <button class="btn-ctrl" id="btnPrevVideo" title="Previous Video (P)">
+              <i class="fa-solid fa-backward-step"></i> Prev
+            </button>
+            <button class="btn-ctrl" id="btnNextVideo" title="Next Video (N)">
+              Next <i class="fa-solid fa-forward-step"></i>
+            </button>
+            <button class="btn-ctrl btn-mark-watched" id="btnMarkWatched" title="Toggle Completion (M)">
+              <i class="fa-regular fa-circle-check"></i> Mark Completed
+            </button>
+          </div>
+
+          <div class="player-controls-right">
+            <button class="btn-ctrl" id="btnOpenYouTube" title="Open this playlist / video on YouTube">
+              <i class="fa-brands fa-youtube" style="color: #ef4444;"></i> Open in YouTube
+            </button>
+            <label class="toggle-switch-label" title="Automatically load next video in playlist">
+              <input type="checkbox" id="autoPlayNextCheck" checked />
+              <span>Autoplay Next</span>
+            </label>
+            <button class="btn-ctrl" id="btnTheaterMode" title="Toggle Theater / Focus Mode (T)">
+              <i class="fa-solid fa-expand"></i> Theater Mode
+            </button>
+            <button class="btn-ctrl" onclick="window.switchToolkitTab('tab-notes')" title="Write Timestamped Note">
+              <i class="fa-solid fa-pen-to-square"></i> Take Note
+            </button>
+          </div>
+        </div>
+
+        <!-- Video Metadata Info -->
+        <div class="video-meta-block">
+          <div class="video-title-row">
+            <h1 class="current-video-title" id="currentVideoTitle">Loading lecture...</h1>
+            <div class="current-video-badges">
+              <span class="video-badge badge-track" id="videoTrackBadge">JAVA</span>
+              <span class="video-badge badge-level" id="videoLevelBadge">Beginner</span>
+              <span class="video-badge" id="videoCategoryBadge">Core Foundation</span>
+            </div>
+          </div>
+          <p class="current-video-desc" id="currentVideoDesc">
+            Lecture description and placement focus highlights will appear here.
+          </p>
+        </div>
+      </div>
+
+      <!-- Playlist Syllabus Sidebar -->
+      <aside class="playlist-sidebar-wrapper">
+        <div class="playlist-header">
+          <div class="playlist-header-top">
+            <div class="playlist-heading-group">
+              <i class="fa-solid fa-list-check" style="color: var(--accent-primary);"></i>
+              <h3>Course Syllabus</h3>
+            </div>
+            <span class="playlist-count-chip" id="playlistCountChip">0 Lectures</span>
+          </div>
+          <div class="playlist-search-box">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input type="text" id="playlistSearchInput" placeholder="Filter lectures in this track..." />
+          </div>
+        </div>
+
+        <!-- Scrollable Playlist Items -->
+        <div class="playlist-items-list" id="playlistItemsContainer">
+          <!-- Populated dynamically by app.js -->
+        </div>
+
+        <!-- Playlist Footer with Quick Add Button -->
+        <div class="playlist-footer">
+          <button class="btn-add-to-playlist" onclick="window.openAddVideoModal(window.appState.currentTrackId)">
+            <i class="fa-solid fa-plus"></i> Add Video / Playlist Link
+          </button>
+        </div>
+      </aside>
+    </section>
+
+    <!-- ======================================================================
+         PLACEMENT TOOLKIT SUB-TABS (OVERVIEW, SANDBOX, NOTES, INTERVIEW Q&A)
+         ====================================================================== -->
+    <section class="toolkit-tabs-container">
+      <div class="toolkit-tab-headers">
+        <button class="toolkit-tab-btn active" data-tab="tab-overview">
+          <i class="fa-solid fa-map-location-dot"></i> Track Roadmap
+        </button>
+        <button class="toolkit-tab-btn" data-tab="tab-sandbox">
+          <i class="fa-solid fa-terminal"></i> Live Code Playground
+        </button>
+        <button class="toolkit-tab-btn" data-tab="tab-notes">
+          <i class="fa-solid fa-note-sticky"></i> Timestamped Notes
+        </button>
+        <button class="toolkit-tab-btn" data-tab="tab-interview">
+          <i class="fa-solid fa-clipboard-question"></i> Top Interview Q&A
+        </button>
+      </div>
+
+      <div class="toolkit-tab-content">
+        
+        <!-- PANE 1: TRACK OVERVIEW & ROADMAP -->
+        <div class="tab-pane active" id="tab-overview">
+          <div class="overview-grid">
+            <div class="overview-card">
+              <h3><i class="fa-solid fa-route" style="color: var(--accent-primary);"></i> Placement Roadmap & Preparation Phases</h3>
+              <div class="roadmap-timeline" id="roadmapTimeline">
+                <!-- Populated dynamically by app.js -->
+              </div>
+            </div>
+
+            <div class="overview-card">
+              <h3><i class="fa-solid fa-shield-halved" style="color: var(--accent-secondary);"></i> Quick Placement Cheat Sheets</h3>
+              <div class="cheat-sheet-list">
+                <a href="javascript:void(0)" onclick="window.switchToolkitTab('tab-interview')" class="cheat-sheet-item">
+                  <span><i class="fa-solid fa-bolt" style="color: var(--track-java);"></i> Top 50 Java Placement Questions</span>
+                  <i class="fa-solid fa-arrow-right" style="color: var(--text-muted);"></i>
+                </a>
+                <a href="javascript:void(0)" onclick="window.switchToolkitTab('tab-sandbox')" class="cheat-sheet-item">
+                  <span><i class="fa-solid fa-code" style="color: var(--track-cpp);"></i> C++ STL Container Complexity Chart</span>
+                  <i class="fa-solid fa-arrow-right" style="color: var(--text-muted);"></i>
+                </a>
+                <a href="javascript:void(0)" onclick="window.switchToolkitTab('tab-interview')" class="cheat-sheet-item">
+                  <span><i class="fa-solid fa-memory" style="color: var(--track-c);"></i> C Dynamic Memory & Pointer Traps</span>
+                  <i class="fa-solid fa-arrow-right" style="color: var(--text-muted);"></i>
+                </a>
+                <a href="javascript:void(0)" onclick="window.switchToolkitTab('tab-interview')" class="cheat-sheet-item">
+                  <span><i class="fa-brands fa-python" style="color: var(--track-python);"></i> Python Placement DSA Tricks</span>
+                  <i class="fa-solid fa-arrow-right" style="color: var(--text-muted);"></i>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- PANE 2: LIVE CODE SANDBOX -->
+        <div class="tab-pane" id="tab-sandbox">
+          <div class="code-sandbox-container">
+            <div class="sandbox-editor-section">
+              <div class="sandbox-header">
+                <div style="display: flex; align-items: center; gap: 0.75rem;">
+                  <i class="fa-solid fa-laptop-code" style="color: var(--accent-success);"></i>
+                  <select id="sandboxLangSelect" class="sandbox-lang-select">
+                    <option value="java">Java 17 (JDK)</option>
+                    <option value="cpp">C++ 20 (G++)</option>
+                    <option value="c">C (GCC 11)</option>
+                    <option value="python">Python 3.11</option>
+                  </select>
+                </div>
+                <div style="display: flex; gap: 0.5rem; align-items: center;">
+                  <span class="badge badge-simulated" title="In-browser simulated compilation"><i class="fa-solid fa-flask"></i> Simulated</span>
+                  <button class="btn btn-secondary btn-sm" id="btnResetCode" title="Reset to template">
+                    <i class="fa-solid fa-rotate-left"></i> Reset
+                  </button>
+                  <button class="btn-run-code" id="btnRunCode" title="Run simulated test cases">
+                    <i class="fa-solid fa-play"></i> Preview Output (Simulated)
+                  </button>
+                </div>
+              </div>
+
+              <div class="sandbox-editor-wrapper">
+                <textarea id="sandboxCodeEditor" class="code-textarea" spellcheck="false" placeholder="Write or paste your code snippet here..."></textarea>
+              </div>
+            </div>
+
+            <!-- Terminal Output Section -->
+            <div class="sandbox-output-section">
+              <div class="sandbox-output-header">
+                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                  <i class="fa-solid fa-terminal" style="color: var(--accent-secondary);"></i>
+                  <span>Simulated Terminal Output</span>
+                </div>
+                <button class="btn btn-secondary btn-sm" id="btnClearConsole">Clear</button>
+              </div>
+              <div id="sandboxOutputConsole" class="sandbox-output-console">
+                // Output terminal ready. Click 'Preview Output (Simulated)' to execute test cases.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- PANE 3: TIMESTAMPED NOTES -->
+        <div class="tab-pane" id="tab-notes">
+          <div class="notes-container">
+            <div class="note-input-box">
+              <textarea id="noteTextInput" placeholder="Write key takeaways, important interview formulas, or code snippets from this lecture..."></textarea>
+              <div class="note-input-actions">
+                <span style="font-size: 0.8rem; color: var(--text-muted);">
+                  <i class="fa-solid fa-clock"></i> Notes automatically link to the current active lecture.
+                </span>
+                <div style="display: flex; gap: 0.5rem;">
+                  <button class="btn btn-secondary btn-sm" id="btnExportNotes">
+                    <i class="fa-solid fa-file-arrow-down"></i> Export Markdown
+                  </button>
+                  <button class="btn btn-primary btn-sm" id="btnAddNote">
+                    <i class="fa-solid fa-plus"></i> Save Note
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <div class="notes-list-grid" id="notesListContainer">
+              <!-- Rendered dynamically by notes.js -->
+            </div>
+          </div>
+        </div>
+
+        <!-- PANE 4: TOP INTERVIEW QUESTIONS -->
+        <div class="tab-pane" id="tab-interview">
+          <div class="interview-prep-container">
+            <div class="interview-filters-bar">
+              <div style="display: flex; gap: 0.6rem; flex-wrap: wrap;">
+                <select id="interviewLangFilter" class="form-control" style="width: auto;">
+                  <option value="all">All Languages</option>
+                  <option value="java">Java</option>
+                  <option value="cpp">C++</option>
+                  <option value="c">C Language</option>
+                  <option value="python">Python</option>
+                  <option value="dsa">DSA & Core CS</option>
+                </select>
+
+                <select id="interviewDifficultyFilter" class="form-control" style="width: auto;">
+                  <option value="all">All Difficulties</option>
+                  <option value="easy">Easy</option>
+                  <option value="medium">Medium</option>
+                  <option value="hard">Hard</option>
+                </select>
+              </div>
+
+              <input type="text" id="interviewSearchInput" class="interview-search-input" placeholder="Search interview questions..." />
+            </div>
+
+            <div class="interview-q-list" id="interviewQList">
+              <!-- Populated dynamically by interviewPrep.js -->
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ========================================================================
+       FOOTER
+       ======================================================================== -->
+  <footer class="app-footer">
+    <div>
+      <strong>PlacementHub</strong> • Master Campus Placements with Zero-Tab Friction
+    </div>
+    <div class="footer-links">
+      <span>Keyboard shortcuts: <kbd style="background: var(--bg-tertiary); padding: 0.15rem 0.4rem; border-radius: 4px; border: 1px solid var(--border-subtle);">N</kbd> Next • <kbd style="background: var(--bg-tertiary); padding: 0.15rem 0.4rem; border-radius: 4px; border: 1px solid var(--border-subtle);">P</kbd> Prev • <kbd style="background: var(--bg-tertiary); padding: 0.15rem 0.4rem; border-radius: 4px; border: 1px solid var(--border-subtle);">M</kbd> Mark Completed • <kbd style="background: var(--bg-tertiary); padding: 0.15rem 0.4rem; border-radius: 4px; border: 1px solid var(--border-subtle);">T</kbd> Theater</span>
+    </div>
+  </footer>
+
+  <!-- ========================================================================
+       MODAL: ADD CUSTOM VIDEO / PLAYLIST LINK
+       ======================================================================== -->
+  <div class="modal-backdrop" id="addVideoModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3><i class="fa-solid fa-link" style="color: var(--accent-primary);"></i> Add Video or Playlist Link</h3>
+        <button class="modal-close-btn" onclick="window.closeModal('addVideoModal')">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+      <form id="addVideoForm">
+        <div class="modal-body">
+          <div class="form-group">
+            <label for="modalVideoUrl">YouTube Video or Playlist URL *</label>
+            <input type="text" id="modalVideoUrl" class="form-control" placeholder="e.g. https://www.youtube.com/watch?v=... or playlist?list=..." required />
+            <span class="form-help">Supports standard YouTube URLs, short URLs (youtu.be), or playlist IDs.</span>
+          </div>
+
+          <div class="form-group">
+            <label for="modalVideoTitle">Video Title / Chapter Name *</label>
+            <input type="text" id="modalVideoTitle" class="form-control" placeholder="e.g. Dynamic Programming Masterclass Phase 1" required />
+          </div>
+
+          <div class="form-row-2">
+            <div class="form-group">
+              <label for="modalVideoTrackSelect">Target Subject Track</label>
+              <select id="modalVideoTrackSelect" class="form-control">
+                <option value="java">☕ Java Placement Track</option>
+                <option value="cpp">⚡ C++ & STL Track</option>
+                <option value="c">🚀 C Language Track</option>
+                <option value="python">🐍 Python Track</option>
+                <option value="dsa">🧩 DSA & Placement Roadmap</option>
+                <option value="custom" selected>⭐ My Custom Links</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="modalVideoLevelSelect">Difficulty Level</label>
+              <select id="modalVideoLevelSelect" class="form-control">
+                <option value="Beginner">Beginner</option>
+                <option value="Intermediate">Intermediate</option>
+                <option value="Advanced">Advanced</option>
+                <option value="Placement Ready" selected>Placement Ready</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="modalVideoCategory">Module / Category Tag</label>
+            <input type="text" id="modalVideoCategory" class="form-control" placeholder="e.g. Strings, Trees, System Design, MCQs" />
+          </div>
+
+          <div class="form-group">
+            <label for="modalVideoDesc">Description / Key Notes</label>
+            <textarea id="modalVideoDesc" class="form-control" style="min-height: 70px;" placeholder="Add key placement topics covered in this video..."></textarea>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="window.closeModal('addVideoModal')">Cancel</button>
+          <button type="submit" class="btn btn-primary"><i class="fa-solid fa-plus"></i> Add to Playlist</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       MODAL: KEYBOARD SHORTCUTS
+       ======================================================================== -->
+  <div class="modal-backdrop" id="shortcutsModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3><i class="fa-solid fa-keyboard" style="color: var(--accent-secondary);"></i> Keyboard Shortcuts</h3>
+        <button class="modal-close-btn" onclick="window.closeModal('shortcutsModal')">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+          <div style="display: flex; justify-content: space-between; padding: 0.5rem 0; border-bottom: 1px solid var(--border-subtle);">
+            <span>Next Video in Playlist</span>
+            <kbd style="background: var(--bg-tertiary); padding: 0.2rem 0.6rem; border-radius: 4px; border: 1px solid var(--border-subtle);">N</kbd>
+          </div>
+          <div style="display: flex; justify-content: space-between; padding: 0.5rem 0; border-bottom: 1px solid var(--border-subtle);">
+            <span>Previous Video</span>
+            <kbd style="background: var(--bg-tertiary); padding: 0.2rem 0.6rem; border-radius: 4px; border: 1px solid var(--border-subtle);">P</kbd>
+          </div>
+          <div style="display: flex; justify-content: space-between; padding: 0.5rem 0; border-bottom: 1px solid var(--border-subtle);">
+            <span>Toggle Mark as Watched / Completed</span>
+            <kbd style="background: var(--bg-tertiary); padding: 0.2rem 0.6rem; border-radius: 4px; border: 1px solid var(--border-subtle);">M</kbd>
+          </div>
+          <div style="display: flex; justify-content: space-between; padding: 0.5rem 0; border-bottom: 1px solid var(--border-subtle);">
+            <span>Toggle Full Theater / Focus Mode</span>
+            <kbd style="background: var(--bg-tertiary); padding: 0.2rem 0.6rem; border-radius: 4px; border: 1px solid var(--border-subtle);">T</kbd>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="window.closeModal('shortcutsModal')">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- Application Scripts -->
+  <script src="js/data.js"></script>
+  <script src="js/player.js"></script>
+  <script src="js/playlistManager.js"></script>
+  <script src="js/codeSandbox.js"></script>
+  <script src="js/notes.js"></script>
+  <script src="js/interviewPrep.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
