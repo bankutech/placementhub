@@ -23,6 +23,12 @@ class VideoPlayerController {
     this.playlistCountChip = document.getElementById('playlistCountChip');
     this.learningStageGrid = document.getElementById('learningStageGrid');
 
+    this.playlistLectureNav = document.getElementById('playlistLectureNav');
+    this.playlistCurrentLectureText = document.getElementById('playlistCurrentLectureText');
+    this.lectureIndexSelect = document.getElementById('lectureIndexSelect');
+    this.currentPlaylistLectureIndex = 0;
+    this.currentPlaylistId = null;
+
     this.loadWatchedState();
   }
 
@@ -97,7 +103,7 @@ class VideoPlayerController {
   // --------------------------------------------------------------------------
   // Render / Play Video In-Place Without Leaving Page
   // --------------------------------------------------------------------------
-  loadVideo(video, trackId, index = 0) {
+  loadVideo(video, trackId, index = 0, lectureIndex = 0) {
     if (!video) {
       this.showPlaceholder("No video selected", "Choose a video from the playlist to start learning.");
       return;
@@ -105,6 +111,7 @@ class VideoPlayerController {
 
     this.currentTrackId = trackId;
     this.currentVideoIndex = index;
+    this.currentPlaylistLectureIndex = lectureIndex;
 
     // Parse the stored ID or URL — must happen BEFORE building embedUrl
     const parsed = VideoPlayerController.parseYouTubeUrl(video.youtubeId || video.youtubeUrl);
@@ -117,9 +124,13 @@ class VideoPlayerController {
 
     if (parsed) {
       if (parsed.type === 'playlist') {
-        embedUrl = `${BASE}/videoseries?list=${parsed.id}&rel=0`;
+        this.currentPlaylistId = parsed.id;
+        embedUrl = `${BASE}/videoseries?list=${parsed.id}&rel=0&index=${lectureIndex}`;
         rawWatchUrl = `https://www.youtube.com/playlist?list=${parsed.id}`;
+        this.setupPlaylistLectureNav(parsed.id, lectureIndex);
       } else {
+        this.currentPlaylistId = null;
+        this.hidePlaylistLectureNav();
         const listParam = parsed.playlistId ? `&list=${parsed.playlistId}` : '';
         embedUrl = `${BASE}/${parsed.id}?rel=0${listParam}`;
         rawWatchUrl = parsed.playlistId
@@ -127,6 +138,8 @@ class VideoPlayerController {
           : `https://www.youtube.com/watch?v=${parsed.id}`;
       }
     } else {
+      this.currentPlaylistId = null;
+      this.hidePlaylistLectureNav();
       embedUrl = `${BASE}/${video.youtubeId}?rel=0`;
     }
 
@@ -162,6 +175,92 @@ class VideoPlayerController {
     const activeItem = document.querySelector(`.playlist-item[data-video-id="${video.id}"]`);
     if (activeItem) {
       activeItem.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+  }
+
+  // --------------------------------------------------------------------------
+  // Playlist Lecture Specific Navigation (index=N parameter)
+  // --------------------------------------------------------------------------
+  setupPlaylistLectureNav(playlistId, lectureIndex = 0) {
+    if (!this.playlistLectureNav) {
+      this.playlistLectureNav = document.getElementById('playlistLectureNav');
+    }
+    if (!this.playlistCurrentLectureText) {
+      this.playlistCurrentLectureText = document.getElementById('playlistCurrentLectureText');
+    }
+    if (!this.lectureIndexSelect) {
+      this.lectureIndexSelect = document.getElementById('lectureIndexSelect');
+    }
+
+    if (this.playlistLectureNav) {
+      this.playlistLectureNav.style.display = 'flex';
+    }
+
+    if (this.playlistCurrentLectureText) {
+      this.playlistCurrentLectureText.textContent = `Playing Lecture #${lectureIndex + 1}`;
+    }
+
+    if (this.lectureIndexSelect) {
+      this.lectureIndexSelect.innerHTML = '';
+      // Populate standard 1 to 100 lectures for quick navigation
+      for (let i = 0; i < 100; i++) {
+        const opt = document.createElement('option');
+        opt.value = i;
+        opt.textContent = `Lecture ${i + 1}${i === 0 ? ' (Start)' : ''}`;
+        if (i === lectureIndex) opt.selected = true;
+        this.lectureIndexSelect.appendChild(opt);
+      }
+    }
+  }
+
+  hidePlaylistLectureNav() {
+    if (!this.playlistLectureNav) {
+      this.playlistLectureNav = document.getElementById('playlistLectureNav');
+    }
+    if (this.playlistLectureNav) {
+      this.playlistLectureNav.style.display = 'none';
+    }
+  }
+
+  jumpToPlaylistLecture(lectureIndex) {
+    if (!this.currentPlaylistId) return;
+    this.currentPlaylistLectureIndex = Math.max(0, lectureIndex);
+
+    const BASE = 'https://www.youtube.com/embed';
+    const embedUrl = `${BASE}/videoseries?list=${this.currentPlaylistId}&rel=0&index=${this.currentPlaylistLectureIndex}&autoplay=1`;
+
+    if (this.videoIframe) {
+      this.videoIframe.src = '';
+      this.videoIframe.src = embedUrl;
+    }
+
+    if (this.playlistCurrentLectureText) {
+      this.playlistCurrentLectureText.textContent = `Playing Lecture #${this.currentPlaylistLectureIndex + 1}`;
+    }
+    if (this.lectureIndexSelect) {
+      this.lectureIndexSelect.value = this.currentPlaylistLectureIndex;
+    }
+
+    window.showToast(`Switched to Lecture #${this.currentPlaylistLectureIndex + 1}`, 'info');
+  }
+
+  playNextPlaylistLecture() {
+    if (this.currentPlaylistId) {
+      this.jumpToPlaylistLecture(this.currentPlaylistLectureIndex + 1);
+    } else {
+      this.playNext();
+    }
+  }
+
+  playPrevPlaylistLecture() {
+    if (this.currentPlaylistId) {
+      if (this.currentPlaylistLectureIndex > 0) {
+        this.jumpToPlaylistLecture(this.currentPlaylistLectureIndex - 1);
+      } else {
+        window.showToast("You are already at Lecture #1", "info");
+      }
+    } else {
+      this.playPrev();
     }
   }
 

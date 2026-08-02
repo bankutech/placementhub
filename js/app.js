@@ -327,11 +327,22 @@ document.addEventListener('DOMContentLoaded', () => {
   const btnNext = document.getElementById('btnNextVideo');
   const btnTheater = document.getElementById('btnTheaterMode');
   const btnMark = document.getElementById('btnMarkWatched');
+  const btnLecPrev = document.getElementById('btnLecturePrev');
+  const btnLecNext = document.getElementById('btnLectureNext');
+  const lectureSelect = document.getElementById('lectureIndexSelect');
 
   if (btnPrev) btnPrev.addEventListener('click', () => window.playerController.playPrev());
   if (btnNext) btnNext.addEventListener('click', () => window.playerController.playNext());
   if (btnTheater) btnTheater.addEventListener('click', () => window.playerController.toggleTheaterMode());
   if (btnMark) btnMark.addEventListener('click', () => window.playerController.toggleCurrentWatched());
+
+  if (btnLecPrev) btnLecPrev.addEventListener('click', () => window.playerController.playPrevPlaylistLecture());
+  if (btnLecNext) btnLecNext.addEventListener('click', () => window.playerController.playNextPlaylistLecture());
+  if (lectureSelect) {
+    lectureSelect.addEventListener('change', (e) => {
+      window.playerController.jumpToPlaylistLecture(parseInt(e.target.value, 10));
+    });
+  }
 
   // 5. Playlist Sidebar Search Filter
   const playlistSearchInput = document.getElementById('playlistSearchInput');
