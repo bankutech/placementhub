@@ -101,38 +101,61 @@ window.renderPlaylistSidebar = function(trackId, filterText = '') {
       ? `https://img.youtube.com/vi/0/mqdefault.jpg`  // generic fallback
       : `https://img.youtube.com/vi/${video.youtubeId}/mqdefault.jpg`;
 
+    const isActive = (window.playerController.currentTrackId === trackId && window.playerController.currentVideoIndex === idx);
+
+    let nestedLecturesHtml = '';
+    if (isActive && isPlaylist) {
+      const currentLecIndex = window.playerController.currentPlaylistLectureIndex || 0;
+      nestedLecturesHtml = `
+        <div class="playlist-sub-lectures-container">
+          ${Array.from({ length: 40 }).map((_, lIdx) => {
+            const isLecActive = (currentLecIndex === lIdx);
+            return `
+              <div class="playlist-sub-lecture ${isLecActive ? 'active' : ''}" onclick="event.stopPropagation(); window.playerController.jumpToPlaylistLecture(${lIdx})">
+                <i class="fa-solid ${isLecActive ? 'fa-circle-play' : 'fa-play'}"></i>
+                <span class="sub-lecture-title">Lecture #${lIdx + 1}</span>
+              </div>
+            `;
+          }).join('')}
+        </div>
+      `;
+    }
+
     return `
-      <div class="playlist-item" data-video-id="${video.id}" onclick="window.selectVideo('${trackId}', '${video.id}')">
-        <div class="playlist-item-index">${idx + 1}</div>
-        <div class="playlist-item-thumbnail${isPlaylist ? ' is-playlist' : ''}">
-          ${isPlaylist
-            ? `<div class="playlist-thumb-fallback"><i class="fa-solid fa-list-ul"></i></div>`
-            : `<img src="${thumbUrl}" onerror="this.src=''" alt="Thumbnail" />`
-          }
-          <div class="play-icon-hover"><i class="fa-solid fa-${isPlaylist ? 'list-ul' : 'play'}"></i></div>
-        </div>
-        <div class="playlist-item-content">
-          <div class="playlist-item-title" title="${video.title}">${video.title}</div>
-          <div class="playlist-item-meta">
-            <span><i class="fa-regular fa-clock"></i> ${video.duration || 'Full Video'}</span>
-            <span>•</span>
-            <span style="color: var(--accent-secondary);">${video.category || 'Module'}</span>
-            ${isPlaylist ? `<span class="badge-playlist-pill"><i class="fa-solid fa-list-ul"></i> Playlist</span>` : ''}
+      <div class="playlist-item-wrapper ${isActive ? 'is-active' : ''}">
+        <div class="playlist-item" data-video-id="${video.id}" onclick="window.selectVideo('${trackId}', '${video.id}')">
+          <div class="playlist-item-index">${idx + 1}</div>
+          <div class="playlist-item-thumbnail${isPlaylist ? ' is-playlist' : ''}">
+            ${isPlaylist
+              ? `<div class="playlist-thumb-fallback"><i class="fa-solid fa-list-ul"></i></div>`
+              : `<img src="${thumbUrl}" onerror="this.src=''" alt="Thumbnail" />`
+            }
+            <div class="play-icon-hover"><i class="fa-solid fa-${isPlaylist ? 'list-ul' : 'play'}"></i></div>
+          </div>
+          <div class="playlist-item-content">
+            <div class="playlist-item-title" title="${video.title}">${video.title}</div>
+            <div class="playlist-item-meta">
+              <span><i class="fa-regular fa-clock"></i> ${video.duration || 'Full Video'}</span>
+              <span>•</span>
+              <span style="color: var(--accent-secondary);">${video.category || 'Module'}</span>
+              ${isPlaylist ? `<span class="badge-playlist-pill"><i class="fa-solid fa-list-ul"></i> Playlist</span>` : ''}
+            </div>
+          </div>
+          <div class="playlist-item-actions" style="display: flex; align-items: center; gap: 0.35rem; margin-left: 0.25rem;">
+            <a href="${video.youtubeUrl || (isPlaylist ? 'https://www.youtube.com/playlist?list=' + video.youtubeId : 'https://www.youtube.com/watch?v=' + video.youtubeId)}" target="_blank" rel="noopener noreferrer" class="btn-ctrl" style="padding: 0.25rem 0.45rem; font-size: 0.75rem; border-radius: 6px;" title="Open directly in YouTube" onclick="event.stopPropagation()">
+              <i class="fa-solid fa-arrow-up-right-from-square"></i>
+            </a>
+            <div class="playlist-item-check" title="${isWatched ? 'Mark as unwatched' : 'Mark as completed'}" onclick="event.stopPropagation(); window.playerController.toggleVideoWatched('${video.id}')">
+              <i class="${isWatched ? 'fa-solid fa-circle-check checked' : 'fa-regular fa-circle'}"></i>
+            </div>
+            ${isCustom ? `
+              <button class="btn-delete-note" onclick="event.stopPropagation(); window.playlistManager.deleteVideo('${trackId}', '${video.id}')" title="Delete custom video">
+                <i class="fa-solid fa-trash-can"></i>
+              </button>
+            ` : ''}
           </div>
         </div>
-        <div class="playlist-item-actions" style="display: flex; align-items: center; gap: 0.35rem; margin-left: 0.25rem;">
-          <a href="${video.youtubeUrl || (isPlaylist ? 'https://www.youtube.com/playlist?list=' + video.youtubeId : 'https://www.youtube.com/watch?v=' + video.youtubeId)}" target="_blank" rel="noopener noreferrer" class="btn-ctrl" style="padding: 0.25rem 0.45rem; font-size: 0.75rem; border-radius: 6px;" title="Open directly in YouTube" onclick="event.stopPropagation()">
-            <i class="fa-solid fa-arrow-up-right-from-square"></i>
-          </a>
-          <div class="playlist-item-check" title="${isWatched ? 'Mark as unwatched' : 'Mark as completed'}" onclick="event.stopPropagation(); window.playerController.toggleVideoWatched('${video.id}')">
-            <i class="${isWatched ? 'fa-solid fa-circle-check checked' : 'fa-regular fa-circle'}"></i>
-          </div>
-          ${isCustom ? `
-            <button class="btn-delete-note" onclick="event.stopPropagation(); window.playlistManager.deleteVideo('${trackId}', '${video.id}')" title="Delete custom video">
-              <i class="fa-solid fa-trash-can"></i>
-            </button>
-          ` : ''}
-        </div>
+        ${nestedLecturesHtml}
       </div>
     `;
   }).join('');

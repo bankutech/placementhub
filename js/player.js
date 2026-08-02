@@ -242,6 +242,11 @@ class VideoPlayerController {
     }
 
     window.showToast(`Switched to Lecture #${this.currentPlaylistLectureIndex + 1}`, 'info');
+
+    // Sync sub-lectures active highlight in sidebar
+    if (typeof window.renderPlaylistSidebar === 'function') {
+      window.renderPlaylistSidebar(this.currentTrackId);
+    }
   }
 
   playNextPlaylistLecture() {
