@@ -95,7 +95,7 @@ window.renderPlaylistSidebar = function(trackId, filterText = '') {
             ${filteredLec.map(lec => {
               const isLecActive = (currentLecIndex === lec.index);
               return `
-                <div class="playlist-sub-lecture ${isLecActive ? 'active' : ''}" onclick="event.preventDefault(); event.stopPropagation(); window.selectPlaylistLecture('${video.id}', '${video.youtubeId}', ${lec.index}, '${lec.id}', '${lec.title}')">
+                <div class="playlist-sub-lecture ${isLecActive ? 'active' : ''}" onclick="event.preventDefault(); event.stopPropagation(); window.selectPlaylistLecture('${video.id}', '${video.youtubeId}', ${lec.index}, '${lec.id}', ${JSON.stringify(lec.title)})">
                   <div class="playlist-sub-lecture-thumb">
                     <img src="${lec.thumbnail}" alt="" />
                   </div>
@@ -247,13 +247,10 @@ window.updateOverallProgress = function() {
     });
   });
 
-  // Global Quick Stat in Navbar
-  const totalWatchedStat = document.getElementById('totalWatchedStat');
-  const streakDaysStat = document.getElementById('streakDaysStat');
-  if (totalWatchedStat) {
-    totalWatchedStat.textContent = `${watchedTotal}/${totalVideos} Lessons`;
-  }
+  // Stats panel removed; updateOverallProgress kept for future extension
+  // (DOM elements totalWatchedStat / streakDaysStat are not in current HTML)
 };
+
 
 window.updateTrackChips = function() {
   const tracks = window.appState.tracks;
@@ -516,7 +513,7 @@ window.selectPlaylistLecture = function(parentId, playlistId, index, videoIdReal
     window.playerController.videoTitleElem.textContent = title;
   }
   
-  window.showToast(`Playing Lecture #${index + 1}: ${title.substring(0, 30)}...`, 'info');
+  window.showToast(`Playing Lecture #${index + 1}: ${(title || '').substring(0, 30)}...`, 'info');
   
   // Refresh sidebar to update highlight
   window.renderPlaylistSidebar(window.appState.currentTrackId);
