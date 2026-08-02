@@ -95,7 +95,7 @@ window.renderPlaylistSidebar = function(trackId, filterText = '') {
             ${filteredLec.map(lec => {
               const isLecActive = (currentLecIndex === lec.index);
               return `
-                <div class="playlist-sub-lecture ${isLecActive ? 'active' : ''}" onclick="event.preventDefault(); event.stopPropagation(); window.selectPlaylistLecture('${video.id}', '${video.youtubeId}', ${lec.index}, '${lec.id}', ${JSON.stringify(lec.title)})">
+                <div class="playlist-sub-lecture ${isLecActive ? 'active' : ''}" onclick="event.preventDefault(); event.stopPropagation(); window.selectPlaylistLecture('${video.id}', '${video.youtubeId}', ${lec.index}, '${lec.id}', ${JSON.stringify(lec.title).replace(/"/g, '&quot;')})">
                   <div class="playlist-sub-lecture-thumb">
                     <img src="${lec.thumbnail}" alt="" />
                   </div>
