@@ -4,7 +4,7 @@
 
 class PlaylistManager {
   constructor() {
-    this.storageKey = 'placementhub_user_playlists_v5';
+    this.storageKey = 'placementhub_user_playlists_v6';
   }
 
   // Initialize tracks data from localStorage or fallback to defaults
@@ -13,11 +13,19 @@ class PlaylistManager {
       const savedData = localStorage.getItem(this.storageKey);
       if (savedData) {
         const parsed = JSON.parse(savedData);
-        // Ensure all required default keys exist
-        return {
-          ...INITIAL_PLACEMENT_DATA,
-          ...parsed
-        };
+        // Create a deep copy of the fresh INITIAL_PLACEMENT_DATA defaults
+        const tracks = JSON.parse(JSON.stringify(INITIAL_PLACEMENT_DATA));
+        
+        // Merge user-added custom videos without overwriting updated defaults
+        Object.keys(parsed).forEach(tKey => {
+          if (tracks[tKey] && parsed[tKey].videos) {
+            const defaultIds = new Set(tracks[tKey].videos.map(v => v.id));
+            const userVideos = parsed[tKey].videos.filter(v => !defaultIds.has(v.id));
+            // Append user videos gracefully
+            tracks[tKey].videos.push(...userVideos);
+          }
+        });
+        return tracks;
       }
     } catch (e) {
       console.error("Failed to load tracks from localStorage, loading defaults:", e);
