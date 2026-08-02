@@ -190,8 +190,6 @@ window.renderTrackView = function(trackId) {
   const banner = document.getElementById('trackBanner');
   const heading = document.getElementById('trackHeading');
   const desc = document.getElementById('trackDesc');
-  const progressFill = document.getElementById('trackProgressFill');
-  const progressText = document.getElementById('trackProgressText');
 
   if (banner) banner.className = `track-banner track-${trackId}`;
   if (heading) heading.innerHTML = `<i class="${track.icon}"></i> ${track.name}`;
@@ -248,22 +246,6 @@ window.updateOverallProgress = function() {
       }
     });
   });
-
-  // Calculate current track progress
-  const currentTrack = tracks[window.appState.currentTrackId];
-  if (currentTrack && currentTrack.videos) {
-    const cTotal = currentTrack.videos.length;
-    let cWatched = 0;
-    currentTrack.videos.forEach(v => {
-      if (window.playerController.watchedVideos.has(v.id)) cWatched++;
-    });
-
-    const cPercent = cTotal > 0 ? Math.round((cWatched / cTotal) * 100) : 0;
-    const progressFill = document.getElementById('trackProgressFill');
-    const progressText = document.getElementById('trackProgressText');
-    if (progressFill) progressFill.style.width = `${cPercent}%`;
-    if (progressText) progressText.textContent = `${cWatched}/${cTotal} Completed (${cPercent}%)`;
-  }
 
   // Global Quick Stat in Navbar
   const totalWatchedStat = document.getElementById('totalWatchedStat');
