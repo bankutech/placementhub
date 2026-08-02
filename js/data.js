@@ -62,6 +62,16 @@ const INITIAL_PLACEMENT_DATA = {
         level: "All Levels",
         category: "C++ & DSA",
         description: "Complete DSA practice series in C++ by Apna College with arrays, pointers, strings, binary search, sorting, and interview question solutions."
+      },
+      {
+        id: "user-cpp-02",
+        title: "C++ STL Complete Tutorial | Standard Template Library - One Shot",
+        youtubeId: "okhdtEk1iKk",
+        youtubeUrl: "https://www.youtube.com/watch?v=okhdtEk1iKk",
+        duration: "Full Video",
+        level: "All Levels",
+        category: "C++ & STL",
+        description: "Complete Standard Template Library (STL) tutorial in C++ by Apna College in one shot."
       }
     ]
   },
@@ -324,6 +334,16 @@ const INITIAL_PLACEMENT_DATA = {
         level: "All Levels",
         category: "C++ & DSA",
         description: "Apna College Data Structures and Algorithms complete practice playlist for placements and internships."
+      },
+      {
+        id: "custom-08b",
+        title: "C++ STL Complete Tutorial | Standard Template Library - One Shot",
+        youtubeId: "okhdtEk1iKk",
+        youtubeUrl: "https://www.youtube.com/watch?v=okhdtEk1iKk",
+        duration: "Full Video",
+        level: "All Levels",
+        category: "C++ & STL",
+        description: "Complete Standard Template Library (STL) tutorial in C++ by Apna College in one shot."
       },
       {
         id: "custom-09",
