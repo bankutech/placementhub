@@ -169,11 +169,17 @@ class VideoPlayerController {
 
     // Scroll active item into view WITHIN the sidebar only (not the whole page)
     setTimeout(() => {
-      const activeItem = document.querySelector('.playlist-item-wrapper.is-active');
+      const activeItem = document.querySelector('.playlist-sub-lecture.active') || document.querySelector('.playlist-item-wrapper.is-active');
       const sidebar = document.getElementById('playlistItemsContainer');
       if (activeItem && sidebar) {
-        const itemTop = activeItem.offsetTop - sidebar.offsetTop;
-        sidebar.scrollTop = itemTop - 20;
+        const itemRect = activeItem.getBoundingClientRect();
+        const sidebarRect = sidebar.getBoundingClientRect();
+        
+        // Calculate scroll target using absolute scroll + relative diff
+        const relativeTop = itemRect.top - sidebarRect.top;
+        const targetScrollTop = sidebar.scrollTop + relativeTop - 20;
+        
+        sidebar.scrollTo({ top: targetScrollTop, behavior: 'smooth' });
       }
     }, 150);
   }
