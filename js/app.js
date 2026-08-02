@@ -520,4 +520,7 @@ window.selectPlaylistLecture = function(parentId, playlistId, index, videoIdReal
   
   // Refresh sidebar to update highlight
   window.renderPlaylistSidebar(window.appState.currentTrackId);
+  if (window.playerController && typeof window.playerController.scrollToActivePlaylistItem === 'function') {
+    window.playerController.scrollToActivePlaylistItem();
+  }
 };
