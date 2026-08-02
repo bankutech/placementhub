@@ -33,15 +33,20 @@ class VideoPlayerController {
     if (!urlOrId || typeof urlOrId !== 'string') return null;
     const clean = urlOrId.trim();
 
-    // 1. Direct 11-character video ID
+    // 1. Direct Playlist ID (starts with PL, RD, UU, FL, LP, OLAK5uy_ or length > 11)
+    if (/^(?:PL|RD|UU|FL|LP|OLAK5uy_)[a-zA-Z0-9_-]+$/.test(clean) || (clean.startsWith('PL') && clean.length > 11)) {
+      return { type: 'playlist', id: clean };
+    }
+
+    // 2. Direct 11-character video ID
     if (/^[a-zA-Z0-9_-]{11}$/.test(clean)) {
       return { type: 'video', id: clean };
     }
 
-    // 2. Playlist URL (youtube.com/playlist?list=ID)
+    // 3. Extract list= parameter from any full URL
     const playlistMatch = clean.match(/[?&]list=([a-zA-Z0-9_-]+)/);
     
-    // 3. youtu.be/ID format
+    // 4. youtu.be/ID format
     const shortMatch = clean.match(/youtu\.be\/([a-zA-Z0-9_-]{11})/);
     if (shortMatch) {
       return { 
@@ -51,7 +56,7 @@ class VideoPlayerController {
       };
     }
 
-    // 4. Standard watch?v=ID format
+    // 5. Standard watch?v=ID format
     const watchMatch = clean.match(/[?&]v=([a-zA-Z0-9_-]{11})/);
     if (watchMatch) {
       return { 
@@ -61,7 +66,12 @@ class VideoPlayerController {
       };
     }
 
-    // 5. Embed URL format (youtube.com/embed/ID)
+    // 6. Embed URL format (youtube.com/embed/videoseries?list=ID or youtube.com/embed/ID)
+    const embedSeriesMatch = clean.match(/youtube\.com\/embed\/videoseries\?list=([a-zA-Z0-9_-]+)/);
+    if (embedSeriesMatch) {
+      return { type: 'playlist', id: embedSeriesMatch[1] };
+    }
+
     const embedMatch = clean.match(/youtube\.com\/embed\/([a-zA-Z0-9_-]{11})/);
     if (embedMatch) {
       return { 
@@ -71,12 +81,16 @@ class VideoPlayerController {
       };
     }
 
-    // 6. Only playlist URL provided
+    // 7. Playlist URL (with list= parameter and no video ID)
     if (playlistMatch) {
       return { type: 'playlist', id: playlistMatch[1] };
     }
 
-    // Fallback if user just entered custom link string
+    // Fallback: If longer than standard video ID (11 chars), treat as playlist
+    if (clean.length > 11) {
+      return { type: 'playlist', id: clean };
+    }
+
     return { type: 'video', id: clean };
   }
 
