@@ -1,0 +1,385 @@
+/* ==========================================================================
+   PLACEMENTHUB — RESPONSIVE OVERRIDES
+   Mobile-first, covers: 480px, 640px, 768px, 1024px, 1280px
+   ========================================================================== */
+
+/* Mobile search bar (below track nav) */
+.mobile-search-bar {
+  display: none;
+  position: relative;
+  padding: 0.5rem 1rem;
+  background: var(--bg-secondary);
+  border-bottom: 1px solid var(--border-subtle);
+}
+.mobile-search-bar i {
+  position: absolute;
+  left: 1.85rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  pointer-events: none;
+}
+.mobile-search-bar input {
+  width: 100%;
+  padding: 0.5rem 1rem 0.5rem 2.2rem;
+  border-radius: var(--radius-full);
+  background: rgba(15, 23, 42, 0.7) !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  color: #fff !important;
+  font-size: 0.88rem;
+}
+.mobile-search-bar.active {
+  display: flex;
+  align-items: center;
+}
+
+/* Mobile playlist sidebar toggle bar */
+.mobile-playlist-toggle {
+  display: none;
+}
+
+/* Mobile sidebar open state */
+.playlist-sidebar-wrapper.mobile-sidebar-open {
+  display: flex !important;
+  max-height: 420px !important;
+}
+
+
+/* ==========================================================================
+   LAPTOP / TABLET (≤ 1280px) — tighten sidebar & header
+   ========================================================================== */
+@media (max-width: 1280px) {
+  :root {
+    --sidebar-width: 320px;
+  }
+
+  .main-workspace {
+    padding: 1.25rem 1.5rem 2rem;
+    gap: 1.25rem;
+  }
+}
+
+/* ==========================================================================
+   TABLET (≤ 1024px) — stack player + sidebar vertically
+   ========================================================================== */
+@media (max-width: 1024px) {
+  :root {
+    --header-height: 60px;
+  }
+
+  /* --- HEADER --- */
+  .app-header {
+    padding: 0 1rem;
+    height: var(--header-height);
+    gap: 0.75rem;
+  }
+  .brand-tagline { display: none; }
+  .header-search { display: none; }
+
+  /* --- TRACK NAV --- */
+  .track-nav-container {
+    padding: 0.5rem 1rem;
+    gap: 0.5rem;
+  }
+  /* Hide the "zero tab switching" tagline on smaller screens */
+  .track-nav-container > div:last-child {
+    display: none;
+  }
+
+  /* --- MAIN WORKSPACE --- */
+  .main-workspace {
+    padding: 1rem;
+    gap: 1rem;
+  }
+
+  /* --- TRACK BANNER --- */
+  .track-heading { font-size: 1.15rem; }
+  .track-desc { font-size: 0.82rem; }
+
+  /* --- LEARNING STAGE: STACK VERTICALLY --- */
+  .learning-stage-grid {
+    grid-template-columns: 1fr !important;
+    gap: 1rem;
+  }
+
+  /* --- SIDEBAR: shrink fixed height --- */
+  .playlist-sidebar-wrapper {
+    position: static !important;
+    max-height: 480px;
+    min-height: 200px;
+  }
+
+  /* --- CONTROL BAR: wraps neatly --- */
+  .player-control-bar {
+    padding: 0.75rem 1rem;
+    gap: 0.6rem;
+  }
+
+  /* --- FOOTER: stack vertically --- */
+  .app-footer {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+    padding: 1rem;
+  }
+  .footer-links { font-size: 0.78rem; }
+}
+
+/* ==========================================================================
+   LARGE MOBILE / SMALL TABLET (≤ 768px)
+   ========================================================================== */
+@media (max-width: 768px) {
+  :root {
+    --header-height: 56px;
+  }
+
+  /* Show mobile search icon in header */
+  #btnMobileSearch { display: inline-flex !important; }
+
+  /* Show playlist toggle bar */
+  .mobile-playlist-toggle { display: block; }
+
+  /* --- HEADER --- */
+
+  .app-header {
+    padding: 0 0.85rem;
+  }
+  .brand-title { font-size: 1.1rem; }
+  .brand-icon-box {
+    width: 34px;
+    height: 34px;
+    font-size: 1rem;
+  }
+  /* Shrink "Add Video" button — show icon only */
+  .btn-header span { display: none; }
+  .btn-header {
+    padding: 0.5rem 0.7rem;
+    font-size: 0.82rem;
+  }
+
+  /* --- TRACK CHIPS: scroll horizontally, smaller pills --- */
+  .track-chips {
+    gap: 0.4rem;
+  }
+  .track-chip {
+    padding: 0.45rem 0.75rem !important;
+    font-size: 0.78rem !important;
+    gap: 0.4rem !important;
+  }
+  .track-badge { display: none; } /* hide count badge on mobile */
+
+  /* --- TRACK BANNER --- */
+  .track-banner {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+    padding: 1rem 1.25rem;
+  }
+  .track-heading { font-size: 1rem; }
+  .track-desc { font-size: 0.8rem; }
+
+  /* --- PLAYER CONTROL BAR: two rows --- */
+  .player-control-bar {
+    flex-direction: column;
+    align-items: stretch;
+    padding: 0.65rem 0.85rem;
+    gap: 0.5rem;
+  }
+  .player-controls-left,
+  .player-controls-right {
+    display: flex;
+    gap: 0.4rem;
+    flex-wrap: wrap;
+  }
+  .player-controls-right {
+    justify-content: flex-start;
+  }
+  .btn-ctrl {
+    font-size: 0.78rem;
+    padding: 0.4rem 0.65rem;
+  }
+  /* Theater mode button: hide text label on mobile */
+  #btnTheaterMode span,
+  #btnOpenYouTube span { display: none; }
+
+  /* --- VIDEO META --- */
+  .video-meta-block { padding: 0.85rem 1rem; }
+  .video-title-row {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .current-video-title { font-size: 1rem; }
+  .current-video-badges { flex-wrap: wrap; }
+
+  /* --- SIDEBAR --- */
+  .playlist-sidebar-wrapper {
+    max-height: 400px;
+  }
+  .playlist-header { padding: 0.9rem 1rem; }
+
+  /* Compact playlist items */
+  .playlist-item {
+    padding: 0.6rem 0.7rem;
+    gap: 0.6rem;
+  }
+  .playlist-item-thumbnail {
+    width: 64px !important;
+    height: 40px !important;
+  }
+  .playlist-item-title { font-size: 0.8rem; }
+
+  /* --- PLAYLIST LECTURE NAV BAR --- */
+  .playlist-lecture-nav {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.6rem;
+    padding: 0.65rem 1rem;
+  }
+  .playlist-nav-center { flex-wrap: wrap; }
+  .playlist-nav-tip { display: none; }
+
+  /* --- MODAL --- */
+  .modal-backdrop { padding: 0.75rem; }
+  .modal-card { max-width: 100%; }
+  .modal-body {
+    padding: 1rem;
+    max-height: 65vh;
+  }
+  .form-row-2 {
+    grid-template-columns: 1fr;
+  }
+  .modal-footer {
+    padding: 0.85rem 1rem;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .modal-footer .btn { width: 100%; justify-content: center; }
+
+  /* --- FOOTER --- */
+  .app-footer { display: none; } /* hide footer on mobile to save space */
+
+  /* --- TOAST --- */
+  .toast-container {
+    bottom: 1rem;
+    right: 0.75rem;
+    left: 0.75rem;
+  }
+  .toast {
+    min-width: unset;
+    max-width: 100%;
+  }
+}
+
+/* ==========================================================================
+   SMALL MOBILE (≤ 480px)
+   ========================================================================== */
+@media (max-width: 480px) {
+  /* --- HEADER --- */
+  .app-header {
+    padding: 0 0.65rem;
+  }
+  .brand-icon-box {
+    width: 30px;
+    height: 30px;
+    font-size: 0.9rem;
+  }
+  .brand-title { font-size: 1rem; }
+
+  /* --- TRACK CHIPS: ultra compact --- */
+  .track-chip {
+    padding: 0.38rem 0.6rem !important;
+    font-size: 0.72rem !important;
+    gap: 0.3rem !important;
+  }
+  .track-chip span:first-of-type {
+    display: none; /* hide text, show icon only */
+  }
+  .track-chip i { font-size: 0.9rem !important; }
+
+  /* --- TRACK NAV: tighten --- */
+  .track-nav-container { padding: 0.4rem 0.65rem; }
+
+  /* --- MAIN WORKSPACE --- */
+  .main-workspace { padding: 0.65rem 0.65rem 1.5rem; gap: 0.75rem; }
+
+  /* --- TRACK BANNER --- */
+  .track-banner { padding: 0.75rem 1rem; }
+  .track-heading { font-size: 0.9rem; }
+
+  /* --- VIDEO META --- */
+  .video-meta-block { padding: 0.65rem 0.75rem; }
+  .current-video-title { font-size: 0.9rem; }
+
+  /* --- PLAYER CONTROL BAR --- */
+  .player-control-bar {
+    padding: 0.5rem 0.65rem;
+  }
+  .btn-ctrl {
+    font-size: 0.72rem;
+    padding: 0.35rem 0.5rem;
+    gap: 0.3rem;
+  }
+
+  /* --- SIDEBAR --- */
+  .playlist-sidebar-wrapper { max-height: 340px; }
+  .playlist-item-thumbnail {
+    width: 52px !important;
+    height: 34px !important;
+  }
+  .playlist-item { gap: 0.5rem; padding: 0.5rem 0.6rem; }
+  .playlist-item-index { min-width: 18px; font-size: 0.7rem; }
+  .playlist-item-title { font-size: 0.75rem; }
+  .playlist-item-meta { font-size: 0.65rem; }
+
+  /* --- SUB-LECTURES --- */
+  .playlist-sub-lectures-container { margin-left: 1rem; }
+  .sub-lecture-title { font-size: 0.72rem; }
+
+  /* --- MODAL --- */
+  .modal-body { max-height: 60vh; padding: 0.85rem; }
+  .modal-header { padding: 0.85rem 1rem; }
+  .modal-header h3 { font-size: 1rem; }
+}
+
+/* ==========================================================================
+   LANDSCAPE PHONE (≤ 768px height, landscape orientation)
+   ========================================================================== */
+@media (max-height: 500px) and (orientation: landscape) {
+  .playlist-sidebar-wrapper {
+    max-height: 300px;
+  }
+  .modal-body {
+    max-height: 55vh;
+  }
+  .app-header {
+    height: 48px;
+  }
+}
+
+/* ==========================================================================
+   THEATER MODE on mobile: full width adjustments
+   ========================================================================== */
+@media (max-width: 768px) {
+  .learning-stage-grid.theater-mode .playlist-sidebar-wrapper {
+    margin-top: 0.75rem;
+  }
+}
+
+/* ==========================================================================
+   TRACK NAV HORIZONTAL SCROLL smoothness
+   ========================================================================== */
+.track-nav-container {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE */
+}
+.track-nav-container::-webkit-scrollbar {
+  display: none; /* Chrome/Safari */
+}
+.track-chips {
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+}
+.track-chip {
+  scroll-snap-align: start;
+}

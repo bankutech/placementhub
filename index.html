@@ -16,6 +16,8 @@
   <link rel="stylesheet" href="css/components.css" />
   <!-- Visual Enhancement Layer -->
   <link rel="stylesheet" href="css/style.css" />
+  <!-- Responsive / Mobile-First Overrides -->
+  <link rel="stylesheet" href="css/responsive.css" />
 </head>
 <body>
 
@@ -39,6 +41,10 @@
     </div>
 
     <div class="header-actions">
+      <!-- Mobile search icon (visible only on small screens) -->
+      <button class="btn-header btn-mobile-search" id="btnMobileSearch" title="Search" onclick="document.getElementById('mobileSearchBar').classList.toggle('active')" style="display:none;">
+        <i class="fa-solid fa-magnifying-glass"></i>
+      </button>
       <button class="btn-header btn-accent" id="btnHeaderAddVideo" onclick="window.openAddVideoModal()">
         <i class="fa-solid fa-plus"></i>
         <span>Add Video / Link</span>
@@ -94,6 +100,12 @@
       </button>
     </div>
 
+    <!-- Mobile search bar (hidden by default, toggled via button) -->
+    <div id="mobileSearchBar" class="mobile-search-bar">
+      <i class="fa-solid fa-magnifying-glass"></i>
+      <input type="text" id="headerSearchInputMobile" placeholder="Search lectures..." />
+    </div>
+
     <div style="font-size: 0.78rem; color: var(--text-muted); display: flex; align-items: center; gap: 0.4rem;">
       <i class="fa-solid fa-bolt" style="color: var(--accent-secondary);"></i>
       <span>Zero tab switching • Instant In-Page Player</span>
@@ -118,6 +130,13 @@
 
 
     </section>
+
+    <!-- Mobile: toggle Playlist sidebar -->
+    <div class="mobile-playlist-toggle" id="mobilePlaylistToggleBar">
+      <button onclick="document.getElementById('learningStageGrid').querySelector('.playlist-sidebar-wrapper').classList.toggle('mobile-sidebar-open')" style="background:none;border:none;color:var(--accent-secondary);font-size:0.85rem;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:0.5rem;padding:0.5rem 0;">
+        <i class="fa-solid fa-list-check"></i> Show / Hide Course Syllabus
+      </button>
+    </div>
 
     <!-- Learning Stage: Video Player + Playlist Syllabus Sidebar -->
     <section class="learning-stage-grid" id="learningStageGrid">
