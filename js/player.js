@@ -267,8 +267,10 @@ class VideoPlayerController {
 
   playPrevPlaylistLecture() {
     if (this.currentPlaylistId) {
-      if (this.currentPlaylistLectureIndex > 0) {
-        this.jumpToPlaylistLecture(this.currentPlaylistLectureIndex - 1);
+      const cached = window.appState.playlistItemsCache[this.currentPlaylistId];
+      const prevIdx = (this.currentPlaylistLectureIndex || 0) - 1;
+      if (prevIdx >= 0) {
+        this.jumpToPlaylistLecture(prevIdx);
       } else {
         window.showToast("You are already at Lecture #1", "info");
       }
@@ -295,6 +297,21 @@ class VideoPlayerController {
   // Navigation Controls (Prev / Next)
   // --------------------------------------------------------------------------
   playNext() {
+    // If currently playing a sub-lecture playlist, go to next lecture within it
+    if (this.currentPlaylistId) {
+      const cached = window.appState.playlistItemsCache[this.currentPlaylistId];
+      const currentIdx = this.currentPlaylistLectureIndex || 0;
+      const nextIdx = currentIdx + 1;
+      if (cached && Array.isArray(cached) && nextIdx < cached.length) {
+        this.jumpToPlaylistLecture(nextIdx);
+        return;
+      } else if (cached && Array.isArray(cached) && nextIdx >= cached.length) {
+        window.showToast("🎉 You've finished all lectures in this playlist!", 'success');
+        return;
+      }
+    }
+
+    // Otherwise navigate between main course items
     const track = window.appState.tracks[this.currentTrackId];
     if (!track || !track.videos.length) return;
 
@@ -304,11 +321,25 @@ class VideoPlayerController {
       this.loadVideo(nextVideo, this.currentTrackId, nextIndex);
       window.showToast(`Now Playing: ${nextVideo.title}`, 'info');
     } else {
-      window.showToast("🎉 You've reached the end of this playlist!", 'success');
+      window.showToast("🎉 You've reached the end of this track!", 'success');
     }
   }
 
   playPrev() {
+    // If currently playing a sub-lecture playlist, go to previous lecture within it
+    if (this.currentPlaylistId) {
+      const currentIdx = this.currentPlaylistLectureIndex || 0;
+      const prevIdx = currentIdx - 1;
+      if (prevIdx >= 0) {
+        this.jumpToPlaylistLecture(prevIdx);
+        return;
+      } else {
+        window.showToast("You are already at Lecture #1", "info");
+        return;
+      }
+    }
+
+    // Otherwise navigate between main course items
     const track = window.appState.tracks[this.currentTrackId];
     if (!track || !track.videos.length) return;
 
@@ -317,6 +348,8 @@ class VideoPlayerController {
       const prevVideo = track.videos[prevIndex];
       this.loadVideo(prevVideo, this.currentTrackId, prevIndex);
       window.showToast(`Now Playing: ${prevVideo.title}`, 'info');
+    } else {
+      window.showToast("Already at the first video in this track.", "info");
     }
   }
 
