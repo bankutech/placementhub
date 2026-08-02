@@ -23,9 +23,6 @@ class VideoPlayerController {
     this.playlistCountChip = document.getElementById('playlistCountChip');
     this.learningStageGrid = document.getElementById('learningStageGrid');
 
-    this.playlistLectureNav = document.getElementById('playlistLectureNav');
-    this.playlistCurrentLectureText = document.getElementById('playlistCurrentLectureText');
-    this.lectureIndexSelect = document.getElementById('lectureIndexSelect');
     this.currentPlaylistLectureIndex = 0;
     this.currentPlaylistId = null;
 
@@ -127,10 +124,8 @@ class VideoPlayerController {
         this.currentPlaylistId = parsed.id;
         embedUrl = `${BASE}/videoseries?list=${parsed.id}&rel=0&index=${lectureIndex}`;
         rawWatchUrl = `https://www.youtube.com/playlist?list=${parsed.id}`;
-        this.setupPlaylistLectureNav(parsed.id, lectureIndex);
       } else {
         this.currentPlaylistId = null;
-        this.hidePlaylistLectureNav();
         const listParam = parsed.playlistId ? `&list=${parsed.playlistId}` : '';
         embedUrl = `${BASE}/${parsed.id}?rel=0${listParam}`;
         rawWatchUrl = parsed.playlistId
@@ -139,7 +134,6 @@ class VideoPlayerController {
       }
     } else {
       this.currentPlaylistId = null;
-      this.hidePlaylistLectureNav();
       embedUrl = `${BASE}/${video.youtubeId}?rel=0`;
     }
 
@@ -178,50 +172,6 @@ class VideoPlayerController {
     }
   }
 
-  // --------------------------------------------------------------------------
-  // Playlist Lecture Specific Navigation (index=N parameter)
-  // --------------------------------------------------------------------------
-  setupPlaylistLectureNav(playlistId, lectureIndex = 0) {
-    if (!this.playlistLectureNav) {
-      this.playlistLectureNav = document.getElementById('playlistLectureNav');
-    }
-    if (!this.playlistCurrentLectureText) {
-      this.playlistCurrentLectureText = document.getElementById('playlistCurrentLectureText');
-    }
-    if (!this.lectureIndexSelect) {
-      this.lectureIndexSelect = document.getElementById('lectureIndexSelect');
-    }
-
-    if (this.playlistLectureNav) {
-      this.playlistLectureNav.style.display = 'flex';
-    }
-
-    if (this.playlistCurrentLectureText) {
-      this.playlistCurrentLectureText.textContent = `Playing Lecture #${lectureIndex + 1}`;
-    }
-
-    if (this.lectureIndexSelect) {
-      this.lectureIndexSelect.innerHTML = '';
-      // Populate standard 1 to 100 lectures for quick navigation
-      for (let i = 0; i < 100; i++) {
-        const opt = document.createElement('option');
-        opt.value = i;
-        opt.textContent = `Lecture ${i + 1}${i === 0 ? ' (Start)' : ''}`;
-        if (i === lectureIndex) opt.selected = true;
-        this.lectureIndexSelect.appendChild(opt);
-      }
-    }
-  }
-
-  hidePlaylistLectureNav() {
-    if (!this.playlistLectureNav) {
-      this.playlistLectureNav = document.getElementById('playlistLectureNav');
-    }
-    if (this.playlistLectureNav) {
-      this.playlistLectureNav.style.display = 'none';
-    }
-  }
-
   jumpToPlaylistLecture(lectureIndex) {
     if (!this.currentPlaylistId) return;
     this.currentPlaylistLectureIndex = Math.max(0, lectureIndex);
@@ -242,12 +192,6 @@ class VideoPlayerController {
       this.videoIframe.src = embedUrl;
     }
 
-    if (this.playlistCurrentLectureText) {
-      this.playlistCurrentLectureText.textContent = `Playing Lecture #${this.currentPlaylistLectureIndex + 1}`;
-    }
-    if (this.lectureIndexSelect) {
-      this.lectureIndexSelect.value = this.currentPlaylistLectureIndex;
-    }
 
     window.showToast(`Switched to Lecture #${this.currentPlaylistLectureIndex + 1}`, 'info');
 
