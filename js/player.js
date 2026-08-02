@@ -98,24 +98,22 @@ class VideoPlayerController {
     let embedUrl = "";
     let rawWatchUrl = video.youtubeUrl || `https://www.youtube.com/watch?v=${video.youtubeId}`;
 
-    // Use youtube-nocookie.com — privacy-safe, works on real domains + localhost
-    // autoplay=1 works when triggered by user click (which this always is)
-    const BASE = 'https://www.youtube-nocookie.com/embed';
-    const origin = encodeURIComponent(window.location.origin);
+    // Standard clean YouTube embed format — works universally across desktop & mobile
+    const BASE = 'https://www.youtube.com/embed';
 
     if (parsed) {
       if (parsed.type === 'playlist') {
-        embedUrl = `${BASE}/videoseries?list=${parsed.id}&rel=0&modestbranding=1&autoplay=1&origin=${origin}`;
+        embedUrl = `${BASE}/videoseries?list=${parsed.id}&rel=0`;
         rawWatchUrl = `https://www.youtube.com/playlist?list=${parsed.id}`;
       } else {
         const listParam = parsed.playlistId ? `&list=${parsed.playlistId}` : '';
-        embedUrl = `${BASE}/${parsed.id}?rel=0&modestbranding=1&autoplay=1&origin=${origin}${listParam}`;
+        embedUrl = `${BASE}/${parsed.id}?rel=0${listParam}`;
         rawWatchUrl = parsed.playlistId
           ? `https://www.youtube.com/watch?v=${parsed.id}&list=${parsed.playlistId}`
           : `https://www.youtube.com/watch?v=${parsed.id}`;
       }
     } else {
-      embedUrl = `${BASE}/${video.youtubeId}?rel=0&modestbranding=1&autoplay=1&origin=${origin}`;
+      embedUrl = `${BASE}/${video.youtubeId}?rel=0`;
     }
 
     // Show iframe, hide placeholder
