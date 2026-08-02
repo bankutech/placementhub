@@ -95,7 +95,7 @@ window.renderPlaylistSidebar = function(trackId, filterText = '') {
             ${filteredLec.map(lec => {
               const isLecActive = (currentLecIndex === lec.index);
               return `
-                <div class="playlist-sub-lecture ${isLecActive ? 'active' : ''}" onclick="event.stopPropagation(); window.selectPlaylistLecture('${video.id}', '${video.youtubeId}', ${lec.index}, '${lec.id}', '${lec.title}')">
+                <div class="playlist-sub-lecture ${isLecActive ? 'active' : ''}" onclick="event.preventDefault(); event.stopPropagation(); window.selectPlaylistLecture('${video.id}', '${video.youtubeId}', ${lec.index}, '${lec.id}', '${lec.title}')">
                   <div class="playlist-sub-lecture-thumb">
                     <img src="${lec.thumbnail}" alt="" />
                   </div>
@@ -124,7 +124,7 @@ window.renderPlaylistSidebar = function(trackId, filterText = '') {
 
     return `
       <div class="playlist-item-wrapper ${isActive ? 'is-active' : ''}">
-        <div class="playlist-item" data-video-id="${video.id}" onclick="window.selectVideo('${trackId}', '${video.id}')">
+        <div class="playlist-item" data-video-id="${video.id}" onclick="event.preventDefault(); window.selectVideo('${trackId}', '${video.id}')">
           <div class="playlist-item-index">${idx + 1}</div>
           <div class="playlist-item-thumbnail${isPlaylist ? ' is-playlist' : ''}">
             ${isPlaylist
