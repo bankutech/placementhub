@@ -314,6 +314,19 @@ document.addEventListener('DOMContentLoaded', () => {
   const btnLecNext = document.getElementById('btnLectureNext');
   const lectureSelect = document.getElementById('lectureIndexSelect');
 
+  // Utility Debounce for search inputs
+  const debounce = (func, wait) => {
+    let timeout;
+    return function executedFunction(...args) {
+      const later = () => {
+        clearTimeout(timeout);
+        func(...args);
+      };
+      clearTimeout(timeout);
+      timeout = setTimeout(later, wait);
+    };
+  };
+
   if (btnPrev) btnPrev.addEventListener('click', () => window.playerController.playPrev());
   if (btnNext) btnNext.addEventListener('click', () => window.playerController.playNext());
   if (btnTheater) btnTheater.addEventListener('click', () => window.playerController.toggleTheaterMode());
@@ -330,15 +343,15 @@ document.addEventListener('DOMContentLoaded', () => {
   // 5. Playlist Sidebar Search Filter
   const playlistSearchInput = document.getElementById('playlistSearchInput');
   if (playlistSearchInput) {
-    playlistSearchInput.addEventListener('input', (e) => {
+    playlistSearchInput.addEventListener('input', debounce((e) => {
       window.renderPlaylistSidebar(window.appState.currentTrackId, e.target.value.trim());
-    });
+    }, 300));
   }
 
   // 6. Global Header Search (Searches across all tracks)
   const headerSearchInput = document.getElementById('headerSearchInput');
   if (headerSearchInput) {
-    headerSearchInput.addEventListener('input', (e) => {
+    headerSearchInput.addEventListener('input', debounce((e) => {
       const q = e.target.value.toLowerCase().trim();
       if (!q) return;
 
@@ -351,7 +364,7 @@ document.addEventListener('DOMContentLoaded', () => {
           break;
         }
       }
-    });
+    }, 500));
   }
 
   // 7. Add Custom Video Form Submit
