@@ -24,12 +24,12 @@ const INITIAL_PLACEMENT_DATA = {
     videos: [
       {
         id: "user-java-01",
-        title: "Complete Java & DSA Bootcamp - Full Playlist by Kunal Kushwaha",
+        title: "Kunal Kushwaha – Complete Java & DSA Bootcamp",
         youtubeId: "PL9gnSGHSqcnr_DxHsP7AW9ftq0AtAyYqJ",
-        youtubeUrl: "https://youtube.com/playlist?list=PL9gnSGHSqcnr_DxHsP7AW9ftq0AtAyYqJ",
+        youtubeUrl: "https://www.youtube.com/playlist?list=PL9gnSGHSqcnr_DxHsP7AW9ftq0AtAyYqJ",
         duration: "Full Bootcamp",
         level: "All Levels",
-        category: "Java + DSA Series",
+        category: "Java & DSA",
         description: "World-class complete Java and Data Structures & Algorithms Bootcamp covering everything from basics to advanced trees, graphs, and dynamic programming."
       }
     ]
@@ -55,12 +55,12 @@ const INITIAL_PLACEMENT_DATA = {
     videos: [
       {
         id: "user-cpp-01",
-        title: "Apna College DSA in C++ Placement Series - Full Playlist",
+        title: "Apna College – C++ & DSA",
         youtubeId: "PLfqMhTWNBTe137I_EPQd34TsgV6IO55pt",
-        youtubeUrl: "https://youtube.com/playlist?list=PLfqMhTWNBTe137I_EPQd34TsgV6IO55pt",
+        youtubeUrl: "https://www.youtube.com/playlist?list=PLfqMhTWNBTe137I_EPQd34TsgV6IO55pt",
         duration: "Full Playlist",
         level: "All Levels",
-        category: "C++ & DSA Practice",
+        category: "C++ & DSA",
         description: "Complete DSA practice series in C++ by Apna College with arrays, pointers, strings, binary search, sorting, and interview question solutions."
       }
     ]
@@ -86,9 +86,9 @@ const INITIAL_PLACEMENT_DATA = {
     videos: [
       {
         id: "user-c-01",
-        title: "C Language Full Course for Beginners - Apna College",
+        title: "Apna College – C Language (10.5 Hours)",
         youtubeId: "irqbmMNs2Bo",
-        youtubeUrl: "https://youtu.be/irqbmMNs2Bo",
+        youtubeUrl: "https://www.youtube.com/watch?v=irqbmMNs2Bo",
         duration: "10:32:00",
         level: "Beginner to Pro",
         category: "C Masterclass",
@@ -96,12 +96,12 @@ const INITIAL_PLACEMENT_DATA = {
       },
       {
         id: "user-c-02",
-        title: "C Programming Placement Series - Neso Academy",
+        title: "Neso Academy – C Programming",
         youtubeId: "PLBlnK6fEyqRhMP7gwIe2j0hb1PCvYn0RI",
-        youtubeUrl: "https://youtube.com/playlist?list=PLBlnK6fEyqRhMP7gwIe2j0hb1PCvYn0RI",
+        youtubeUrl: "https://www.youtube.com/playlist?list=PLBlnK6fEyqRhMP7gwIe2j0hb1PCvYn0RI",
         duration: "Full Playlist",
         level: "All Levels",
-        category: "C Placement Series",
+        category: "C Programming",
         description: "Comprehensive C programming lectures covering basics, pointers, recursion, data structures in C, and tricky placement interview MCQs."
       }
     ]
@@ -127,9 +127,9 @@ const INITIAL_PLACEMENT_DATA = {
     videos: [
       {
         id: "user-py-01",
-        title: "Jenny's Lectures - Python Language Full Course",
+        title: "Jenny's Lectures – Python Full Course (2025–26)",
         youtubeId: "PLGjplNEQ1it8-0CmoljS5yeV-GlKSUEt0",
-        youtubeUrl: "https://youtube.com/playlist?list=PLGjplNEQ1it8-0CmoljS5yeV-GlKSUEt0",
+        youtubeUrl: "https://www.youtube.com/playlist?list=PLGjplNEQ1it8-0CmoljS5yeV-GlKSUEt0",
         duration: "Full Playlist",
         level: "All Levels",
         category: "Python Full Course",
@@ -137,12 +137,12 @@ const INITIAL_PLACEMENT_DATA = {
       },
       {
         id: "user-py-02",
-        title: "Neso Academy - Python Programming Full Course",
+        title: "Neso Academy – Python Programming",
         youtubeId: "PLBlnK6fEyqRiueC_HzwFallNO76hfXBB7",
-        youtubeUrl: "https://youtube.com/playlist?list=PLBlnK6fEyqRiueC_HzwFallNO76hfXBB7",
+        youtubeUrl: "https://www.youtube.com/playlist?list=PLBlnK6fEyqRiueC_HzwFallNO76hfXBB7",
         duration: "Full Playlist",
         level: "All Levels",
-        category: "Python Masterclass",
+        category: "Python Programming",
         description: "In-depth Python programming lecture series by Neso Academy with conceptual theory, syntax breakdown, and practical examples."
       }
     ]
@@ -168,49 +168,49 @@ const INITIAL_PLACEMENT_DATA = {
     videos: [
       {
         id: "user-dsa-01",
-        title: "Striver's A2Z DSA Course - takeUforward",
+        title: "Striver's A2Z DSA Course & Placement Series",
         youtubeId: "PLgUwDviBIf0oF6QL8m22w1hIDC1vJ_BHz",
-        youtubeUrl: "https://youtube.com/playlist?list=PLgUwDviBIf0oF6QL8m22w1hIDC1vJ_BHz",
+        youtubeUrl: "https://www.youtube.com/playlist?list=PLgUwDviBIf0oF6QL8m22w1hIDC1vJ_BHz",
         duration: "Full Course",
         level: "All Levels",
-        category: "A2Z DSA Masterclass",
+        category: "A2Z DSA",
         description: "Complete A2Z Data Structures & Algorithms placement sheet course by Striver (takeUforward) covering arrays, trees, graphs, and dynamic programming."
       },
       {
         id: "user-dsa-02",
-        title: "Neso Academy - Core Engineering & Placement Series",
+        title: "Neso Academy – Core Engineering / OS / CN / DBMS",
         youtubeId: "PLBlnK6fEyqRhgMzWqbZXXd8TrBXtQiV3l",
-        youtubeUrl: "https://youtube.com/playlist?list=PLBlnK6fEyqRhgMzWqbZXXd8TrBXtQiV3l",
+        youtubeUrl: "https://www.youtube.com/playlist?list=PLBlnK6fEyqRhgMzWqbZXXd8TrBXtQiV3l",
         duration: "Full Playlist",
         level: "All Levels",
-        category: "Core CS Series",
+        category: "Core CS / OS",
         description: "Comprehensive engineering curriculum, Digital Logic, OS, Network basics, and placement preparation series by Neso Academy."
       },
       {
         id: "user-dsa-03",
-        title: "Amit Khurana Complete Aptitude & Reasoning Series",
+        title: "Amit Khurana – Complete Aptitude & Reasoning",
         youtubeId: "PLC36xJgs4dxE43Au1FGRQvwHTr7NbgDCS",
-        youtubeUrl: "https://youtube.com/playlist?list=PLC36xJgs4dxE43Au1FGRQvwHTr7NbgDCS",
+        youtubeUrl: "https://www.youtube.com/playlist?list=PLC36xJgs4dxE43Au1FGRQvwHTr7NbgDCS",
         duration: "Full Playlist",
         level: "All Levels",
-        category: "Quantitative Aptitude",
+        category: "Aptitude & Reasoning",
         description: "Complete Quantitative Aptitude and Logical Reasoning syllabus for campus placements and competitive exams by Amit Khurana."
       },
       {
         id: "user-dsa-04",
-        title: "CareerRide Quantitative Aptitude Mastery Tutorials",
+        title: "CareerRide – Quantitative Aptitude",
         youtubeId: "PLpyc33gOcbVA4qXMoQ5vmhefTruk5t9lt",
-        youtubeUrl: "https://youtube.com/playlist?list=PLpyc33gOcbVA4qXMoQ5vmhefTruk5t9lt",
+        youtubeUrl: "https://www.youtube.com/playlist?list=PLpyc33gOcbVA4qXMoQ5vmhefTruk5t9lt",
         duration: "Full Playlist",
         level: "All Levels",
-        category: "Aptitude Tricks & Shortcuts",
+        category: "Quantitative Aptitude",
         description: "Speed math shortcuts, topic-wise solved placement test problems, and company aptitude test preparation by CareerRide."
       },
       {
         id: "user-dsa-05",
-        title: "Placement Coding & Aptitude Prep Series",
+        title: "Placement Hub – Placement Coding & Aptitude Prep",
         youtubeId: "PL8p2I9GklV454LdGfDOw0KkNazKuA-6B2",
-        youtubeUrl: "https://youtube.com/playlist?list=PL8p2I9GklV454LdGfDOw0KkNazKuA-6B2",
+        youtubeUrl: "https://www.youtube.com/playlist?list=PL8p2I9GklV454LdGfDOw0KkNazKuA-6B2",
         duration: "Full Playlist",
         level: "Placement Ready",
         category: "Placement Coding",
@@ -218,9 +218,9 @@ const INITIAL_PLACEMENT_DATA = {
       },
       {
         id: "user-dsa-06",
-        title: "Comprehensive Placement & Coding Master Series",
+        title: "Placement Masterclass – Placement & Coding",
         youtubeId: "PLBG_hRMQjgpwN2WhFoFZG_jad1fLgKSnZ",
-        youtubeUrl: "https://youtube.com/playlist?list=PLBG_hRMQjgpwN2WhFoFZG_jad1fLgKSnZ",
+        youtubeUrl: "https://www.youtube.com/playlist?list=PLBG_hRMQjgpwN2WhFoFZG_jad1fLgKSnZ",
         duration: "Full Playlist",
         level: "Placement Ready",
         category: "Placement Preparation",
@@ -247,123 +247,123 @@ const INITIAL_PLACEMENT_DATA = {
     videos: [
       {
         id: "custom-01",
-        title: "Placement Coding & Aptitude Prep Series",
-        youtubeId: "PL8p2I9GklV454LdGfDOw0KkNazKuA-6B2",
-        youtubeUrl: "https://youtube.com/playlist?list=PL8p2I9GklV454LdGfDOw0KkNazKuA-6B2",
-        duration: "Full Playlist",
-        level: "Placement Ready",
-        category: "Placement Preparation",
-        description: "Curated collection of campus placement coding questions, aptitude tests, and interview technical rounds."
-      },
-      {
-        id: "custom-02",
-        title: "C Programming Placement Series - Neso Academy",
-        youtubeId: "PLBlnK6fEyqRhMP7gwIe2j0hb1PCvYn0RI",
-        youtubeUrl: "https://youtube.com/playlist?list=PLBlnK6fEyqRhMP7gwIe2j0hb1PCvYn0RI",
-        duration: "Full Playlist",
-        level: "All Levels",
-        category: "C Programming",
-        description: "Comprehensive C programming lectures covering basics, pointers, recursion, data structures in C, and tricky placement interview MCQs."
-      },
-      {
-        id: "custom-03",
-        title: "Amit Khurana Complete Aptitude & Reasoning Series",
-        youtubeId: "PLC36xJgs4dxE43Au1FGRQvwHTr7NbgDCS",
-        youtubeUrl: "https://youtube.com/playlist?list=PLC36xJgs4dxE43Au1FGRQvwHTr7NbgDCS",
-        duration: "Full Playlist",
-        level: "All Levels",
-        category: "Aptitude & Reasoning",
-        description: "Complete Quantitative Aptitude and Logical Reasoning syllabus for campus placements and competitive exams by Amit Khurana."
-      },
-      {
-        id: "custom-04",
-        title: "CareerRide Quantitative Aptitude Mastery Tutorials",
-        youtubeId: "PLpyc33gOcbVA4qXMoQ5vmhefTruk5t9lt",
-        youtubeUrl: "https://youtube.com/playlist?list=PLpyc33gOcbVA4qXMoQ5vmhefTruk5t9lt",
-        duration: "Full Playlist",
-        level: "All Levels",
-        category: "Quantitative Aptitude",
-        description: "Speed math shortcuts, topic-wise solved placement test problems, and company aptitude test preparation by CareerRide."
-      },
-      {
-        id: "custom-05",
-        title: "Comprehensive Placement & Coding Master Series",
-        youtubeId: "PLBG_hRMQjgpwN2WhFoFZG_jad1fLgKSnZ",
-        youtubeUrl: "https://youtube.com/playlist?list=PLBG_hRMQjgpwN2WhFoFZG_jad1fLgKSnZ",
-        duration: "Full Playlist",
-        level: "Placement Ready",
-        category: "Placement Preparation",
-        description: "Comprehensive placement preparation video series with core concepts and problem solving."
-      },
-      {
-        id: "custom-06",
-        title: "Kunal Kushwaha Java & DSA Bootcamp",
-        youtubeId: "PL9gnSGHSqcnr_DxHsP7AW9ftq0AtAyYqJ",
-        youtubeUrl: "https://youtube.com/playlist?list=PL9gnSGHSqcnr_DxHsP7AW9ftq0AtAyYqJ",
-        duration: "Full Bootcamp",
-        level: "All Levels",
-        category: "Java & DSA",
-        description: "Complete Java + Data Structures & Algorithms course with step-by-step assignments and interview problem solutions."
-      },
-      {
-        id: "custom-07",
-        title: "Apna College DSA Practice & C++ Course",
-        youtubeId: "PLfqMhTWNBTe137I_EPQd34TsgV6IO55pt",
-        youtubeUrl: "https://youtube.com/playlist?list=PLfqMhTWNBTe137I_EPQd34TsgV6IO55pt",
-        duration: "Full Playlist",
-        level: "All Levels",
-        category: "C++ & DSA",
-        description: "Apna College Data Structures and Algorithms complete practice playlist for placements and internships."
-      },
-      {
-        id: "custom-08",
-        title: "Jenny's Lectures - Python Language Full Course",
-        youtubeId: "PLGjplNEQ1it8-0CmoljS5yeV-GlKSUEt0",
-        youtubeUrl: "https://youtube.com/playlist?list=PLGjplNEQ1it8-0CmoljS5yeV-GlKSUEt0",
-        duration: "Full Playlist",
-        level: "All Levels",
-        category: "Python Course",
-        description: "Comprehensive Python course covering core concepts, loops, functions, OOPs, data structures, and placement questions by Jenny's Lectures."
-      },
-      {
-        id: "custom-09",
-        title: "Apna College - C Language Full Course for Beginners",
-        youtubeId: "irqbmMNs2Bo",
-        youtubeUrl: "https://youtu.be/irqbmMNs2Bo",
-        duration: "10:32:00",
-        level: "Beginner to Pro",
-        category: "C Programming",
-        description: "10.5-hour complete C programming course covering fundamentals, pointers, memory allocation, arrays, and interview questions by Apna College."
-      },
-      {
-        id: "custom-10",
-        title: "Striver's A2Z DSA Course - takeUforward",
+        title: "Striver's A2Z DSA Course & Placement Series",
         youtubeId: "PLgUwDviBIf0oF6QL8m22w1hIDC1vJ_BHz",
-        youtubeUrl: "https://youtube.com/playlist?list=PLgUwDviBIf0oF6QL8m22w1hIDC1vJ_BHz",
+        youtubeUrl: "https://www.youtube.com/playlist?list=PLgUwDviBIf0oF6QL8m22w1hIDC1vJ_BHz",
         duration: "Full Course",
         level: "All Levels",
         category: "A2Z DSA",
         description: "Complete A2Z Data Structures & Algorithms placement sheet course by Striver (takeUforward) covering arrays, trees, graphs, and dynamic programming."
       },
       {
-        id: "custom-11",
-        title: "Neso Academy - Core Engineering & Placement Series",
+        id: "custom-02",
+        title: "Kunal Kushwaha – Complete Java & DSA Bootcamp",
+        youtubeId: "PL9gnSGHSqcnr_DxHsP7AW9ftq0AtAyYqJ",
+        youtubeUrl: "https://www.youtube.com/playlist?list=PL9gnSGHSqcnr_DxHsP7AW9ftq0AtAyYqJ",
+        duration: "Full Bootcamp",
+        level: "All Levels",
+        category: "Java & DSA",
+        description: "World-class complete Java and Data Structures & Algorithms Bootcamp covering everything from basics to advanced trees, graphs, and dynamic programming."
+      },
+      {
+        id: "custom-03",
+        title: "Neso Academy – Core Engineering / OS / CN / DBMS",
         youtubeId: "PLBlnK6fEyqRhgMzWqbZXXd8TrBXtQiV3l",
-        youtubeUrl: "https://youtube.com/playlist?list=PLBlnK6fEyqRhgMzWqbZXXd8TrBXtQiV3l",
+        youtubeUrl: "https://www.youtube.com/playlist?list=PLBlnK6fEyqRhgMzWqbZXXd8TrBXtQiV3l",
         duration: "Full Playlist",
         level: "All Levels",
-        category: "Neso Academy",
+        category: "Core CS / OS",
         description: "Engineering curriculum and placement preparation series by Neso Academy."
       },
       {
-        id: "custom-12",
-        title: "Neso Academy - Python Programming Full Course",
-        youtubeId: "PLBlnK6fEyqRiueC_HzwFallNO76hfXBB7",
-        youtubeUrl: "https://youtube.com/playlist?list=PLBlnK6fEyqRiueC_HzwFallNO76hfXBB7",
+        id: "custom-04",
+        title: "Amit Khurana – Complete Aptitude & Reasoning",
+        youtubeId: "PLC36xJgs4dxE43Au1FGRQvwHTr7NbgDCS",
+        youtubeUrl: "https://www.youtube.com/playlist?list=PLC36xJgs4dxE43Au1FGRQvwHTr7NbgDCS",
         duration: "Full Playlist",
         level: "All Levels",
-        category: "Python Series",
+        category: "Aptitude & Reasoning",
+        description: "Complete Quantitative Aptitude and Logical Reasoning syllabus for campus placements and competitive exams by Amit Khurana."
+      },
+      {
+        id: "custom-05",
+        title: "Placement Hub – Placement Coding & Aptitude Prep",
+        youtubeId: "PL8p2I9GklV454LdGfDOw0KkNazKuA-6B2",
+        youtubeUrl: "https://www.youtube.com/playlist?list=PL8p2I9GklV454LdGfDOw0KkNazKuA-6B2",
+        duration: "Full Playlist",
+        level: "Placement Ready",
+        category: "Placement Coding",
+        description: "Curated collection of campus placement coding questions, aptitude tests, and interview technical rounds."
+      },
+      {
+        id: "custom-06",
+        title: "Jenny's Lectures – Python Full Course (2025–26)",
+        youtubeId: "PLGjplNEQ1it8-0CmoljS5yeV-GlKSUEt0",
+        youtubeUrl: "https://www.youtube.com/playlist?list=PLGjplNEQ1it8-0CmoljS5yeV-GlKSUEt0",
+        duration: "Full Playlist",
+        level: "All Levels",
+        category: "Python Course",
+        description: "Comprehensive Python course covering core concepts, loops, functions, OOPs, data structures, and placement questions by Jenny's Lectures."
+      },
+      {
+        id: "custom-07",
+        title: "Neso Academy – Python Programming",
+        youtubeId: "PLBlnK6fEyqRiueC_HzwFallNO76hfXBB7",
+        youtubeUrl: "https://www.youtube.com/playlist?list=PLBlnK6fEyqRiueC_HzwFallNO76hfXBB7",
+        duration: "Full Playlist",
+        level: "All Levels",
+        category: "Python Programming",
         description: "Comprehensive Python programming lecture series by Neso Academy."
+      },
+      {
+        id: "custom-08",
+        title: "Apna College – C++ & DSA",
+        youtubeId: "PLfqMhTWNBTe137I_EPQd34TsgV6IO55pt",
+        youtubeUrl: "https://www.youtube.com/playlist?list=PLfqMhTWNBTe137I_EPQd34TsgV6IO55pt",
+        duration: "Full Playlist",
+        level: "All Levels",
+        category: "C++ & DSA",
+        description: "Apna College Data Structures and Algorithms complete practice playlist for placements and internships."
+      },
+      {
+        id: "custom-09",
+        title: "Neso Academy – C Programming",
+        youtubeId: "PLBlnK6fEyqRhMP7gwIe2j0hb1PCvYn0RI",
+        youtubeUrl: "https://www.youtube.com/playlist?list=PLBlnK6fEyqRhMP7gwIe2j0hb1PCvYn0RI",
+        duration: "Full Playlist",
+        level: "All Levels",
+        category: "C Programming",
+        description: "Comprehensive C programming lectures covering basics, pointers, recursion, data structures in C, and tricky placement interview MCQs."
+      },
+      {
+        id: "custom-10",
+        title: "Apna College – C Language (10.5 Hours)",
+        youtubeId: "irqbmMNs2Bo",
+        youtubeUrl: "https://www.youtube.com/watch?v=irqbmMNs2Bo",
+        duration: "10:32:00",
+        level: "Beginner to Pro",
+        category: "C Programming",
+        description: "10.5-hour complete C programming course covering fundamentals, pointers, memory allocation, arrays, and interview questions by Apna College."
+      },
+      {
+        id: "custom-11",
+        title: "CareerRide – Quantitative Aptitude",
+        youtubeId: "PLpyc33gOcbVA4qXMoQ5vmhefTruk5t9lt",
+        youtubeUrl: "https://www.youtube.com/playlist?list=PLpyc33gOcbVA4qXMoQ5vmhefTruk5t9lt",
+        duration: "Full Playlist",
+        level: "All Levels",
+        category: "Quantitative Aptitude",
+        description: "Speed math shortcuts, topic-wise solved placement test problems, and company aptitude test preparation by CareerRide."
+      },
+      {
+        id: "custom-12",
+        title: "Placement Masterclass – Placement & Coding",
+        youtubeId: "PLBG_hRMQjgpwN2WhFoFZG_jad1fLgKSnZ",
+        youtubeUrl: "https://www.youtube.com/playlist?list=PLBG_hRMQjgpwN2WhFoFZG_jad1fLgKSnZ",
+        duration: "Full Playlist",
+        level: "Placement Ready",
+        category: "Placement Preparation",
+        description: "Comprehensive placement preparation video series with core concepts and problem solving."
       }
     ]
   }

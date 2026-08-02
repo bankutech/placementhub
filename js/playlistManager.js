@@ -4,7 +4,7 @@
 
 class PlaylistManager {
   constructor() {
-    this.storageKey = 'placementhub_user_playlists_v3';
+    this.storageKey = 'placementhub_user_playlists_v4';
   }
 
   // Initialize tracks data from localStorage or fallback to defaults
