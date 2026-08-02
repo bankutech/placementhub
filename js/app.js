@@ -107,7 +107,7 @@ window.renderPlaylistSidebar = function(trackId, filterText = '') {
     let nestedLecturesHtml = '';
     if (isActive && isPlaylist) {
       const cached = window.appState.playlistItemsCache[video.youtubeId];
-      if (cached) {
+      if (cached && cached !== 'loading') {
         const currentLecIndex = window.playerController.currentPlaylistLectureIndex || 0;
         const filteredLec = filterText ? cached.filter(c => c.title.toLowerCase().includes(filterText.toLowerCase())) : cached;
         nestedLecturesHtml = `
@@ -135,8 +135,10 @@ window.renderPlaylistSidebar = function(trackId, filterText = '') {
             </div>
           </div>
         `;
-        // Trigger background load
-        window.loadPlaylistItems(video.youtubeId, trackId);
+        // Trigger background load only if not currently loading
+        if (cached !== 'loading') {
+          window.loadPlaylistItems(video.youtubeId, trackId);
+        }
       }
     }
 
@@ -491,6 +493,9 @@ window.saveSettings = function() {
 // ----------------------------------------------------------------------------
 window.loadPlaylistItems = async function(playlistId, trackId) {
   if (window.appState.playlistItemsCache[playlistId]) return;
+
+  // Mark as loading immediately to block parallel duplicate fetch triggers
+  window.appState.playlistItemsCache[playlistId] = 'loading';
 
   const apiKey = localStorage.getItem('placementhub_yt_api_key') || 'AIzaSyB0Fv95z1wTMFKfAMCSMuNg8RsvQirFcXE';
   
