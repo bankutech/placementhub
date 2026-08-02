@@ -492,7 +492,7 @@ window.saveSettings = function() {
 window.loadPlaylistItems = async function(playlistId, trackId) {
   if (window.appState.playlistItemsCache[playlistId]) return;
 
-  const apiKey = localStorage.getItem('placementhub_yt_api_key');
+  const apiKey = localStorage.getItem('placementhub_yt_api_key') || 'AIzaSyB0Fv95z1wTMFKfAMCSMuNg8RsvQirFcXE';
   
   if (apiKey) {
     try {
