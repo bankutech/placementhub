@@ -226,8 +226,16 @@ class VideoPlayerController {
     if (!this.currentPlaylistId) return;
     this.currentPlaylistLectureIndex = Math.max(0, lectureIndex);
 
+    // Retrieve real video details from cache if available
+    const cached = window.appState.playlistItemsCache[this.currentPlaylistId];
+    if (cached && cached[this.currentPlaylistLectureIndex]) {
+      const lec = cached[this.currentPlaylistLectureIndex];
+      window.selectPlaylistLecture(null, this.currentPlaylistId, this.currentPlaylistLectureIndex, lec.id, lec.title);
+      return;
+    }
+
     const BASE = 'https://www.youtube.com/embed';
-    const embedUrl = `${BASE}/videoseries?list=${this.currentPlaylistId}&rel=0&index=${this.currentPlaylistLectureIndex}&autoplay=1`;
+    const embedUrl = `${BASE}/videoseries?list=${this.currentPlaylistId}&rel=0&index=${this.currentPlaylistLectureIndex}&autoplay=1&t=${Date.now()}`;
 
     if (this.videoIframe) {
       this.videoIframe.src = '';
