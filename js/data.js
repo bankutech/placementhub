@@ -127,13 +127,13 @@ const INITIAL_PLACEMENT_DATA = {
     videos: [
       {
         id: "user-py-01",
-        title: "Jenny's Lectures – Python Full Course (2025–26)",
+        title: "Shradha Khapra (Apna College) – Python Full Course",
         youtubeId: "PLGjplNEQ1it8-0CmoljS5yeV-GlKSUEt0",
         youtubeUrl: "https://www.youtube.com/playlist?list=PLGjplNEQ1it8-0CmoljS5yeV-GlKSUEt0",
         duration: "Full Playlist",
         level: "All Levels",
         category: "Python Full Course",
-        description: "Comprehensive Python course covering core concepts, loops, functions, OOPs, data structures, and placement questions by Jenny's Lectures."
+        description: "Comprehensive Python course covering core concepts, loops, functions, OOPs, data structures, and placement questions by Shradha Khapra."
       },
       {
         id: "user-py-02",
@@ -297,13 +297,13 @@ const INITIAL_PLACEMENT_DATA = {
       },
       {
         id: "custom-06",
-        title: "Jenny's Lectures – Python Full Course (2025–26)",
+        title: "Shradha Khapra (Apna College) – Python Full Course",
         youtubeId: "PLGjplNEQ1it8-0CmoljS5yeV-GlKSUEt0",
         youtubeUrl: "https://www.youtube.com/playlist?list=PLGjplNEQ1it8-0CmoljS5yeV-GlKSUEt0",
         duration: "Full Playlist",
         level: "All Levels",
         category: "Python Course",
-        description: "Comprehensive Python course covering core concepts, loops, functions, OOPs, data structures, and placement questions by Jenny's Lectures."
+        description: "Comprehensive Python course covering core concepts, loops, functions, OOPs, data structures, and placement questions by Shradha Khapra."
       },
       {
         id: "custom-07",
