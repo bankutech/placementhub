@@ -27,7 +27,7 @@
   <link rel="stylesheet" href="css/toolkit.css?v=5" />
   <link rel="stylesheet" href="css/components.css?v=5" />
   <!-- Visual Enhancement Layer -->
-  <link rel="stylesheet" href="css/style.css?v=5" />
+  <link rel="stylesheet" href="css/style.css?v=6" />
   <!-- Responsive / Mobile-First Overrides -->
   <link rel="stylesheet" href="css/responsive.css?v=5" />
 </head>
@@ -706,21 +706,21 @@
     </button>
   </nav>
 
-  <!-- Application Scripts (Version 5 Cache-Busted) -->
-  <script src="js/data.js?v=5"></script>
-  <script src="js/practiceData.js?v=5"></script>
-  <script src="js/player.js?v=5"></script>
-  <script src="js/playlistManager.js?v=5"></script>
-  <script src="js/notesManager.js?v=5"></script>
-  <script src="js/practiceManager.js?v=5"></script>
-  <script src="js/pomodoro.js?v=5"></script>
-  <script src="js/app.js?v=5"></script>
+  <!-- Application Scripts (Version 6 Cache-Busted) -->
+  <script src="js/data.js?v=6"></script>
+  <script src="js/practiceData.js?v=6"></script>
+  <script src="js/player.js?v=6"></script>
+  <script src="js/playlistManager.js?v=6"></script>
+  <script src="js/notesManager.js?v=6"></script>
+  <script src="js/practiceManager.js?v=6"></script>
+  <script src="js/pomodoro.js?v=6"></script>
+  <script src="js/app.js?v=6"></script>
 
   <!-- PWA Service Worker Registration & Live Auto-Update -->
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/sw.js?v=5')
+        navigator.serviceWorker.register('/sw.js?v=6')
           .then(reg => {
             reg.update();
             console.log('PlacementHub SW active & updated:', reg.scope);
