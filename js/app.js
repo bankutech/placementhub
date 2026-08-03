@@ -656,14 +656,15 @@ window.selectPlaylistLecture = function(parentId, playlistId, index, videoIdReal
   window.playerController.currentPlaylistLectureIndex = index;
   
   const BASE = 'https://www.youtube.com/embed';
+  const CLEAN = 'rel=0&iv_load_policy=3&modestbranding=1&cc_load_policy=0';
   let embedUrl = "";
   
   if (videoIdReal && !videoIdReal.startsWith('fallback-')) {
     // Play the exact unique video, loading the playlist queue next to it
-    embedUrl = `${BASE}/${videoIdReal}?list=${playlistId}&rel=0&autoplay=1`;
+    embedUrl = `${BASE}/${videoIdReal}?list=${playlistId}&${CLEAN}&autoplay=1`;
   } else {
     // Fallback if no API key or real ID: use index with cache buster
-    embedUrl = `${BASE}/videoseries?list=${playlistId}&rel=0&index=${index}&autoplay=1&t=${Date.now()}`;
+    embedUrl = `${BASE}/videoseries?list=${playlistId}&${CLEAN}&index=${index}&autoplay=1&t=${Date.now()}`;
   }
   
   if (window.playerController.videoIframe) {

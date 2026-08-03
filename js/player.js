@@ -116,25 +116,26 @@ class VideoPlayerController {
     let embedUrl = "";
     let rawWatchUrl = video.youtubeUrl || `https://www.youtube.com/watch?v=${video.youtubeId}`;
 
-    // Standard clean YouTube embed format — works universally across desktop & mobile
+    // Standard clean YouTube embed format — minimizes clutter, cards & popups
     const BASE = 'https://www.youtube.com/embed';
+    const CLEAN = 'rel=0&iv_load_policy=3&modestbranding=1&cc_load_policy=0';
 
     if (parsed) {
       if (parsed.type === 'playlist') {
         this.currentPlaylistId = parsed.id;
-        embedUrl = `${BASE}/videoseries?list=${parsed.id}&rel=0&index=${lectureIndex}`;
+        embedUrl = `${BASE}/videoseries?list=${parsed.id}&${CLEAN}&index=${lectureIndex}`;
         rawWatchUrl = `https://www.youtube.com/playlist?list=${parsed.id}`;
       } else {
         this.currentPlaylistId = null;
         const listParam = parsed.playlistId ? `&list=${parsed.playlistId}` : '';
-        embedUrl = `${BASE}/${parsed.id}?rel=0${listParam}`;
+        embedUrl = `${BASE}/${parsed.id}?${CLEAN}${listParam}`;
         rawWatchUrl = parsed.playlistId
           ? `https://www.youtube.com/watch?v=${parsed.id}&list=${parsed.playlistId}`
           : `https://www.youtube.com/watch?v=${parsed.id}`;
       }
     } else {
       this.currentPlaylistId = null;
-      embedUrl = `${BASE}/${video.youtubeId}?rel=0`;
+      embedUrl = `${BASE}/${video.youtubeId}?${CLEAN}`;
     }
 
     // Show iframe, hide placeholder
@@ -183,7 +184,8 @@ class VideoPlayerController {
     }
 
     const BASE = 'https://www.youtube.com/embed';
-    const embedUrl = `${BASE}/videoseries?list=${this.currentPlaylistId}&rel=0&index=${this.currentPlaylistLectureIndex}&autoplay=1&t=${Date.now()}`;
+    const CLEAN = 'rel=0&iv_load_policy=3&modestbranding=1&cc_load_policy=0';
+    const embedUrl = `${BASE}/videoseries?list=${this.currentPlaylistId}&${CLEAN}&index=${this.currentPlaylistLectureIndex}&autoplay=1&t=${Date.now()}`;
 
     if (this.videoIframe) {
       this.videoIframe.src = '';
