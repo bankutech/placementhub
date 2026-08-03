@@ -42,10 +42,10 @@
   --glow-secondary:  rgba(34, 211, 238, 0.35);
   --glow-success:    rgba(16, 185, 129, 0.35);
 
-  /* --- Text (WCAG AA minimum contrast on dark bg) --- */
-  --text-primary:   #f1f5f9;   /* ~15:1 on bg-primary */
-  --text-secondary: #94a3b8;   /* ~5:1  on bg-primary */
-  --text-muted:     #64748b;   /* ~3:1  — decorative only */
+  /* --- Text (WCAG AAA/AA High Contrast for Long Study Sessions) --- */
+  --text-primary:   #f8fafc;   /* ~16:1 on dark navy */
+  --text-secondary: #cbd5e1;   /* ~9.5:1 on dark navy - crisp & readable */
+  --text-muted:     #94a3b8;   /* ~5.5:1 on dark navy */
   --text-inverse:   #07090f;
 
   /* --- Typography --- */
@@ -221,11 +221,12 @@ body, button, input, select, textarea {
 }
 
 .brand-tagline {
-  font-size: 0.68rem;
-  color: var(--text-muted);
-  font-weight: 500;
+  font-size: 0.72rem;
+  color: var(--text-secondary);
+  font-weight: 600;
   letter-spacing: 0.6px;
   text-transform: uppercase;
+  opacity: 0.95;
 }
 
 /* Header search */
@@ -312,42 +313,39 @@ body, button, input, select, textarea {
    6. TRACK NAV — pill tabs with track-colour glow
    ========================================================================== */
 .track-nav-container {
-  background: rgba(7, 9, 15, 0.75);
+  background: rgba(7, 9, 15, 0.85);
   backdrop-filter: var(--backdrop-blur);
   -webkit-backdrop-filter: var(--backdrop-blur);
   border-bottom: 1px solid var(--border-subtle);
-  padding: var(--space-3) var(--space-8);
+  padding: 8px var(--space-8);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: var(--space-4);
-  overflow-x: auto;
-  scrollbar-width: none;
+  gap: 8px 16px;
+  flex-wrap: wrap;
   position: sticky;
   top: var(--header-height);
   z-index: 100;
 }
 
-.track-nav-container::-webkit-scrollbar { display: none; }
-
 .track-chips {
   display: flex;
   align-items: center;
-  gap: var(--space-2);
-  flex-wrap: nowrap;
+  gap: 6px;
+  flex-wrap: wrap;
 }
 
 /* Base chip */
 .track-chip {
   display: inline-flex !important;
   align-items: center;
-  gap: var(--space-2);
-  padding: 6px 14px !important;
+  gap: 6px;
+  padding: 5px 12px !important;
   border-radius: var(--radius-full) !important;
-  background: rgba(255,255,255,0.04) !important;
-  border: 1px solid rgba(255,255,255,0.08) !important;
+  background: rgba(255,255,255,0.05) !important;
+  border: 1px solid rgba(255,255,255,0.1) !important;
   color: var(--text-secondary) !important;
-  font-size: 0.82rem !important;
+  font-size: 0.8rem !important;
   font-weight: 600 !important;
   cursor: pointer;
   transition: var(--transition) !important;
@@ -356,11 +354,11 @@ body, button, input, select, textarea {
   letter-spacing: 0.01em;
 }
 
-.track-chip i { font-size: 0.92rem; }
+.track-chip i { font-size: 0.88rem; }
 
 .track-chip:hover {
-  background: rgba(255,255,255,0.08) !important;
-  border-color: rgba(255,255,255,0.18) !important;
+  background: rgba(255,255,255,0.09) !important;
+  border-color: rgba(255,255,255,0.2) !important;
   color: var(--text-primary) !important;
   transform: translateY(-1px) !important;
 }
@@ -419,17 +417,22 @@ body, button, input, select, textarea {
   padding: 1px 6px;
   border-radius: var(--radius-full);
   background: rgba(255,255,255,0.1);
-  color: var(--text-muted);
+  color: var(--text-secondary);
   min-width: 20px;
   text-align: center;
 }
 
 /* Nav tagline */
+.nav-tagline,
 .track-nav-container > div:last-child {
-  font-size: 0.72rem;
-  color: var(--text-muted);
+  font-size: 0.76rem;
+  color: var(--text-secondary);
   white-space: nowrap;
   flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-left: auto;
 }
 
 /* ==========================================================================
@@ -493,10 +496,12 @@ body, button, input, select, textarea {
 }
 
 .track-desc {
-  font-size: 0.82rem;
+  font-size: 0.88rem;
+  line-height: 1.55;
   color: var(--text-secondary);
-  margin-top: 2px;
-  max-width: 70ch;
+  margin-top: 4px;
+  max-width: 75ch;
+  font-weight: 400;
 }
 
 /* ==========================================================================

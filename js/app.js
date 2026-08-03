@@ -53,8 +53,47 @@ window.renderPlaylistSidebar = function(trackId, filterText = '') {
     videos.filter(v => v.title.toLowerCase().includes(filterText.toLowerCase()) || (v.category && v.category.toLowerCase().includes(filterText.toLowerCase())))
     : videos;
 
+  // Calculate accurate syllabus items count including sub-lectures and pluralization
+  let totalLectures = 0;
+  if (filterText) {
+    let matchedSub = 0;
+    videos.forEach((v, idx) => {
+      const isActive = (window.playerController.currentTrackId === trackId && window.playerController.currentVideoIndex === idx);
+      const isPlaylist = v.youtubeId && v.youtubeId.length > 11;
+      if (isActive && isPlaylist) {
+        const cached = window.appState.playlistItemsCache[v.youtubeId];
+        if (Array.isArray(cached)) {
+          matchedSub += cached.filter(c => c.title.toLowerCase().includes(filterText.toLowerCase())).length;
+        }
+      }
+    });
+    totalLectures = filtered.length + matchedSub;
+  } else {
+    let hasExpandedSubLectures = false;
+    let subCount = 0;
+    videos.forEach((v, idx) => {
+      const isActive = (window.playerController.currentTrackId === trackId && window.playerController.currentVideoIndex === idx);
+      const isPlaylist = v.youtubeId && v.youtubeId.length > 11;
+      if (isActive && isPlaylist) {
+        const cached = window.appState.playlistItemsCache[v.youtubeId];
+        if (Array.isArray(cached) && cached.length > 0) {
+          hasExpandedSubLectures = true;
+          subCount += cached.length;
+        }
+      }
+    });
+
+    if (hasExpandedSubLectures && videos.length === 1) {
+      totalLectures = subCount;
+    } else if (hasExpandedSubLectures && videos.length > 1) {
+      totalLectures = (videos.length - 1) + subCount;
+    } else {
+      totalLectures = videos.length;
+    }
+  }
+
   if (countChip) {
-    countChip.textContent = `${videos.length} Lectures`;
+    countChip.textContent = totalLectures === 1 ? '1 Lecture' : `${totalLectures} Lectures`;
   }
 
   if (filtered.length === 0) {

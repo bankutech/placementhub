@@ -64,7 +64,7 @@
   .brand-tagline { display: none; }
   .header-search { display: none; }
   .track-nav-container { padding: 8px 20px; }
-  .track-nav-container > div:last-child { display: none; }
+  .nav-tagline, .track-nav-container > div:last-child { display: none; }
   .main-workspace { padding: 16px 20px 40px; gap: 16px; }
   .track-heading { font-size: 1.15rem; }
 
