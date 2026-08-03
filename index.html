@@ -21,15 +21,15 @@
   <!-- Font Awesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
 
-  <!-- Application Stylesheets -->
-  <link rel="stylesheet" href="css/main.css" />
-  <link rel="stylesheet" href="css/player.css" />
-  <link rel="stylesheet" href="css/toolkit.css" />
-  <link rel="stylesheet" href="css/components.css" />
+  <!-- Application Stylesheets (Version 5 Cache-Busted) -->
+  <link rel="stylesheet" href="css/main.css?v=5" />
+  <link rel="stylesheet" href="css/player.css?v=5" />
+  <link rel="stylesheet" href="css/toolkit.css?v=5" />
+  <link rel="stylesheet" href="css/components.css?v=5" />
   <!-- Visual Enhancement Layer -->
-  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/style.css?v=5" />
   <!-- Responsive / Mobile-First Overrides -->
-  <link rel="stylesheet" href="css/responsive.css" />
+  <link rel="stylesheet" href="css/responsive.css?v=5" />
 </head>
 <body>
 
@@ -201,6 +201,18 @@
       </button>
     </div>
   </header>
+
+  <!-- Mobile Quick Track Bar (Tap anywhere on mobile to open Side Panel) -->
+  <div class="mobile-track-bar" id="mobileTrackBar" onclick="window.toggleSideNav(true)" role="button" aria-label="Open Course Tracks Side Panel">
+    <div class="mobile-track-bar-left">
+      <span class="mobile-track-bar-tag"><i class="fa-solid fa-layer-group"></i> ACTIVE TRACK</span>
+      <span class="mobile-track-bar-title" id="mobileActiveTrackName">☕ Java Placement Track</span>
+    </div>
+    <div class="mobile-track-bar-btn">
+      <span>Browse Tracks</span>
+      <i class="fa-solid fa-chevron-right"></i>
+    </div>
+  </div>
 
   <!-- ========================================================================
        MAIN WORKSPACE
@@ -668,22 +680,49 @@
   <!-- Toast Notification Container -->
   <div class="toast-container" id="toastContainer"></div>
 
-  <!-- Application Scripts -->
-  <script src="js/data.js"></script>
-  <script src="js/practiceData.js"></script>
-  <script src="js/player.js"></script>
-  <script src="js/playlistManager.js"></script>
-  <script src="js/notesManager.js"></script>
-  <script src="js/practiceManager.js"></script>
-  <script src="js/pomodoro.js"></script>
-  <script src="js/app.js"></script>
+  <!-- Mobile Bottom Navigation Bar (Visible on phones & small tablets) -->
+  <nav class="mobile-bottom-bar" id="mobileBottomBar" aria-label="Mobile Navigation">
+    <button class="mobile-bottom-tab active" onclick="window.toggleSideNav(true)" id="mTabTracks" aria-label="Open Course Tracks">
+      <i class="fa-solid fa-layer-group"></i>
+      <span>Tracks</span>
+    </button>
+    <button class="mobile-bottom-tab" onclick="window.switchToolkitTab('tab-notes')" id="mTabNotes" aria-label="Notes">
+      <i class="fa-solid fa-note-sticky"></i>
+      <span>Notes</span>
+    </button>
+    <button class="mobile-bottom-tab" onclick="window.switchToolkitTab('tab-practice')" id="mTabPractice" aria-label="Practice">
+      <i class="fa-solid fa-puzzle-piece"></i>
+      <span>Practice</span>
+    </button>
+    <button class="mobile-bottom-tab" onclick="window.openModal('pomodoroModal')" id="mTabPomo" aria-label="Pomodoro Timer">
+      <i class="fa-solid fa-fire"></i>
+      <span>Timer</span>
+    </button>
+    <button class="mobile-bottom-tab" onclick="window.openAddVideoModal()" id="mTabAdd" aria-label="Add Video">
+      <i class="fa-solid fa-circle-plus"></i>
+      <span>Add</span>
+    </button>
+  </nav>
 
-  <!-- PWA Service Worker Registration -->
+  <!-- Application Scripts (Version 5 Cache-Busted) -->
+  <script src="js/data.js?v=5"></script>
+  <script src="js/practiceData.js?v=5"></script>
+  <script src="js/player.js?v=5"></script>
+  <script src="js/playlistManager.js?v=5"></script>
+  <script src="js/notesManager.js?v=5"></script>
+  <script src="js/practiceManager.js?v=5"></script>
+  <script src="js/pomodoro.js?v=5"></script>
+  <script src="js/app.js?v=5"></script>
+
+  <!-- PWA Service Worker Registration & Live Auto-Update -->
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/sw.js')
-          .then(reg => console.log('PlacementHub SW registered:', reg.scope))
+        navigator.serviceWorker.register('/sw.js?v=5')
+          .then(reg => {
+            reg.update();
+            console.log('PlacementHub SW active & updated:', reg.scope);
+          })
           .catch(err => console.warn('SW registration failed:', err));
       });
     }

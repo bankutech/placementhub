@@ -1,8 +1,8 @@
 /* ==========================================================================
-   PLACEMENTHUB SERVICE WORKER — Offline-First Caching
+   PLACEMENTHUB SERVICE WORKER — Network-First Strategy for Instant Updates
    ========================================================================== */
 
-const CACHE_NAME = 'placementhub-v1';
+const CACHE_NAME = 'placementhub-v5';
 const CORE_ASSETS = [
   '/',
   '/index.html',
@@ -26,16 +26,17 @@ const CORE_ASSETS = [
   '/manifest.json'
 ];
 
-// Install: cache core assets
+// Install: cache core assets and skip waiting
 self.addEventListener('install', (event) => {
+  self.skipWaiting();
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
       return cache.addAll(CORE_ASSETS);
-    }).then(() => self.skipWaiting())
+    })
   );
 });
 
-// Activate: clean old caches
+// Activate: instantly remove any older cache versions and claim clients
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys().then((keys) =>
@@ -46,27 +47,26 @@ self.addEventListener('activate', (event) => {
   );
 });
 
-// Fetch: serve from cache, fall back to network
+// Fetch: NETWORK FIRST with offline cache fallback
 self.addEventListener('fetch', (event) => {
-  // Skip cross-origin requests (YouTube API, etc.)
   if (!event.request.url.startsWith(self.location.origin)) return;
 
   event.respondWith(
-    caches.match(event.request).then((cached) => {
-      if (cached) return cached;
-      return fetch(event.request).then((response) => {
-        // Cache successful GET responses
-        if (response && response.status === 200 && event.request.method === 'GET') {
-          const clone = response.clone();
+    fetch(event.request)
+      .then((networkResponse) => {
+        if (networkResponse && networkResponse.status === 200 && event.request.method === 'GET') {
+          const clone = networkResponse.clone();
           caches.open(CACHE_NAME).then((cache) => cache.put(event.request, clone));
         }
-        return response;
-      }).catch(() => {
-        // If offline and no cache, return the app shell
-        if (event.request.destination === 'document') {
-          return caches.match('/index.html');
-        }
-      });
-    })
+        return networkResponse;
+      })
+      .catch(() => {
+        return caches.match(event.request).then((cached) => {
+          if (cached) return cached;
+          if (event.request.destination === 'document') {
+            return caches.match('/index.html');
+          }
+        });
+      })
   );
 });
