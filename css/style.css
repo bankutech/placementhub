@@ -229,6 +229,25 @@ body, button, input, select, textarea {
   opacity: 0.95;
 }
 
+.header-desktop-title {
+  display: none;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #f8fafc;
+  letter-spacing: -0.2px;
+}
+
+@media (min-width: 1024px) {
+  .header-left-group .brand-wrapper {
+    display: none !important;
+  }
+  .header-desktop-title {
+    display: flex !important;
+  }
+}
+
 /* Header search */
 .header-search {
   position: relative;
@@ -1617,7 +1636,26 @@ body, button, input, select, textarea {
 
 /* ==========================================================================
    26. SIDEVIEW DRAWER / COURSE NAVIGATION PANEL ("SIDEVIEW PLANE")
+/* ==========================================================================
+   APP SHELL & PERMANENT SIDE PANEL LAYOUT
    ========================================================================== */
+.app-shell {
+  display: flex;
+  min-height: 100vh;
+  width: 100%;
+  position: relative;
+  background: var(--bg-primary);
+}
+
+.app-main-container {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  position: relative;
+}
+
 .header-left-group {
   display: flex;
   align-items: center;
@@ -1671,27 +1709,66 @@ body, button, input, select, textarea {
 }
 
 .side-nav-drawer {
-  position: fixed;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  width: 340px;
-  max-width: 88vw;
-  background: var(--bg-glass-heavy);
-  backdrop-filter: var(--backdrop-blur);
-  -webkit-backdrop-filter: var(--backdrop-blur);
-  border-right: 1px solid var(--border-medium);
-  box-shadow: 0 0 40px rgba(0, 0, 0, 0.85), 0 0 80px rgba(99, 102, 241, 0.18);
-  z-index: 1100;
+  width: 275px;
+  min-width: 275px;
+  background: #090d1a;
+  border-right: 1px solid var(--border-subtle);
   display: flex;
   flex-direction: column;
-  transform: translateX(-100%);
-  transition: transform 0.32s cubic-bezier(0.16, 1, 0.3, 1);
-  overflow: hidden;
+  z-index: 850;
+  overflow-y: auto;
+  flex-shrink: 0;
 }
 
-.side-nav-drawer.open {
-  transform: translateX(0);
+@media (min-width: 1024px) {
+  .side-nav-backdrop {
+    display: none !important;
+  }
+
+  .side-nav-drawer {
+    position: sticky !important;
+    top: 0 !important;
+    left: 0 !important;
+    height: 100vh !important;
+    transform: none !important;
+    box-shadow: 4px 0 24px rgba(0, 0, 0, 0.4) !important;
+  }
+
+  .side-nav-close-btn {
+    display: none !important;
+  }
+
+  .btn-side-nav-toggle {
+    display: none !important;
+  }
+}
+
+@media (max-width: 1023px) {
+  .app-shell {
+    display: block;
+  }
+
+  .side-nav-drawer {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 300px;
+    max-width: 86vw;
+    z-index: 1100;
+    transform: translateX(-100%);
+    box-shadow: 0 0 40px rgba(0, 0, 0, 0.85);
+    background: #0a0e1c;
+    transition: transform 0.32s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .side-nav-drawer.open {
+    transform: translateX(0);
+  }
+
+  .btn-side-nav-toggle {
+    display: inline-flex !important;
+  }
 }
 
 .side-nav-header {
@@ -1700,7 +1777,7 @@ body, button, input, select, textarea {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: var(--bg-tertiary);
+  background: rgba(15, 23, 42, 0.6);
   flex-shrink: 0;
 }
 

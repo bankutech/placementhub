@@ -275,10 +275,14 @@ window.renderTrackView = function(trackId) {
     }
   });
 
-  // 2. Update Side Navigation, Header Toggle & Playlist Sidebar Labels
+  // 2. Update Side Navigation, Header Toggle, Desktop Title & Playlist Sidebar Labels
   const headerActiveTrackLabel = document.getElementById('headerActiveTrackLabel');
   if (headerActiveTrackLabel) {
     headerActiveTrackLabel.textContent = track.name || trackId;
+  }
+  const headerDesktopTitle = document.getElementById('headerDesktopTitle');
+  if (headerDesktopTitle) {
+    headerDesktopTitle.textContent = `${track.icon || '☕'} ${track.name || trackId}`;
   }
   const playlistSidebarTrackName = document.getElementById('playlistSidebarTrackName');
   if (playlistSidebarTrackName) {

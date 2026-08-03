@@ -33,12 +33,13 @@
 </head>
 <body>
 
-  <!-- ========================================================================
-       SIDEVIEW DRAWER / COURSE NAVIGATION PANEL ("SIDEVIEW PLANE")
-       ======================================================================== -->
   <div class="side-nav-backdrop" id="sideNavBackdrop" onclick="window.toggleSideNav(false)"></div>
 
-  <aside class="side-nav-drawer" id="sideNavDrawer" aria-label="Learning Tracks & Course Navigation">
+  <div class="app-shell">
+    <!-- ========================================================================
+         LEFT SIDE PANEL / COURSE TRACKS NAVIGATION (Permanent on Desktop)
+         ======================================================================== -->
+    <aside class="side-nav-drawer" id="sideNavDrawer" aria-label="Learning Tracks & Course Navigation">
     <div class="side-nav-header">
       <div class="side-nav-brand">
         <div class="side-nav-brand-icon">
@@ -157,29 +158,32 @@
         </div>
       </div>
     </div>
-  </aside>
+    </aside>
 
-  <!-- ========================================================================
-       TOP HEADER & NAVIGATION
-       ======================================================================== -->
-  <header class="app-header">
-    <div class="header-left-group">
-      <button class="btn-side-nav-toggle" id="btnToggleSideNav" onclick="window.toggleSideNav()" aria-label="Toggle Learning Tracks Menu" title="Open Learning Tracks Side Panel">
-        <i class="fa-solid fa-bars-staggered"></i>
-        <span class="btn-side-nav-label" id="headerActiveTrackLabel">Java Placement</span>
-        <i class="fa-solid fa-chevron-down" style="font-size: 0.65rem; opacity: 0.7; margin-left: 2px;"></i>
-      </button>
+    <!-- ========================================================================
+         MAIN APP CONTAINER (HEADER + WORKSPACE + FOOTER)
+         ======================================================================== -->
+    <div class="app-main-container">
+      <header class="app-header">
+        <div class="header-left-group">
+          <button class="btn-side-nav-toggle" id="btnToggleSideNav" onclick="window.toggleSideNav()" aria-label="Toggle Learning Tracks Menu" title="Open Learning Tracks Side Panel">
+            <i class="fa-solid fa-bars-staggered"></i>
+            <span class="btn-side-nav-label" id="headerActiveTrackLabel">Java Placement</span>
+            <i class="fa-solid fa-chevron-down" style="font-size: 0.65rem; opacity: 0.7; margin-left: 2px;"></i>
+          </button>
 
-      <div class="brand-wrapper">
-        <div class="brand-icon-box">
-          <i class="fa-solid fa-graduation-cap"></i>
+          <div class="header-desktop-title" id="headerDesktopTitle">☕ Java Placement Track</div>
+
+          <div class="brand-wrapper">
+            <div class="brand-icon-box">
+              <i class="fa-solid fa-graduation-cap"></i>
+            </div>
+            <div class="brand-text">
+              <span class="brand-title">PlacementHub</span>
+              <span class="brand-tagline">Campus & Tech Placement Portal</span>
+            </div>
+          </div>
         </div>
-        <div class="brand-text">
-          <span class="brand-title">PlacementHub</span>
-          <span class="brand-tagline">Campus & Tech Placement Portal</span>
-        </div>
-      </div>
-    </div>
 
     <div class="header-search">
       <i class="fa-solid fa-magnifying-glass"></i>
@@ -483,7 +487,9 @@
     <div class="footer-links">
       <span style="font-size:0.75rem; color: var(--text-muted);">Shortcuts: <kbd style="background: var(--bg-tertiary); padding: 0.15rem 0.4rem; border-radius: 4px; border: 1px solid var(--border-subtle);">N</kbd> Next &nbsp;<kbd style="background: var(--bg-tertiary); padding: 0.15rem 0.4rem; border-radius: 4px; border: 1px solid var(--border-subtle);">P</kbd> Prev &nbsp;<kbd style="background: var(--bg-tertiary); padding: 0.15rem 0.4rem; border-radius: 4px; border: 1px solid var(--border-subtle);">M</kbd> Mark &nbsp;<kbd style="background: var(--bg-tertiary); padding: 0.15rem 0.4rem; border-radius: 4px; border: 1px solid var(--border-subtle);">T</kbd> Theater</span>
     </div>
-  </footer>
+    </footer>
+    </div> <!-- /app-main-container -->
+  </div> <!-- /app-shell -->
 
   <!-- ========================================================================
        MODAL: ADD CUSTOM VIDEO / PLAYLIST LINK
