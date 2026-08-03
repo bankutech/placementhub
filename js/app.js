@@ -228,6 +228,9 @@ window.selectVideo = function(trackId, videoId) {
 window.toggleSideNav = function(forceState) {
   const drawer = document.getElementById('sideNavDrawer');
   const backdrop = document.getElementById('sideNavBackdrop');
+  const floatingBtn = document.getElementById('btnFloatingSideToggle');
+  const floatingChevron = document.getElementById('floatingChevron');
+  const floatingText = document.getElementById('floatingTabText');
   if (!drawer || !backdrop) return;
 
   const shouldOpen = typeof forceState === 'boolean' 
@@ -238,10 +241,16 @@ window.toggleSideNav = function(forceState) {
     drawer.classList.add('open');
     backdrop.classList.add('active');
     document.body.classList.add('side-nav-open');
+    if (floatingBtn) floatingBtn.classList.add('drawer-open');
+    if (floatingChevron) floatingChevron.className = 'fa-solid fa-chevron-left floating-chevron';
+    if (floatingText) floatingText.textContent = 'Close';
   } else {
     drawer.classList.remove('open');
     backdrop.classList.remove('active');
     document.body.classList.remove('side-nav-open');
+    if (floatingBtn) floatingBtn.classList.remove('drawer-open');
+    if (floatingChevron) floatingChevron.className = 'fa-solid fa-chevron-right floating-chevron';
+    if (floatingText) floatingText.textContent = 'Tracks';
   }
 };
 

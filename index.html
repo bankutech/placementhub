@@ -35,6 +35,13 @@
 
   <div class="side-nav-backdrop" id="sideNavBackdrop" onclick="window.toggleSideNav(false)"></div>
 
+  <!-- Floating Side Button / Edge Tab (Click to see & close side panel) -->
+  <button class="floating-side-tab" id="btnFloatingSideToggle" onclick="window.toggleSideNav()" aria-label="Toggle Learning Tracks Panel" title="Click to see / close Learning Tracks">
+    <i class="fa-solid fa-layer-group" id="floatingSideIcon"></i>
+    <span class="floating-tab-text" id="floatingTabText">Tracks</span>
+    <i class="fa-solid fa-chevron-right floating-chevron" id="floatingChevron"></i>
+  </button>
+
   <div class="app-shell">
     <!-- ========================================================================
          LEFT SIDE PANEL / COURSE TRACKS NAVIGATION (Permanent on Desktop)
