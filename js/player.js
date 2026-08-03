@@ -31,12 +31,96 @@ class VideoPlayerController {
     this.loadWatchedState();
     this.initScrubber();
     this.initControls();
+    this.initAutoHideControls();
     this.startProgressTicker();
   }
 
   // --------------------------------------------------------------------------
   // YouTube API Communication & Player Controls
   // --------------------------------------------------------------------------
+  initAutoHideControls() {
+    this.controlBar = document.getElementById('playerControlBar');
+    this.videoWrapper = document.getElementById('videoFrameWrapper');
+    this.playerCard = document.querySelector('.player-container-card');
+    if (!this.controlBar) return;
+
+    this.autoHideTimer = null;
+    this.isHoveringControls = false;
+
+    this.showControls = () => {
+      if (this.controlBar) {
+        this.controlBar.classList.remove('controls-hidden');
+      }
+    };
+
+    this.hideControls = () => {
+      if (this.controlBar && !this.isHoveringControls) {
+        this.controlBar.classList.add('controls-hidden');
+      }
+    };
+
+    this.resetAutoHideTimer = () => {
+      this.showControls();
+      if (this.autoHideTimer) clearTimeout(this.autoHideTimer);
+      if (this.isHoveringControls) return;
+
+      this.autoHideTimer = setTimeout(() => {
+        this.hideControls();
+      }, 3000);
+    };
+
+    // 1. User activity over video wrapper & card
+    if (this.videoWrapper) {
+      this.videoWrapper.addEventListener('mousemove', () => this.resetAutoHideTimer());
+      this.videoWrapper.addEventListener('mouseenter', () => this.resetAutoHideTimer());
+      this.videoWrapper.addEventListener('touchstart', () => this.resetAutoHideTimer(), { passive: true });
+      this.videoWrapper.addEventListener('touchmove', () => this.resetAutoHideTimer(), { passive: true });
+      this.videoWrapper.addEventListener('mouseleave', () => {
+        if (this.autoHideTimer) clearTimeout(this.autoHideTimer);
+        this.hideControls();
+      });
+    }
+
+    if (this.playerCard) {
+      this.playerCard.addEventListener('mousemove', () => this.resetAutoHideTimer());
+      this.playerCard.addEventListener('mouseleave', () => {
+        if (this.autoHideTimer) clearTimeout(this.autoHideTimer);
+        this.hideControls();
+      });
+    }
+
+    // 2. Hovering directly over the control bar pauses the timer
+    this.controlBar.addEventListener('mouseenter', () => {
+      this.isHoveringControls = true;
+      if (this.autoHideTimer) clearTimeout(this.autoHideTimer);
+      this.showControls();
+    });
+
+    this.controlBar.addEventListener('mouseleave', () => {
+      this.isHoveringControls = false;
+      this.resetAutoHideTimer();
+    });
+
+    // 3. Cursor tracking fallback across screen
+    document.addEventListener('mousemove', (e) => {
+      if (!this.videoWrapper) return;
+      const rect = this.videoWrapper.getBoundingClientRect();
+      const isInside = (
+        e.clientX >= rect.left &&
+        e.clientX <= rect.right &&
+        e.clientY >= rect.top &&
+        e.clientY <= rect.bottom
+      );
+
+      if (isInside) {
+        this.resetAutoHideTimer();
+      }
+    });
+
+    // Start initial 3-second auto-hide timer
+    this.resetAutoHideTimer();
+  }
+
   initScrubber() {
     const progressContainer = document.getElementById('ytProgressContainer');
     const progressPlayed = document.getElementById('ytProgressPlayed');
@@ -49,6 +133,7 @@ class VideoPlayerController {
       progressPlayed.style.width = `${pos * 100}%`;
       this.sendYTCommand('seekTo', [this.currentTime, true]);
       this.updateTimeDisplay();
+      if (this.resetAutoHideTimer) this.resetAutoHideTimer();
     };
 
     let isDragging = false;
@@ -130,6 +215,7 @@ class VideoPlayerController {
     if (volIcon) {
       volIcon.className = this.isMuted ? 'fa-solid fa-volume-xmark' : 'fa-solid fa-volume-high';
     }
+    if (this.resetAutoHideTimer) this.resetAutoHideTimer();
     window.showToast(this.isMuted ? "🔇 Muted" : "🔊 Unmuted", "info");
   }
 
@@ -141,6 +227,7 @@ class VideoPlayerController {
     if (speedText) {
       speedText.textContent = `${speed}x`;
     }
+    if (this.resetAutoHideTimer) this.resetAutoHideTimer();
     window.showToast(`⚡ Playback Speed: ${speed}x`, "info");
   }
 
@@ -154,6 +241,7 @@ class VideoPlayerController {
     } else {
       document.exitFullscreen();
     }
+    if (this.resetAutoHideTimer) this.resetAutoHideTimer();
   }
 
   sendYTCommand(func, args = []) {
@@ -178,6 +266,7 @@ class VideoPlayerController {
     this.isPlaying = !this.isPlaying;
     this.sendYTCommand(this.isPlaying ? 'playVideo' : 'pauseVideo');
     this.updatePlayPauseButton();
+    if (this.resetAutoHideTimer) this.resetAutoHideTimer();
     if (!this.isPlaying) {
       window.showToast("⏸ Paused", "info");
     } else {
@@ -189,6 +278,7 @@ class VideoPlayerController {
     this.currentTime = Math.max(0, Math.min(this.duration, this.currentTime + seconds));
     this.sendYTCommand('seekTo', [this.currentTime, true]);
     this.updateTimeDisplay();
+    if (this.resetAutoHideTimer) this.resetAutoHideTimer();
     window.showToast(seconds > 0 ? `⏩ +${seconds}s` : `⏪ ${seconds}s`, "info");
   }
 
@@ -347,6 +437,7 @@ class VideoPlayerController {
     }
 
     this.scrollToActivePlaylistItem();
+    if (this.resetAutoHideTimer) this.resetAutoHideTimer();
   }
 
   jumpToPlaylistLecture(lectureIndex) {

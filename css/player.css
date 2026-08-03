@@ -79,23 +79,37 @@
 }
 
 /* ==========================================================================
-   YOUTUBE-STYLE PREMIUM PLAYER CONTROL BAR
+   YOUTUBE-STYLE PREMIUM PLAYER CONTROL BAR (OVERLAYS BOTTOM OF VIDEO)
    ========================================================================== */
 .yt-style-control-bar {
-  padding: 0;
-  background: #18181b;
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  z-index: 10;
+  padding: 16px 0 0 0;
+  background: linear-gradient(to top, rgba(15, 23, 42, 0.96) 0%, rgba(15, 23, 42, 0.75) 65%, transparent 100%);
   display: flex;
   flex-direction: column;
-  position: relative;
   user-select: none;
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+  transition: opacity 0.28s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.28s ease, transform 0.28s ease;
+}
+
+.yt-style-control-bar.controls-hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translateY(8px);
 }
 
 /* Full-Width Interactive Timeline Scrubber */
 .yt-progress-container {
   width: 100%;
-  height: 6px;
-  background: rgba(255, 255, 255, 0.2);
+  height: 5px;
+  background: rgba(255, 255, 255, 0.25);
   cursor: pointer;
   position: relative;
   transition: height 0.15s ease;
