@@ -131,15 +131,10 @@
     font-size: 0.82rem;
   }
 
-  /* --- TRACK NAV: Show Clean Mobile Track Selector, Keep Chips in Sideview Drawer --- */
-  .track-nav-container {
-    padding: 0.5rem 0.85rem;
-  }
-  .mobile-track-selector-btn {
-    display: flex !important;
-  }
-  .track-chips {
-    display: none; /* Replaced by Sideview Plane on mobile to eliminate all overflow bugs */
+  /* --- SIDE NAV PILLS --- */
+  .side-nav-pill {
+    padding: 0.6rem 0.85rem !important;
+    font-size: 0.84rem !important;
   }
 
   /* --- TRACK BANNER --- */
@@ -275,17 +270,10 @@
   }
   .brand-title { font-size: 1rem; }
 
-  /* --- TRACK NAV: tighten --- */
-  .track-nav-container { padding: 0.4rem 0.65rem; }
-  .mobile-track-selector-btn {
-    padding: 0.65rem 0.85rem;
-  }
-  .mobile-track-active-name {
-    font-size: 0.86rem;
-  }
-  .mobile-change-pill {
-    padding: 0.2rem 0.5rem;
-    font-size: 0.72rem;
+  /* --- SIDE NAV PILLS: compact on small mobile --- */
+  .side-nav-pill {
+    padding: 0.55rem 0.75rem !important;
+    font-size: 0.8rem !important;
   }
 
   /* --- MAIN WORKSPACE --- */

@@ -62,85 +62,65 @@
       </div>
 
       <!-- Section: Course Tracks -->
+      <!-- Section: Course Tracks (Pills matching layout) -->
       <div class="side-nav-section">
         <div class="side-nav-section-header">
           <span><i class="fa-solid fa-layer-group"></i> LEARNING TRACKS</span>
           <span class="side-nav-section-count">7 Tracks</span>
         </div>
-        <div class="side-nav-tracks-list">
-          <button class="side-nav-track-item track-chip active" data-track="java">
-            <div class="side-nav-track-icon track-icon-java">
-              <i class="fa-brands fa-java"></i>
-            </div>
-            <div class="side-nav-track-details">
-              <div class="side-nav-track-title">Java Placement</div>
-              <div class="side-nav-track-sub">Core Java & OOPs</div>
+        <div class="side-nav-tracks-list side-nav-pills-list">
+          <button class="track-chip side-nav-pill active" data-track="java">
+            <div class="pill-left">
+              <i class="fa-brands fa-java" style="color: #fb923c;"></i>
+              <span class="pill-name">Java Placement</span>
             </div>
             <span class="track-badge">1</span>
           </button>
 
-          <button class="side-nav-track-item track-chip" data-track="cpp">
-            <div class="side-nav-track-icon track-icon-cpp">
-              <i class="fa-solid fa-code"></i>
-            </div>
-            <div class="side-nav-track-details">
-              <div class="side-nav-track-title">C++ & STL</div>
-              <div class="side-nav-track-sub">Modern C++ & STL</div>
+          <button class="track-chip side-nav-pill" data-track="cpp">
+            <div class="pill-left">
+              <i class="fa-solid fa-code" style="color: #38bdf8;"></i>
+              <span class="pill-name">C++ & STL</span>
             </div>
             <span class="track-badge">2</span>
           </button>
 
-          <button class="side-nav-track-item track-chip" data-track="c">
-            <div class="side-nav-track-icon track-icon-c">
-              <i class="fa-solid fa-c"></i>
-            </div>
-            <div class="side-nav-track-details">
-              <div class="side-nav-track-title">C Language</div>
-              <div class="side-nav-track-sub">Pointers & Memory</div>
+          <button class="track-chip side-nav-pill" data-track="c">
+            <div class="pill-left">
+              <i class="fa-solid fa-c" style="color: #22d3ee;"></i>
+              <span class="pill-name">C Language</span>
             </div>
             <span class="track-badge">2</span>
           </button>
 
-          <button class="side-nav-track-item track-chip" data-track="python">
-            <div class="side-nav-track-icon track-icon-python">
-              <i class="fa-brands fa-python"></i>
-            </div>
-            <div class="side-nav-track-details">
-              <div class="side-nav-track-title">Python Track</div>
-              <div class="side-nav-track-sub">Foundations to Scripting</div>
+          <button class="track-chip side-nav-pill" data-track="python">
+            <div class="pill-left">
+              <i class="fa-brands fa-python" style="color: #facc15;"></i>
+              <span class="pill-name">Python Track</span>
             </div>
             <span class="track-badge">2</span>
           </button>
 
-          <button class="side-nav-track-item track-chip" data-track="dsa">
-            <div class="side-nav-track-icon track-icon-dsa">
-              <i class="fa-solid fa-sitemap"></i>
-            </div>
-            <div class="side-nav-track-details">
-              <div class="side-nav-track-title">DSA & Roadmap</div>
-              <div class="side-nav-track-sub">Data Structures & Algo</div>
+          <button class="track-chip side-nav-pill" data-track="dsa">
+            <div class="pill-left">
+              <i class="fa-solid fa-sitemap" style="color: #c084fc;"></i>
+              <span class="pill-name">DSA & Roadmap</span>
             </div>
             <span class="track-badge">2</span>
           </button>
 
-          <button class="side-nav-track-item track-chip" data-track="aptitude">
-            <div class="side-nav-track-icon track-icon-aptitude">
-              <i class="fa-solid fa-brain"></i>
-            </div>
-            <div class="side-nav-track-details">
-              <div class="side-nav-track-title">Aptitude & Reasoning</div>
-              <div class="side-nav-track-sub">Quant, Logic & Verbal</div>
+          <button class="track-chip side-nav-pill" data-track="aptitude">
+            <div class="pill-left">
+              <i class="fa-solid fa-brain" style="color: #34d399;"></i>
+              <span class="pill-name">Aptitude</span>
             </div>
             <span class="track-badge">4</span>
           </button>
 
-          <button class="side-nav-track-item track-chip" data-track="custom">
-            <div class="side-nav-track-icon track-icon-custom">
-              <i class="fa-solid fa-bookmark"></i>
-            </div>
-            <div class="side-nav-track-details">
-              <div class="side-nav-track-title">My Playlists</div>
-              <div class="side-nav-track-sub">Custom Saved Links</div>
+          <button class="track-chip side-nav-pill" data-track="custom">
+            <div class="pill-left">
+              <i class="fa-solid fa-bookmark" style="color: #f472b6;"></i>
+              <span class="pill-name">My Playlists</span>
             </div>
             <span class="track-badge">12</span>
           </button>
@@ -184,9 +164,10 @@
        ======================================================================== -->
   <header class="app-header">
     <div class="header-left-group">
-      <button class="btn-side-nav-toggle" id="btnToggleSideNav" onclick="window.toggleSideNav()" aria-label="Toggle Learning Tracks Menu" title="Open Learning Tracks & Side Menu">
+      <button class="btn-side-nav-toggle" id="btnToggleSideNav" onclick="window.toggleSideNav()" aria-label="Toggle Learning Tracks Menu" title="Open Learning Tracks Side Panel">
         <i class="fa-solid fa-bars-staggered"></i>
-        <span class="btn-side-nav-label">Tracks</span>
+        <span class="btn-side-nav-label" id="headerActiveTrackLabel">Java Placement</span>
+        <i class="fa-solid fa-chevron-down" style="font-size: 0.65rem; opacity: 0.7; margin-left: 2px;"></i>
       </button>
 
       <div class="brand-wrapper">
@@ -216,68 +197,6 @@
       </button>
     </div>
   </header>
-
-  <!-- ========================================================================
-       SUBJECT TRACKS NAVIGATION BAR
-       ======================================================================== -->
-  <nav class="track-nav-container">
-    <!-- Mobile Quick-Switch Card (Visible on mobile screens) -->
-    <button class="mobile-track-selector-btn" id="mobileTrackSelectorBtn" onclick="window.toggleSideNav(true)" title="Tap to switch subject track">
-      <div class="mobile-track-selector-left">
-        <span class="mobile-track-label">ACTIVE TRACK</span>
-        <span class="mobile-track-active-name" id="mobileActiveTrackName">☕ Java Placement Track</span>
-      </div>
-      <div class="mobile-track-selector-right">
-        <span class="mobile-change-pill">Change Track</span>
-        <i class="fa-solid fa-chevron-right"></i>
-      </div>
-    </button>
-
-    <!-- Track Chips (Smooth scroll on desktop & tablet) -->
-    <div class="track-chips" id="trackChipsContainer">
-      <button class="track-chip active" data-track="java">
-        <i class="fa-brands fa-java"></i>
-        <span>Java Placement</span>
-        <span class="track-badge">1</span>
-      </button>
-
-      <button class="track-chip" data-track="cpp">
-        <i class="fa-solid fa-code"></i>
-        <span>C++ & STL</span>
-        <span class="track-badge">2</span>
-      </button>
-
-      <button class="track-chip" data-track="c">
-        <i class="fa-solid fa-c"></i>
-        <span>C Language</span>
-        <span class="track-badge">2</span>
-      </button>
-
-      <button class="track-chip" data-track="python">
-        <i class="fa-brands fa-python"></i>
-        <span>Python Track</span>
-        <span class="track-badge">2</span>
-      </button>
-
-      <button class="track-chip" data-track="dsa">
-        <i class="fa-solid fa-sitemap"></i>
-        <span>DSA & Roadmap</span>
-        <span class="track-badge">2</span>
-      </button>
-
-      <button class="track-chip" data-track="aptitude">
-        <i class="fa-solid fa-brain"></i>
-        <span>Aptitude</span>
-        <span class="track-badge">4</span>
-      </button>
-
-      <button class="track-chip" data-track="custom">
-        <i class="fa-solid fa-bookmark"></i>
-        <span>My Playlists</span>
-        <span class="track-badge">12</span>
-      </button>
-    </div>
-  </nav>
 
   <!-- ========================================================================
        MAIN WORKSPACE
@@ -387,6 +306,18 @@
       <!-- Playlist Syllabus Sidebar -->
       <aside class="playlist-sidebar-wrapper">
         <div class="playlist-header">
+          <!-- Active Track Banner Pill inside Side Panel -->
+          <div class="playlist-track-banner-pill" onclick="window.toggleSideNav(true)" title="Click to switch track in Side Panel">
+            <div class="track-pill-active-left">
+              <span class="track-pill-label">TRACK:</span>
+              <span class="track-pill-name" id="playlistSidebarTrackName">☕ Java Placement</span>
+            </div>
+            <span class="btn-change-track-pill">
+              <span>Switch</span>
+              <i class="fa-solid fa-chevron-right"></i>
+            </span>
+          </div>
+
           <div class="playlist-header-top">
             <div class="playlist-heading-group">
               <i class="fa-solid fa-list-check" style="color: var(--accent-primary);"></i>

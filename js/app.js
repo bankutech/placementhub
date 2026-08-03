@@ -275,7 +275,15 @@ window.renderTrackView = function(trackId) {
     }
   });
 
-  // 2. Update Side Navigation & Mobile Active Track Labels
+  // 2. Update Side Navigation, Header Toggle & Playlist Sidebar Labels
+  const headerActiveTrackLabel = document.getElementById('headerActiveTrackLabel');
+  if (headerActiveTrackLabel) {
+    headerActiveTrackLabel.textContent = track.name || trackId;
+  }
+  const playlistSidebarTrackName = document.getElementById('playlistSidebarTrackName');
+  if (playlistSidebarTrackName) {
+    playlistSidebarTrackName.textContent = track.name || trackId;
+  }
   const sideNavTrackName = document.getElementById('sideNavCurrentTrackName');
   if (sideNavTrackName) {
     sideNavTrackName.textContent = track.name || trackId;

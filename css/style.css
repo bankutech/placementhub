@@ -2056,3 +2056,161 @@ body, button, input, select, textarea {
   color: #c7d2fe;
 }
 
+/* ==========================================================================
+   SIDE NAV TRACK PILLS (Exact match to screenshot pills)
+   ========================================================================== */
+.side-nav-pills-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+}
+
+.side-nav-pill {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  width: 100% !important;
+  padding: 0.65rem 1rem !important;
+  border-radius: var(--radius-full) !important;
+  background: rgba(18, 26, 45, 0.8) !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  color: var(--text-secondary) !important;
+  font-size: 0.86rem !important;
+  font-weight: 600 !important;
+  cursor: pointer;
+  transition: var(--transition) !important;
+  text-align: left;
+  user-select: none;
+}
+
+.side-nav-pill .pill-left {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.side-nav-pill .pill-left i {
+  font-size: 0.95rem;
+  width: 18px;
+  text-align: center;
+}
+
+.side-nav-pill .pill-name {
+  color: #f8fafc;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+
+.side-nav-pill .track-badge {
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: var(--radius-full);
+  background: rgba(255, 255, 255, 0.12);
+  color: #cbd5e1;
+  min-width: 22px;
+  text-align: center;
+}
+
+.side-nav-pill:hover {
+  background: rgba(26, 38, 66, 0.9) !important;
+  border-color: rgba(255, 255, 255, 0.25) !important;
+  transform: translateX(3px) !important;
+}
+
+/* Active Glow States for side-nav-pill */
+.side-nav-pill.active {
+  color: #fff !important;
+  font-weight: 700 !important;
+}
+
+.side-nav-pill.active[data-track="java"] {
+  background: rgba(249, 115, 22, 0.18) !important;
+  border-color: rgba(249, 115, 22, 0.65) !important;
+  box-shadow: 0 0 16px rgba(249, 115, 22, 0.25) !important;
+}
+.side-nav-pill.active[data-track="cpp"] {
+  background: rgba(2, 132, 199, 0.18) !important;
+  border-color: rgba(2, 132, 199, 0.65) !important;
+  box-shadow: 0 0 16px rgba(2, 132, 199, 0.25) !important;
+}
+.side-nav-pill.active[data-track="c"] {
+  background: rgba(34, 211, 238, 0.15) !important;
+  border-color: rgba(34, 211, 238, 0.6) !important;
+  box-shadow: 0 0 16px rgba(34, 211, 238, 0.22) !important;
+}
+.side-nav-pill.active[data-track="python"] {
+  background: rgba(234, 179, 8, 0.15) !important;
+  border-color: rgba(234, 179, 8, 0.6) !important;
+  box-shadow: 0 0 16px rgba(234, 179, 8, 0.22) !important;
+}
+.side-nav-pill.active[data-track="dsa"] {
+  background: rgba(168, 85, 247, 0.18) !important;
+  border-color: rgba(168, 85, 247, 0.65) !important;
+  box-shadow: 0 0 16px rgba(168, 85, 247, 0.25) !important;
+}
+.side-nav-pill.active[data-track="aptitude"] {
+  background: rgba(16, 185, 129, 0.15) !important;
+  border-color: rgba(16, 185, 129, 0.6) !important;
+  box-shadow: 0 0 16px rgba(16, 185, 129, 0.22) !important;
+}
+.side-nav-pill.active[data-track="custom"] {
+  background: rgba(236, 72, 153, 0.15) !important;
+  border-color: rgba(236, 72, 153, 0.6) !important;
+  box-shadow: 0 0 16px rgba(236, 72, 153, 0.22) !important;
+}
+
+/* Playlist sidebar track header pill */
+.playlist-track-banner-pill {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.55rem 0.85rem;
+  border-radius: var(--radius-md);
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.12), rgba(6, 182, 212, 0.08));
+  border: 1px solid rgba(99, 102, 241, 0.25);
+  cursor: pointer;
+  transition: var(--transition);
+  margin-bottom: 0.65rem;
+}
+
+.playlist-track-banner-pill:hover {
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.22), rgba(6, 182, 212, 0.15));
+  border-color: var(--accent-primary);
+  box-shadow: 0 0 16px var(--glow-primary);
+  transform: translateY(-1px);
+}
+
+.track-pill-active-left {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.track-pill-label {
+  font-size: 0.64rem;
+  font-weight: 800;
+  color: var(--accent-secondary);
+  letter-spacing: 0.5px;
+}
+
+.track-pill-name {
+  font-size: 0.84rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+.btn-change-track-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.2rem 0.55rem;
+  border-radius: var(--radius-full);
+  background: rgba(99, 102, 241, 0.25);
+  border: 1px solid rgba(99, 102, 241, 0.4);
+  color: #c7d2fe;
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+
