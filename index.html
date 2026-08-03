@@ -106,27 +106,6 @@
        ======================================================================== -->
   <main class="main-workspace">
 
-    <!-- Active Track Banner -->
-    <section class="track-banner track-java" id="trackBanner">
-      <div class="track-info-left">
-        <h2 class="track-heading" id="trackHeading">
-          <i class="fa-brands fa-java"></i> Java Placement Track
-        </h2>
-        <p class="track-desc" id="trackDesc">
-          Complete Java masterclass for software engineering & campus placement interviews.
-        </p>
-      </div>
-
-
-    </section>
-
-    <!-- Mobile: toggle Playlist sidebar -->
-    <div class="mobile-playlist-toggle" id="mobilePlaylistToggleBar">
-      <button onclick="document.getElementById('learningStageGrid').querySelector('.playlist-sidebar-wrapper').classList.toggle('mobile-sidebar-open')" style="background:none;border:none;color:var(--accent-secondary);font-size:0.85rem;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:0.5rem;padding:0.5rem 0;">
-        <i class="fa-solid fa-list-check"></i> Show / Hide Course Syllabus
-      </button>
-    </div>
-
     <!-- Learning Stage: Video Player + Playlist Syllabus Sidebar -->
     <section class="learning-stage-grid" id="learningStageGrid">
       
@@ -221,16 +200,9 @@
         <!-- Video Metadata Info -->
         <div class="video-meta-block">
           <div class="video-title-row">
-            <h1 class="current-video-title" id="currentVideoTitle">Loading lecture...</h1>
-            <div class="current-video-badges">
-              <span class="video-badge badge-track" id="videoTrackBadge">JAVA</span>
-              <span class="video-badge badge-level" id="videoLevelBadge">Beginner</span>
-              <span class="video-badge" id="videoCategoryBadge">Core Foundation</span>
-            </div>
+            <h1 class="current-video-title" id="currentVideoTitle">Select a lecture to begin</h1>
           </div>
-          <p class="current-video-desc" id="currentVideoDesc">
-            Lecture description and placement focus highlights will appear here.
-          </p>
+          <p class="current-video-desc" id="currentVideoDesc"></p>
         </div>
       </div>
 
@@ -296,15 +268,14 @@
                 </div>
                 <div class="note-timestamp-controls">
                   <span style="font-size: 0.78rem; color: var(--text-muted);"><i class="fa-regular fa-clock"></i> Timestamp:</span>
-                  <input type="text" id="noteTimestampInput" class="note-ts-input" placeholder="e.g. 12:45" />
-                  <button type="button" class="btn-stamp" onclick="document.getElementById('noteTimestampInput').value = '05:00'" title="Quick 5m stamp">+05:00</button>
-                  <button type="button" class="btn-stamp" onclick="document.getElementById('noteTimestampInput').value = '15:00'" title="Quick 15m stamp">+15:00</button>
+                  <input type="text" id="noteTimestampInput" class="note-ts-input" placeholder="e.g. 12:45" disabled />
+                  <button type="button" class="btn-stamp" id="btnStampCurrentTime" title="Stamp current video time">📍 Stamp Time</button>
                 </div>
               </div>
-              <textarea id="noteContentInput" class="note-textarea" placeholder="Type your placement takeaways, syntax tricks, time complexity or code reminders... (Press Ctrl+Enter to save)"></textarea>
+              <textarea id="noteContentInput" class="note-textarea" placeholder="Type your placement takeaways, syntax tricks, time complexity or code reminders... (Press Ctrl+Enter to save)" disabled></textarea>
               <div class="note-editor-footer">
-                <div style="font-size: 0.75rem; color: var(--text-muted);">
-                  <i class="fa-solid fa-circle-info"></i> Auto-tagged with current video title and subject track.
+                <div style="font-size: 0.75rem; color: var(--text-muted);" id="noteEditorHint">
+                  <i class="fa-solid fa-circle-info"></i> Select a lecture first to start capturing notes.
                 </div>
                 <div style="display: flex; gap: 0.5rem;">
                   <button type="button" class="btn btn-secondary btn-sm" onclick="window.notesManager.exportNotes()" title="Export all notes as Markdown file">
@@ -313,7 +284,7 @@
                   <button type="button" class="btn btn-secondary btn-sm" onclick="window.notesManager.copyAllNotes()" title="Copy all notes to clipboard">
                     <i class="fa-regular fa-copy"></i> Copy All
                   </button>
-                  <button type="button" class="btn btn-primary btn-sm" id="btnSaveNote">
+                  <button type="button" class="btn btn-primary btn-sm" id="btnSaveNote" disabled>
                     <i class="fa-solid fa-floppy-disk"></i> Save Note
                   </button>
                 </div>
@@ -398,10 +369,10 @@
        ======================================================================== -->
   <footer class="app-footer">
     <div>
-      <strong>PlacementHub</strong> • Master Campus Placements with Zero-Tab Friction
+      <strong>PlacementHub</strong> &copy; 2025 &nbsp;•&nbsp; Built for campus placement excellence
     </div>
     <div class="footer-links">
-      <span>Keyboard shortcuts: <kbd style="background: var(--bg-tertiary); padding: 0.15rem 0.4rem; border-radius: 4px; border: 1px solid var(--border-subtle);">N</kbd> Next • <kbd style="background: var(--bg-tertiary); padding: 0.15rem 0.4rem; border-radius: 4px; border: 1px solid var(--border-subtle);">P</kbd> Prev • <kbd style="background: var(--bg-tertiary); padding: 0.15rem 0.4rem; border-radius: 4px; border: 1px solid var(--border-subtle);">M</kbd> Mark Completed • <kbd style="background: var(--bg-tertiary); padding: 0.15rem 0.4rem; border-radius: 4px; border: 1px solid var(--border-subtle);">T</kbd> Theater</span>
+      <span style="font-size:0.75rem; color: var(--text-muted);">Shortcuts: <kbd style="background: var(--bg-tertiary); padding: 0.15rem 0.4rem; border-radius: 4px; border: 1px solid var(--border-subtle);">N</kbd> Next &nbsp;<kbd style="background: var(--bg-tertiary); padding: 0.15rem 0.4rem; border-radius: 4px; border: 1px solid var(--border-subtle);">P</kbd> Prev &nbsp;<kbd style="background: var(--bg-tertiary); padding: 0.15rem 0.4rem; border-radius: 4px; border: 1px solid var(--border-subtle);">M</kbd> Mark &nbsp;<kbd style="background: var(--bg-tertiary); padding: 0.15rem 0.4rem; border-radius: 4px; border: 1px solid var(--border-subtle);">T</kbd> Theater</span>
     </div>
   </footer>
 

@@ -1,6 +1,16 @@
 /* ==========================================================================
    VIDEO PLAYER CONTROLLER - IN-PAGE SEAMLESS EMBED (NO TAB SWITCHING)
+   Uses official YouTube IFrame Player API for real play/pause/seek control.
    ========================================================================== */
+
+/* ---- Load YouTube IFrame API script once ---- */
+(function() {
+  if (document.getElementById('yt-iframe-api-script')) return;
+  const tag = document.createElement('script');
+  tag.id = 'yt-iframe-api-script';
+  tag.src = 'https://www.youtube.com/iframe_api';
+  document.head.appendChild(tag);
+})();
 
 class VideoPlayerController {
   constructor() {
@@ -8,8 +18,14 @@ class VideoPlayerController {
     this.currentVideoIndex = 0;
     this.isAutoplayEnabled = true;
     this.isTheaterMode = false;
-    this.isPlaying = true;
+    this.isPlaying = false;
     this.watchedVideos = new Set();
+
+    // YouTube IFrame API player instance
+    this.ytPlayer = null;
+    this.ytPlayerReady = false;
+    this.pendingEmbedUrl = null;
+    this.progressPollInterval = null;
 
     // DOM Elements
     this.videoIframe = document.getElementById('videoIframe');
@@ -29,11 +45,117 @@ class VideoPlayerController {
     this.currentPlaylistId = null;
 
     this.loadWatchedState();
+    this.initYouTubeAPI();
     this.initScrubber();
     this.initControls();
     this.initAutoHideControls();
     this.initClickSurface();
-    this.startProgressTicker();
+  }
+
+  // --------------------------------------------------------------------------
+  // YouTube IFrame Player API — Real Integration
+  // --------------------------------------------------------------------------
+  initYouTubeAPI() {
+    // Called by YouTube API when ready — or we poll until it is
+    const tryInit = () => {
+      if (window.YT && window.YT.Player) {
+        this._createYTPlayer();
+      } else {
+        setTimeout(tryInit, 200);
+      }
+    };
+
+    if (window.YT && window.YT.Player) {
+      this._createYTPlayer();
+    } else {
+      // YT API calls onYouTubeIframeAPIReady when loaded
+      const existing = window.onYouTubeIframeAPIReady;
+      window.onYouTubeIframeAPIReady = () => {
+        if (existing) existing();
+        this._createYTPlayer();
+      };
+      // Fallback poll in case callback already fired
+      setTimeout(tryInit, 1500);
+    }
+  }
+
+  _createYTPlayer() {
+    if (this.ytPlayer) return; // already created
+    const iframe = document.getElementById('videoIframe');
+    if (!iframe) return;
+
+    this.ytPlayer = new window.YT.Player('videoIframe', {
+      events: {
+        onReady: (e) => {
+          this.ytPlayerReady = true;
+          if (this.pendingEmbedUrl) {
+            this._loadUrlIntoPlayer(this.pendingEmbedUrl);
+            this.pendingEmbedUrl = null;
+          }
+          this._startProgressPoll();
+        },
+        onStateChange: (e) => {
+          const S = window.YT.PlayerState;
+          if (e.data === S.PLAYING) {
+            this.isPlaying = true;
+          } else if (e.data === S.PAUSED || e.data === S.ENDED || e.data === S.BUFFERING) {
+            this.isPlaying = (e.data === S.BUFFERING); // consider buffering as playing
+          }
+          this.updatePlayPauseButton();
+        }
+      }
+    });
+  }
+
+  _loadUrlIntoPlayer(embedUrl) {
+    if (this.ytPlayer && this.ytPlayerReady && typeof this.ytPlayer.loadVideoByUrl === 'function') {
+      // Use cueVideoById / loadVideoById for cleaner API usage
+      // Extract video/playlist from embedUrl
+      try {
+        const url = new URL(embedUrl);
+        const list = url.searchParams.get('list');
+        const videoId = url.pathname.split('/').filter(Boolean).pop();
+
+        if (videoId === 'videoseries' && list) {
+          const index = parseInt(url.searchParams.get('index') || '0', 10);
+          this.ytPlayer.loadPlaylist({ listType: 'playlist', list: list, index: index });
+        } else if (videoId && videoId !== 'videoseries') {
+          if (list) {
+            this.ytPlayer.loadVideoById({ videoId: videoId, playerVars: { list: list } });
+          } else {
+            this.ytPlayer.loadVideoById(videoId);
+          }
+        }
+        this.isPlaying = true;
+        this.updatePlayPauseButton();
+      } catch (err) {
+        // Fallback: just set src on the iframe element
+        const frame = document.getElementById('videoIframe');
+        if (frame) frame.src = embedUrl;
+      }
+    } else {
+      const frame = document.getElementById('videoIframe');
+      if (frame) frame.src = embedUrl;
+    }
+  }
+
+  _startProgressPoll() {
+    if (this.progressPollInterval) clearInterval(this.progressPollInterval);
+    this.progressPollInterval = setInterval(() => {
+      if (!this.ytPlayer || !this.ytPlayerReady) return;
+      try {
+        const duration = this.ytPlayer.getDuration ? this.ytPlayer.getDuration() : 0;
+        const current = this.ytPlayer.getCurrentTime ? this.ytPlayer.getCurrentTime() : 0;
+        if (duration > 0) {
+          this.duration = duration;
+          this.currentTime = current;
+          const pct = (current / duration) * 100;
+          const bar = document.getElementById('ytProgressPlayed');
+          if (bar) bar.style.width = `${pct}%`;
+          this.updateTimeDisplay();
+        }
+      } catch (e) { /* player not ready */ }
+    }, 500);
   }
 
   // --------------------------------------------------------------------------
@@ -210,20 +332,7 @@ class VideoPlayerController {
     }
   }
 
-  startProgressTicker() {
-    if (this.tickerInterval) clearInterval(this.tickerInterval);
-    this.tickerInterval = setInterval(() => {
-      if (this.isPlaying && this.currentTime < this.duration) {
-        this.currentTime += 1;
-        const pct = (this.currentTime / this.duration) * 100;
-        const progressPlayed = document.getElementById('ytProgressPlayed');
-        if (progressPlayed) {
-          progressPlayed.style.width = `${pct}%`;
-        }
-        this.updateTimeDisplay();
-      }
-    }, 1000);
-  }
+  // Ticker removed — real time polling is done by _startProgressPoll() via YT API
 
   updateTimeDisplay() {
     const curElem = document.getElementById('ytCurrentTime');
@@ -240,7 +349,11 @@ class VideoPlayerController {
 
   toggleMute() {
     this.isMuted = !this.isMuted;
-    this.sendYTCommand(this.isMuted ? 'mute' : 'unMute');
+    try {
+      if (this.ytPlayer && this.ytPlayerReady) {
+        this.isMuted ? this.ytPlayer.mute() : this.ytPlayer.unMute();
+      }
+    } catch (e) {}
     const volIcon = document.getElementById('volumeIcon');
     if (volIcon) {
       volIcon.className = this.isMuted ? 'fa-solid fa-volume-xmark' : 'fa-solid fa-volume-high';
@@ -252,11 +365,13 @@ class VideoPlayerController {
   cycleSpeed() {
     this.speedIndex = (this.speedIndex + 1) % this.playbackSpeeds.length;
     const speed = this.playbackSpeeds[this.speedIndex];
-    this.sendYTCommand('setPlaybackRate', [speed]);
+    try {
+      if (this.ytPlayer && this.ytPlayerReady) {
+        this.ytPlayer.setPlaybackRate(speed);
+      }
+    } catch (e) {}
     const speedText = document.getElementById('playbackSpeedText');
-    if (speedText) {
-      speedText.textContent = `${speed}x`;
-    }
+    if (speedText) speedText.textContent = `${speed}x`;
     if (this.resetAutoHideTimer) this.resetAutoHideTimer();
     window.showToast(`⚡ Playback Speed: ${speed}x`, "info");
   }
@@ -265,49 +380,81 @@ class VideoPlayerController {
     const wrapper = document.getElementById('videoFrameWrapper');
     if (!wrapper) return;
     if (!document.fullscreenElement) {
-      wrapper.requestFullscreen().catch(err => {
-        console.warn("Fullscreen request error:", err);
-      });
+      wrapper.requestFullscreen().catch(err => console.warn("Fullscreen error:", err));
     } else {
       document.exitFullscreen();
     }
     if (this.resetAutoHideTimer) this.resetAutoHideTimer();
   }
 
+  // Legacy postMessage fallback — used only when YT API unavailable
   sendYTCommand(func, args = []) {
-    if (this.videoIframe && this.videoIframe.contentWindow) {
-      try {
-        this.videoIframe.contentWindow.postMessage(JSON.stringify({
-          event: 'command',
-          func: func,
-          args: args
-        }), '*');
-      } catch (e) {
-        console.warn("Could not postMessage to YouTube player", e);
+    try {
+      const p = this.ytPlayer;
+      if (p && this.ytPlayerReady) {
+        if (func === 'playVideo')  { p.playVideo();  return; }
+        if (func === 'pauseVideo') { p.pauseVideo(); return; }
+        if (func === 'seekTo')     { p.seekTo(args[0], args[1] !== false); return; }
+        if (func === 'mute')       { p.mute();       return; }
+        if (func === 'unMute')     { p.unMute();     return; }
+        if (func === 'setPlaybackRate') { p.setPlaybackRate(args[0]); return; }
       }
+    } catch (e) {}
+    // Fallback postMessage
+    const frame = document.getElementById('videoIframe');
+    if (frame && frame.contentWindow) {
+      try {
+        frame.contentWindow.postMessage(JSON.stringify({ event: 'command', func, args }), '*');
+      } catch (e) {}
     }
   }
 
   getEmbedParams() {
-    return 'enablejsapi=1&rel=0&iv_load_policy=3&modestbranding=1&controls=0&playsinline=1';
+    return 'enablejsapi=1&rel=0&iv_load_policy=3&modestbranding=1&controls=0&playsinline=1&origin=' + encodeURIComponent(window.location.origin);
   }
 
   togglePlay() {
-    this.isPlaying = !this.isPlaying;
-    this.sendYTCommand(this.isPlaying ? 'playVideo' : 'pauseVideo');
+    try {
+      if (this.ytPlayer && this.ytPlayerReady) {
+        const state = this.ytPlayer.getPlayerState ? this.ytPlayer.getPlayerState() : -1;
+        const S = window.YT && window.YT.PlayerState ? window.YT.PlayerState : {};
+        if (state === S.PLAYING) {
+          this.ytPlayer.pauseVideo();
+          this.isPlaying = false;
+        } else {
+          this.ytPlayer.playVideo();
+          this.isPlaying = true;
+        }
+      } else {
+        this.isPlaying = !this.isPlaying;
+        this.sendYTCommand(this.isPlaying ? 'playVideo' : 'pauseVideo');
+      }
+    } catch (e) {
+      this.isPlaying = !this.isPlaying;
+      this.sendYTCommand(this.isPlaying ? 'playVideo' : 'pauseVideo');
+    }
     this.flashIndicator(this.isPlaying ? 'fa-play' : 'fa-pause');
     this.updatePlayPauseButton();
     if (this.resetAutoHideTimer) this.resetAutoHideTimer();
-    if (!this.isPlaying) {
-      window.showToast("⏸ Paused", "info");
-    } else {
-      window.showToast("▶ Resumed", "info");
-    }
+    window.showToast(this.isPlaying ? "▶ Resumed" : "⏸ Paused", "info");
   }
 
   seekRelative(seconds) {
-    this.currentTime = Math.max(0, Math.min(this.duration, this.currentTime + seconds));
-    this.sendYTCommand('seekTo', [this.currentTime, true]);
+    try {
+      if (this.ytPlayer && this.ytPlayerReady && this.ytPlayer.getCurrentTime) {
+        const cur = this.ytPlayer.getCurrentTime();
+        const dur = this.ytPlayer.getDuration() || 0;
+        const target = Math.max(0, Math.min(dur, cur + seconds));
+        this.ytPlayer.seekTo(target, true);
+        this.currentTime = target;
+      } else {
+        this.currentTime = Math.max(0, Math.min(this.duration || 0, (this.currentTime || 0) + seconds));
+        this.sendYTCommand('seekTo', [this.currentTime, true]);
+      }
+    } catch (e) {
+      this.currentTime = Math.max(0, Math.min(this.duration || 0, (this.currentTime || 0) + seconds));
+      this.sendYTCommand('seekTo', [this.currentTime, true]);
+    }
     this.flashIndicator(seconds > 0 ? 'fa-forward' : 'fa-backward');
     this.updateTimeDisplay();
     if (this.resetAutoHideTimer) this.resetAutoHideTimer();
@@ -432,15 +579,42 @@ class VideoPlayerController {
 
     // Show iframe, hide placeholder
     if (this.videoPlaceholder) this.videoPlaceholder.style.display = 'none';
-    if (this.videoIframe) {
-      // Reload by blanking first so navigating to same playlist re-triggers load
-      this.videoIframe.src = '';
-      this.videoIframe.src = embedUrl;
+
+    // Use real YT API if ready, otherwise store as pending for when API loads
+    if (this.ytPlayer && this.ytPlayerReady) {
+      this._loadUrlIntoPlayer(embedUrl);
+    } else if (this.ytPlayer) {
+      // Player created but not yet ready — store and load on onReady
+      this.pendingEmbedUrl = embedUrl;
+    } else {
+      // API not yet loaded at all — set iframe src directly as fallback
+      const frame = document.getElementById('videoIframe');
+      if (frame) { frame.src = ''; frame.src = embedUrl; }
+      this.pendingEmbedUrl = embedUrl;
     }
+
+    // Reset progress display while new video loads
+    this.currentTime = 0;
+    this.duration = 0;
+    const bar = document.getElementById('ytProgressPlayed');
+    if (bar) bar.style.width = '0%';
+    this.updateTimeDisplay();
 
     // Reset playing state
     this.isPlaying = true;
     this.updatePlayPauseButton();
+
+    // Enable note editor now that a video is loaded
+    const noteEditor = document.getElementById('noteContentInput');
+    const noteTimestamp = document.getElementById('noteTimestampInput');
+    const noteSave = document.getElementById('btnSaveNote');
+    const noteHint = document.getElementById('noteEditorHint');
+    if (noteEditor) noteEditor.disabled = false;
+    if (noteTimestamp) noteTimestamp.disabled = false;
+    if (noteSave) noteSave.disabled = false;
+    if (noteHint) noteHint.innerHTML = '<i class="fa-solid fa-circle-info"></i> Auto-tagged with current video title and subject track.';
+    const noteEditorCard = document.querySelector('.note-editor-card');
+    if (noteEditorCard) noteEditorCard.classList.remove('no-video-loaded');
 
     // Keep "Open in YouTube" button wired to correct watch URL
     const btnOpenYouTube = document.getElementById('btnOpenYouTube');

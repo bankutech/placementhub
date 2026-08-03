@@ -230,16 +230,7 @@ window.renderTrackView = function(trackId) {
 
   window.appState.currentTrackId = trackId;
 
-  // 1. Update Track Banner
-  const banner = document.getElementById('trackBanner');
-  const heading = document.getElementById('trackHeading');
-  const desc = document.getElementById('trackDesc');
-
-  if (banner) banner.className = `track-banner track-${trackId}`;
-  if (heading) heading.innerHTML = `<i class="${track.icon}"></i> ${track.name}`;
-  if (desc) desc.textContent = track.description;
-
-  // 2. Update Track Chips Active State
+  // 1. Update Track Chips Active State
   const chips = document.querySelectorAll('.track-chip');
   chips.forEach(chip => {
     if (chip.getAttribute('data-track') === trackId) {
@@ -249,10 +240,10 @@ window.renderTrackView = function(trackId) {
     }
   });
 
-  // 3. Render Playlist Sidebar
+  // 2. Render Playlist Sidebar
   window.renderPlaylistSidebar(trackId);
 
-  // 4. Render Roadmap Timeline in Overview Pane
+  // 3. Render Roadmap Timeline in Overview Pane
   const timeline = document.getElementById('roadmapTimeline');
   if (timeline) {
     timeline.innerHTML = (track.roadmap || []).map(step => `
@@ -263,14 +254,14 @@ window.renderTrackView = function(trackId) {
     `).join('');
   }
 
-  // 5. Load first video in track if available
+  // 4. Load first video in track if available
   if (track.videos && track.videos.length > 0) {
     window.playerController.loadVideo(track.videos[0], trackId, 0);
   } else {
     window.playerController.showPlaceholder("No Videos Available", "Click '+ Add Video / Playlist' to add your custom YouTube learning links.");
   }
 
-  // 6. Refresh Notes Notebook for current track/video
+  // 5. Refresh Notes Notebook for current track/video
   if (window.notesManager) {
     window.notesManager.renderNotes();
   }
@@ -309,6 +300,12 @@ window.updateTrackChips = function() {
       badge.textContent = `${tracks[tKey].videos ? tracks[tKey].videos.length : 0}`;
     }
   });
+  // Update My Playlists badge with real count from localStorage
+  const customBadge = document.querySelector('.track-chip[data-track="custom"] .track-badge');
+  if (customBadge) {
+    const customVideos = (tracks['custom'] && tracks['custom'].videos) ? tracks['custom'].videos.length : 0;
+    customBadge.textContent = customVideos;
+  }
 };
 
 // ----------------------------------------------------------------------------
@@ -410,6 +407,29 @@ document.addEventListener('DOMContentLoaded', () => {
   const btnSaveNote = document.getElementById('btnSaveNote');
   const noteContentInput = document.getElementById('noteContentInput');
   const noteTimestampInput = document.getElementById('noteTimestampInput');
+  const btnStampTime = document.getElementById('btnStampCurrentTime');
+
+  // Wire up "Stamp Current Time" button to read real YT playback time
+  if (btnStampTime) {
+    btnStampTime.addEventListener('click', () => {
+      try {
+        const pc = window.playerController;
+        let ts = '0:00';
+        if (pc && pc.ytPlayer && pc.ytPlayerReady && pc.ytPlayer.getCurrentTime) {
+          const secs = Math.floor(pc.ytPlayer.getCurrentTime());
+          const m = Math.floor(secs / 60);
+          const s = secs % 60;
+          ts = `${m}:${s < 10 ? '0' : ''}${s}`;
+        } else if (pc && pc.currentTime) {
+          const secs = Math.floor(pc.currentTime);
+          const m = Math.floor(secs / 60);
+          const s = secs % 60;
+          ts = `${m}:${s < 10 ? '0' : ''}${s}`;
+        }
+        if (noteTimestampInput) noteTimestampInput.value = ts;
+      } catch (e) {}
+    });
+  }
 
   const handleSaveNote = () => {
     const text = noteContentInput ? noteContentInput.value : '';
