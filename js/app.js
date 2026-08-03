@@ -511,13 +511,8 @@ document.addEventListener('DOMContentLoaded', () => {
   }, 400);
 
   const headerSearchInput = document.getElementById('headerSearchInput');
-  const headerSearchInputMobile = document.getElementById('headerSearchInputMobile');
-  
   if (headerSearchInput) {
     headerSearchInput.addEventListener('input', (e) => handleGlobalSearch(e.target.value));
-  }
-  if (headerSearchInputMobile) {
-    headerSearchInputMobile.addEventListener('input', (e) => handleGlobalSearch(e.target.value));
   }
 
   // 9. Add Custom Video Form Submit

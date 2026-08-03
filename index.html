@@ -41,13 +41,9 @@
     </div>
 
     <div class="header-actions">
-      <!-- Mobile search icon (visible only on small screens) -->
       <button class="pomo-header-pill" id="btnHeaderPomodoro" onclick="window.openModal('pomodoroModal')" title="Pomodoro Study Sprint Timer">
         <i class="fa-solid fa-fire" style="color: #ef4444;"></i>
         <span id="headerPomodoroDisplay">25:00</span>
-      </button>
-      <button class="btn-header btn-mobile-search" id="btnMobileSearch" title="Search" onclick="document.getElementById('mobileSearchBar').classList.toggle('active')" style="display:none;">
-        <i class="fa-solid fa-magnifying-glass"></i>
       </button>
       <button class="btn-header btn-accent" id="btnHeaderAddVideo" onclick="window.openAddVideoModal()">
         <i class="fa-solid fa-plus"></i>
@@ -102,12 +98,6 @@
         <span>My Playlists</span>
         <span class="track-badge">12</span>
       </button>
-    </div>
-
-    <!-- Mobile search bar (hidden by default, toggled via button) -->
-    <div id="mobileSearchBar" class="mobile-search-bar">
-      <i class="fa-solid fa-magnifying-glass"></i>
-      <input type="text" id="headerSearchInputMobile" placeholder="Search lectures..." />
     </div>
   </nav>
 
