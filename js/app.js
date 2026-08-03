@@ -685,33 +685,29 @@ window.loadPlaylistItems = async function(playlistId, trackId) {
 window.selectPlaylistLecture = function(parentId, playlistId, index, videoIdReal, title) {
   window.playerController.currentPlaylistLectureIndex = index;
   
+  const pc = window.playerController;
   const BASE = 'https://www.youtube.com/embed';
-  const params = window.playerController.getEmbedParams();
-  let embedUrl = "";
+  const params = pc.getEmbedParams();
+  let embedUrl = '';
   
   if (videoIdReal && !videoIdReal.startsWith('fallback-')) {
-    // Play the exact unique video, loading the playlist queue next to it
     embedUrl = `${BASE}/${videoIdReal}?list=${playlistId}&${params}&autoplay=1`;
   } else {
-    // Fallback if no API key or real ID: use index with cache buster
-    embedUrl = `${BASE}/videoseries?list=${playlistId}&${params}&index=${index}&autoplay=1&t=${Date.now()}`;
+    embedUrl = `${BASE}/videoseries?list=${playlistId}&${params}&index=${index}&autoplay=1`;
   }
-  
-  if (window.playerController.videoIframe) {
-    window.playerController.videoIframe.src = '';
-    window.playerController.videoIframe.src = embedUrl;
-  }
-  
 
-  if (window.playerController.videoTitleElem) {
-    window.playerController.videoTitleElem.textContent = title;
+  // Use real YT API if available, fall back to iframe src
+  pc._loadUrlIntoPlayer(embedUrl);
+
+  if (pc.videoTitleElem) {
+    pc.videoTitleElem.textContent = title || `Lecture #${index + 1}`;
   }
   
-  window.showToast(`Playing Lecture #${index + 1}: ${(title || '').substring(0, 30)}...`, 'info');
+  window.showToast(`▶ Lecture #${index + 1}: ${(title || '').substring(0, 30)}`, 'info');
   
-  // Refresh sidebar to update highlight
   window.renderPlaylistSidebar(window.appState.currentTrackId);
-  if (window.playerController && typeof window.playerController.scrollToActivePlaylistItem === 'function') {
-    window.playerController.scrollToActivePlaylistItem();
+  if (typeof pc.scrollToActivePlaylistItem === 'function') {
+    pc.scrollToActivePlaylistItem();
   }
 };
+

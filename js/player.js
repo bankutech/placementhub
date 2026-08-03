@@ -98,9 +98,10 @@ class VideoPlayerController {
           const S = window.YT.PlayerState;
           if (e.data === S.PLAYING) {
             this.isPlaying = true;
-          } else if (e.data === S.PAUSED || e.data === S.ENDED || e.data === S.BUFFERING) {
-            this.isPlaying = (e.data === S.BUFFERING); // consider buffering as playing
+          } else if (e.data === S.PAUSED || e.data === S.ENDED) {
+            this.isPlaying = false;
           }
+          // BUFFERING (-1, 3) — keep current state, don't change isPlaying
           this.updatePlayPauseButton();
         }
       }
@@ -108,9 +109,8 @@ class VideoPlayerController {
   }
 
   _loadUrlIntoPlayer(embedUrl) {
-    if (this.ytPlayer && this.ytPlayerReady && typeof this.ytPlayer.loadVideoByUrl === 'function') {
-      // Use cueVideoById / loadVideoById for cleaner API usage
-      // Extract video/playlist from embedUrl
+    // Fix: check for loadVideoById (real API method), not loadVideoByUrl (doesn't exist)
+    if (this.ytPlayer && this.ytPlayerReady && typeof this.ytPlayer.loadVideoById === 'function') {
       try {
         const url = new URL(embedUrl);
         const list = url.searchParams.get('list');
@@ -120,22 +120,23 @@ class VideoPlayerController {
           const index = parseInt(url.searchParams.get('index') || '0', 10);
           this.ytPlayer.loadPlaylist({ listType: 'playlist', list: list, index: index });
         } else if (videoId && videoId !== 'videoseries') {
-          if (list) {
-            this.ytPlayer.loadVideoById({ videoId: videoId, playerVars: { list: list } });
-          } else {
-            this.ytPlayer.loadVideoById(videoId);
-          }
+          this.ytPlayer.loadVideoById({ videoId: videoId, startSeconds: 0 });
+        } else {
+          // Fallback for edge cases
+          const frame = document.getElementById('videoIframe');
+          if (frame) { frame.src = ''; frame.src = embedUrl; }
         }
         this.isPlaying = true;
         this.updatePlayPauseButton();
       } catch (err) {
-        // Fallback: just set src on the iframe element
+        console.warn('YT API load error, using iframe fallback:', err);
         const frame = document.getElementById('videoIframe');
-        if (frame) frame.src = embedUrl;
+        if (frame) { frame.src = ''; frame.src = embedUrl; }
       }
     } else {
+      // API not ready — set iframe src directly
       const frame = document.getElementById('videoIframe');
-      if (frame) frame.src = embedUrl;
+      if (frame) { frame.src = ''; frame.src = embedUrl; }
     }
   }
 
@@ -310,7 +311,7 @@ class VideoPlayerController {
   }
 
   initControls() {
-    this.duration = 979; // Default 16:19
+    this.duration = 0;
     this.currentTime = 0;
     this.isMuted = false;
     this.playbackSpeeds = [1, 1.25, 1.5, 2, 0.75];
@@ -622,16 +623,14 @@ class VideoPlayerController {
       btnOpenYouTube.onclick = () => window.open(rawWatchUrl, '_blank', 'noopener,noreferrer');
     }
 
-    // Update metadata titles and badges
-    if (this.videoTitleElem) this.videoTitleElem.textContent = video.title;
+    // Update metadata title
+    if (this.videoTitleElem) this.videoTitleElem.textContent = video.title || 'Untitled Lecture';
     const chapterTitleElem = document.getElementById('ytChapterTitle');
     if (chapterTitleElem) {
-      chapterTitleElem.textContent = video.title ? (video.title.length > 28 ? video.title.substring(0, 28) + '...' : video.title) : "Lecture View";
+      chapterTitleElem.textContent = video.title ? (video.title.length > 28 ? video.title.substring(0, 28) + '...' : video.title) : 'Lecture View';
     }
-    if (this.videoDescElem) this.videoDescElem.textContent = video.description || "Comprehensive placement preparation video lecture.";
-    if (this.videoTrackBadge) this.videoTrackBadge.textContent = this.currentTrackId.toUpperCase();
-    if (this.videoLevelBadge) this.videoLevelBadge.textContent = video.level || "All Levels";
-    if (this.videoCategoryBadge) this.videoCategoryBadge.textContent = video.category || "Placement Module";
+    if (this.videoDescElem) this.videoDescElem.textContent = video.description || '';
+    // Badge elements removed from HTML — skip those refs
 
     // Update Mark as Watched button state
     const isWatched = this.watchedVideos.has(video.id);
@@ -658,15 +657,9 @@ class VideoPlayerController {
       return;
     }
 
-    const BASE = 'https://www.youtube.com/embed';
-    const params = this.getEmbedParams();
-    const embedUrl = `${BASE}/videoseries?list=${this.currentPlaylistId}&${params}&index=${this.currentPlaylistLectureIndex}&autoplay=1&t=${Date.now()}`;
-
-    if (this.videoIframe) {
-      this.videoIframe.src = '';
-      this.videoIframe.src = embedUrl;
-    }
-
+    // Use YT API if available, else iframe fallback
+    const embedUrl = `https://www.youtube.com/embed/videoseries?list=${this.currentPlaylistId}&${this.getEmbedParams()}&index=${this.currentPlaylistLectureIndex}&autoplay=1`;
+    this._loadUrlIntoPlayer(embedUrl);
 
     window.showToast(`Switched to Lecture #${this.currentPlaylistLectureIndex + 1}`, 'info');
 
