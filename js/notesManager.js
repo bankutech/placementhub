@@ -69,7 +69,9 @@ class NotesManager {
     const currentVideo = (track.videos && track.videos[videoIndex]) ? track.videos[videoIndex] : null;
 
     const videoId = currentVideo ? currentVideo.id : 'general-video';
-    const videoTitle = currentVideo ? currentVideo.title : 'General Lecture';
+    const videoTitle = (window.playerController && window.playerController.videoTitleElem && window.playerController.videoTitleElem.textContent && window.playerController.videoTitleElem.textContent !== 'Loading lecture...')
+      ? window.playerController.videoTitleElem.textContent
+      : (currentVideo ? currentVideo.title : 'General Lecture');
     const youtubeId = currentVideo ? currentVideo.youtubeId : '';
 
     const newNote = {
@@ -90,6 +92,35 @@ class NotesManager {
     this.renderNotes();
     window.showToast("Note saved with timestamp 📝", "success");
     return newNote;
+  }
+
+  jumpToTimestamp(noteId) {
+    const note = this.notes.find(n => n.id === noteId);
+    if (!note) return;
+
+    if (note.timestampSeconds > 0) {
+      if (note.youtubeId && window.playerController && window.playerController.videoIframe) {
+        // If it's a playlist or standard video, seek to start time in the embedded player
+        const isPlaylist = note.youtubeId.length > 11;
+        const BASE = 'https://www.youtube.com/embed';
+        let embedUrl = "";
+        
+        if (isPlaylist) {
+          embedUrl = `${BASE}/videoseries?list=${note.youtubeId}&rel=0&start=${note.timestampSeconds}&autoplay=1`;
+        } else {
+          embedUrl = `${BASE}/${note.youtubeId}?rel=0&start=${note.timestampSeconds}&autoplay=1`;
+        }
+
+        window.playerController.videoIframe.src = '';
+        window.playerController.videoIframe.src = embedUrl;
+        window.showToast(`⏱️ Jumped in player to ${note.timestamp}`, "info");
+        return;
+      }
+
+      if (note.youtubeId) {
+        window.open(`https://www.youtube.com/watch?v=${note.youtubeId}&t=${note.timestampSeconds}s`, '_blank', 'noopener,noreferrer');
+      }
+    }
   }
 
   deleteNote(noteId) {
@@ -220,9 +251,9 @@ class NotesManager {
           <div class="note-card-header">
             <div class="note-meta-group">
               ${note.timestamp ? `
-                <span class="note-timestamp-badge" title="Timestamp" ${jumpLink ? `onclick="window.open('${jumpLink}', '_blank')"` : ''}>
+                <span class="note-timestamp-badge" title="Click to seek player to ${note.timestamp}" onclick="window.notesManager.jumpToTimestamp('${note.id}')">
                   <i class="fa-regular fa-clock"></i> ${note.timestamp}
-                  ${jumpLink ? '<i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 0.65rem; margin-left: 3px;"></i>' : ''}
+                  <i class="fa-solid fa-play" style="font-size: 0.62rem; margin-left: 4px; opacity: 0.85;"></i>
                 </span>
               ` : ''}
               <span class="note-video-tag" title="${note.videoTitle}">

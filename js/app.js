@@ -445,23 +445,34 @@ document.addEventListener('DOMContentLoaded', () => {
     }, 300));
   }
 
-  // 8. Global Header Search (Searches across all tracks)
-  const headerSearchInput = document.getElementById('headerSearchInput');
-  if (headerSearchInput) {
-    headerSearchInput.addEventListener('input', debounce((e) => {
-      const q = e.target.value.toLowerCase().trim();
-      if (!q) return;
+  // 8. Global Header Search (Searches across all tracks - Desktop & Mobile)
+  const handleGlobalSearch = debounce((query) => {
+    const q = query.toLowerCase().trim();
+    if (!q) return;
 
-      // Find first track that contains matching video
-      for (const [tId, tData] of Object.entries(window.appState.tracks)) {
-        const found = (tData.videos || []).find(v => v.title.toLowerCase().includes(q) || v.description.toLowerCase().includes(q));
-        if (found) {
-          window.renderTrackView(tId);
-          window.selectVideo(tId, found.id);
-          break;
-        }
+    // Find first track that contains matching video or playlist
+    for (const [tId, tData] of Object.entries(window.appState.tracks)) {
+      const found = (tData.videos || []).find(v => 
+        (v.title && v.title.toLowerCase().includes(q)) || 
+        (v.category && v.category.toLowerCase().includes(q)) ||
+        (v.description && v.description.toLowerCase().includes(q))
+      );
+      if (found) {
+        window.renderTrackView(tId);
+        window.selectVideo(tId, found.id);
+        break;
       }
-    }, 500));
+    }
+  }, 400);
+
+  const headerSearchInput = document.getElementById('headerSearchInput');
+  const headerSearchInputMobile = document.getElementById('headerSearchInputMobile');
+  
+  if (headerSearchInput) {
+    headerSearchInput.addEventListener('input', (e) => handleGlobalSearch(e.target.value));
+  }
+  if (headerSearchInputMobile) {
+    headerSearchInputMobile.addEventListener('input', (e) => handleGlobalSearch(e.target.value));
   }
 
   // 9. Add Custom Video Form Submit
