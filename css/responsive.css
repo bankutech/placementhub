@@ -180,9 +180,9 @@
 }
 
 /* ==========================================================================
-   TABLET (≤ 1024px) — stack layout vertically
+   TABLET (≤ 1023px) — stack layout vertically
    ========================================================================== */
-@media (max-width: 1024px) {
+@media (max-width: 1023px) {
   :root { --header-height: 58px; }
 
   .app-header { padding: 0 20px; }

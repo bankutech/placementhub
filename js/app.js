@@ -232,42 +232,49 @@ window.toggleSideNav = function(forceState) {
   const edgeLabel = document.getElementById('drawerEdgeLabel');
   if (!drawer) return;
 
-  const isDesktop = window.innerWidth >= 1024;
-  const isCurrentlyOpen = isDesktop 
-    ? !document.body.classList.contains('desktop-sidebar-collapsed')
-    : drawer.classList.contains('open');
+  const isMobile = window.innerWidth < 1024;
 
-  const shouldOpen = typeof forceState === 'boolean' 
-    ? forceState 
-    : !isCurrentlyOpen;
-
-  if (isDesktop) {
-    if (shouldOpen) {
-      document.body.classList.remove('desktop-sidebar-collapsed');
-      if (edgeIcon) edgeIcon.className = 'fa-solid fa-chevron-left';
-      if (edgeLabel) edgeLabel.textContent = 'Close';
-    } else {
-      document.body.classList.add('desktop-sidebar-collapsed');
-      if (edgeIcon) edgeIcon.className = 'fa-solid fa-chevron-right';
-      if (edgeLabel) edgeLabel.textContent = 'Tracks';
-    }
+  let willBeOpen;
+  if (typeof forceState === 'boolean') {
+    willBeOpen = forceState;
   } else {
-    // Mobile / Tablet Drawer
-    if (shouldOpen) {
-      drawer.classList.add('open');
-      if (backdrop) backdrop.classList.add('active');
-      document.body.classList.add('side-nav-open');
-      if (edgeIcon) edgeIcon.className = 'fa-solid fa-chevron-left';
-      if (edgeLabel) edgeLabel.textContent = 'Close';
+    if (isMobile) {
+      willBeOpen = !drawer.classList.contains('open');
     } else {
-      drawer.classList.remove('open');
-      if (backdrop) backdrop.classList.remove('active');
-      document.body.classList.remove('side-nav-open');
-      if (edgeIcon) edgeIcon.className = 'fa-solid fa-chevron-right';
-      if (edgeLabel) edgeLabel.textContent = 'Tracks';
+      willBeOpen = document.body.classList.contains('sidebar-collapsed');
     }
   }
+
+  if (willBeOpen) {
+    drawer.classList.add('open');
+    document.body.classList.remove('sidebar-collapsed');
+    document.body.classList.add('side-nav-open');
+    if (backdrop && isMobile) backdrop.classList.add('active');
+    if (edgeIcon) edgeIcon.className = 'fa-solid fa-chevron-left';
+    if (edgeLabel) edgeLabel.textContent = 'Close';
+  } else {
+    drawer.classList.remove('open');
+    document.body.classList.add('sidebar-collapsed');
+    document.body.classList.remove('side-nav-open');
+    if (backdrop) backdrop.classList.remove('active');
+    if (edgeIcon) edgeIcon.className = 'fa-solid fa-chevron-right';
+    if (edgeLabel) edgeLabel.textContent = 'Tracks';
+  }
 };
+
+// Sync edge tab state on DOM load
+document.addEventListener('DOMContentLoaded', () => {
+  const isMobile = window.innerWidth < 1024;
+  const edgeIcon = document.getElementById('drawerEdgeIcon');
+  const edgeLabel = document.getElementById('drawerEdgeLabel');
+  if (isMobile) {
+    if (edgeIcon) edgeIcon.className = 'fa-solid fa-chevron-right';
+    if (edgeLabel) edgeLabel.textContent = 'Tracks';
+  } else {
+    if (edgeIcon) edgeIcon.className = 'fa-solid fa-chevron-left';
+    if (edgeLabel) edgeLabel.textContent = 'Close';
+  }
+});
 
 window.switchToolkitTab = function(tabId) {
   const btn = document.querySelector(`.toolkit-tab-btn[data-tab="${tabId}"]`);

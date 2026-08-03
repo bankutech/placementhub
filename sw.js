@@ -2,7 +2,7 @@
    PLACEMENTHUB SERVICE WORKER — Network-First Strategy for Instant Updates
    ========================================================================== */
 
-const CACHE_NAME = 'placementhub-v5';
+const CACHE_NAME = 'placementhub-v6';
 const CORE_ASSETS = [
   '/',
   '/index.html',
