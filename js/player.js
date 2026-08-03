@@ -32,12 +32,42 @@ class VideoPlayerController {
     this.initScrubber();
     this.initControls();
     this.initAutoHideControls();
+    this.initClickSurface();
     this.startProgressTicker();
   }
 
   // --------------------------------------------------------------------------
   // YouTube API Communication & Player Controls
   // --------------------------------------------------------------------------
+  initClickSurface() {
+    const surface = document.getElementById('videoClickSurface');
+    if (!surface) return;
+
+    let clickTimer = null;
+    surface.addEventListener('click', (e) => {
+      if (clickTimer === null) {
+        clickTimer = setTimeout(() => {
+          clickTimer = null;
+          this.togglePlay();
+        }, 220);
+      } else {
+        clearTimeout(clickTimer);
+        clickTimer = null;
+        this.toggleTheaterMode();
+      }
+    });
+  }
+
+  flashIndicator(iconClass) {
+    const indicator = document.getElementById('videoCenterIndicator');
+    if (!indicator) return;
+    indicator.innerHTML = `<i class="fa-solid ${iconClass}"></i>`;
+    indicator.classList.add('flash');
+    setTimeout(() => {
+      indicator.classList.remove('flash');
+    }, 380);
+  }
+
   initAutoHideControls() {
     this.controlBar = document.getElementById('playerControlBar');
     this.videoWrapper = document.getElementById('videoFrameWrapper');
@@ -259,12 +289,13 @@ class VideoPlayerController {
   }
 
   getEmbedParams() {
-    return 'enablejsapi=1&rel=0&iv_load_policy=3&modestbranding=1&controls=1&playsinline=1';
+    return 'enablejsapi=1&rel=0&iv_load_policy=3&modestbranding=1&controls=0&playsinline=1';
   }
 
   togglePlay() {
     this.isPlaying = !this.isPlaying;
     this.sendYTCommand(this.isPlaying ? 'playVideo' : 'pauseVideo');
+    this.flashIndicator(this.isPlaying ? 'fa-play' : 'fa-pause');
     this.updatePlayPauseButton();
     if (this.resetAutoHideTimer) this.resetAutoHideTimer();
     if (!this.isPlaying) {
@@ -277,6 +308,7 @@ class VideoPlayerController {
   seekRelative(seconds) {
     this.currentTime = Math.max(0, Math.min(this.duration, this.currentTime + seconds));
     this.sendYTCommand('seekTo', [this.currentTime, true]);
+    this.flashIndicator(seconds > 0 ? 'fa-forward' : 'fa-backward');
     this.updateTimeDisplay();
     if (this.resetAutoHideTimer) this.resetAutoHideTimer();
     window.showToast(seconds > 0 ? `⏩ +${seconds}s` : `⏪ ${seconds}s`, "info");
