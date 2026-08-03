@@ -405,12 +405,21 @@ window.updateTrackChips = function() {
 // ----------------------------------------------------------------------------
 window.openModal = function(modalId) {
   const modal = document.getElementById(modalId);
-  if (modal) modal.classList.add('active');
+  if (!modal) return;
+  // Teleport to body root to escape any CSS transform stacking context
+  // (transform on side-nav-drawer breaks position:fixed in mobile browsers)
+  if (modal.parentElement !== document.body) {
+    document.body.appendChild(modal);
+  }
+  modal.classList.add('active');
+  document.body.style.overflow = 'hidden';
 };
 
 window.closeModal = function(modalId) {
   const modal = document.getElementById(modalId);
-  if (modal) modal.classList.remove('active');
+  if (!modal) return;
+  modal.classList.remove('active');
+  document.body.style.overflow = '';
 };
 
 window.openAddVideoModal = function(trackId = null) {
