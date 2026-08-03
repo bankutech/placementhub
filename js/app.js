@@ -355,8 +355,12 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // 3. Video Player Control Buttons
+  const btnTogglePlay = document.getElementById('btnTogglePlay');
+  const btnRewind10 = document.getElementById('btnRewind10');
+  const btnForward10 = document.getElementById('btnForward10');
   const btnPrev = document.getElementById('btnPrevVideo');
   const btnNext = document.getElementById('btnNextVideo');
+  const btnCleanMode = document.getElementById('btnCleanMode');
   const btnTheater = document.getElementById('btnTheaterMode');
   const btnMark = document.getElementById('btnMarkWatched');
 
@@ -373,6 +377,10 @@ document.addEventListener('DOMContentLoaded', () => {
     };
   };
 
+  if (btnTogglePlay) btnTogglePlay.addEventListener('click', () => window.playerController.togglePlay());
+  if (btnRewind10) btnRewind10.addEventListener('click', () => window.playerController.seekRelative(-10));
+  if (btnForward10) btnForward10.addEventListener('click', () => window.playerController.seekRelative(10));
+  if (btnCleanMode) btnCleanMode.addEventListener('click', () => window.playerController.toggleCleanMode());
   if (btnPrev) btnPrev.addEventListener('click', () => window.playerController.playPrev());
   if (btnNext) btnNext.addEventListener('click', () => window.playerController.playNext());
   if (btnTheater) btnTheater.addEventListener('click', () => window.playerController.toggleTheaterMode());
@@ -550,7 +558,18 @@ document.addEventListener('DOMContentLoaded', () => {
     // Avoid interfering when typing in inputs/textareas
     if (['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement.tagName)) return;
 
-    if (e.key === 'n' || e.key === 'N') {
+    if (e.key === ' ' || e.key === 'k' || e.key === 'K') {
+      e.preventDefault();
+      window.playerController.togglePlay();
+    } else if (e.key === 'j' || e.key === 'J' || e.key === 'ArrowLeft') {
+      e.preventDefault();
+      window.playerController.seekRelative(-10);
+    } else if (e.key === 'l' || e.key === 'L' || e.key === 'ArrowRight') {
+      e.preventDefault();
+      window.playerController.seekRelative(10);
+    } else if (e.key === 'c' || e.key === 'C') {
+      window.playerController.toggleCleanMode();
+    } else if (e.key === 'n' || e.key === 'N') {
       window.playerController.playNext();
     } else if (e.key === 'p' || e.key === 'P') {
       window.playerController.playPrev();
@@ -656,15 +675,15 @@ window.selectPlaylistLecture = function(parentId, playlistId, index, videoIdReal
   window.playerController.currentPlaylistLectureIndex = index;
   
   const BASE = 'https://www.youtube.com/embed';
-  const CLEAN = 'rel=0&iv_load_policy=3&modestbranding=1&cc_load_policy=0';
+  const params = window.playerController.getEmbedParams();
   let embedUrl = "";
   
   if (videoIdReal && !videoIdReal.startsWith('fallback-')) {
     // Play the exact unique video, loading the playlist queue next to it
-    embedUrl = `${BASE}/${videoIdReal}?list=${playlistId}&${CLEAN}&autoplay=1`;
+    embedUrl = `${BASE}/${videoIdReal}?list=${playlistId}&${params}&autoplay=1`;
   } else {
     // Fallback if no API key or real ID: use index with cache buster
-    embedUrl = `${BASE}/videoseries?list=${playlistId}&${CLEAN}&index=${index}&autoplay=1&t=${Date.now()}`;
+    embedUrl = `${BASE}/videoseries?list=${playlistId}&${params}&index=${index}&autoplay=1&t=${Date.now()}`;
   }
   
   if (window.playerController.videoIframe) {

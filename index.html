@@ -168,6 +168,15 @@
         <!-- Video Player Action Toolbar -->
         <div class="player-control-bar">
           <div class="player-controls-left">
+            <button class="btn-ctrl btn-play-pause" id="btnTogglePlay" title="Play / Pause Lecture (Space / K)">
+              <i class="fa-solid fa-pause"></i> <span id="playPauseText">Pause</span>
+            </button>
+            <button class="btn-ctrl" id="btnRewind10" title="Rewind 10s (J / ←)">
+              <i class="fa-solid fa-rotate-left"></i> -10s
+            </button>
+            <button class="btn-ctrl" id="btnForward10" title="Forward 10s (L / →)">
+              <i class="fa-solid fa-rotate-right"></i> +10s
+            </button>
             <button class="btn-ctrl" id="btnPrevVideo" title="Previous Video (P)">
               <i class="fa-solid fa-backward-step"></i> Prev
             </button>
@@ -180,6 +189,9 @@
           </div>
 
           <div class="player-controls-right">
+            <button class="btn-ctrl btn-clean-mode" id="btnCleanMode" title="Clean View Mode: Hides YouTube UI overlay and popups for clear note-taking (C)">
+              <i class="fa-solid fa-wand-magic-sparkles"></i> <span>Clean View</span>
+            </button>
             <button class="btn-ctrl" id="btnOpenYouTube" title="Open this playlist / video on YouTube">
               <i class="fa-brands fa-youtube" style="color: #ef4444;"></i> Open in YouTube
             </button>

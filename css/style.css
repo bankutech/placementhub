@@ -661,6 +661,41 @@ body, button, input, select, textarea {
   box-shadow: 0 0 18px rgba(16,185,129,0.4);
 }
 
+/* Play/Pause — Blue */
+.btn-ctrl.btn-play-pause {
+  background: rgba(59, 130, 246, 0.15);
+  border-color: rgba(59, 130, 246, 0.4);
+  color: #60a5fa;
+  font-weight: 600;
+}
+
+.btn-ctrl.btn-play-pause:hover {
+  background: rgba(59, 130, 246, 0.25);
+  border-color: rgba(59, 130, 246, 0.6);
+  color: #93c5fd;
+}
+
+/* Clean Mode — Purple Glow */
+.btn-ctrl.btn-clean-mode {
+  background: rgba(168, 85, 247, 0.15);
+  border-color: rgba(168, 85, 247, 0.4);
+  color: #c084fc;
+  font-weight: 600;
+}
+
+.btn-ctrl.btn-clean-mode:hover {
+  background: rgba(168, 85, 247, 0.25);
+  border-color: rgba(168, 85, 247, 0.6);
+  color: #e9d5ff;
+}
+
+.btn-ctrl.btn-clean-mode.active {
+  background: #9333ea;
+  color: #ffffff;
+  border-color: #a855f7;
+  box-shadow: 0 0 15px rgba(168, 85, 247, 0.45);
+}
+
 /* Toggle (autoplay next) */
 .toggle-switch-label {
   display: inline-flex;

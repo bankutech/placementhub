@@ -103,13 +103,13 @@ class NotesManager {
         // If it's a playlist or standard video, seek to start time in the embedded player
         const isPlaylist = note.youtubeId.length > 11;
         const BASE = 'https://www.youtube.com/embed';
-        const CLEAN = 'rel=0&iv_load_policy=3&modestbranding=1&cc_load_policy=0';
+        const params = window.playerController.getEmbedParams();
         let embedUrl = "";
         
         if (isPlaylist) {
-          embedUrl = `${BASE}/videoseries?list=${note.youtubeId}&${CLEAN}&start=${note.timestampSeconds}&autoplay=1`;
+          embedUrl = `${BASE}/videoseries?list=${note.youtubeId}&${params}&start=${note.timestampSeconds}&autoplay=1`;
         } else {
-          embedUrl = `${BASE}/${note.youtubeId}?${CLEAN}&start=${note.timestampSeconds}&autoplay=1`;
+          embedUrl = `${BASE}/${note.youtubeId}?${params}&start=${note.timestampSeconds}&autoplay=1`;
         }
 
         window.playerController.videoIframe.src = '';

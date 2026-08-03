@@ -8,6 +8,8 @@ class VideoPlayerController {
     this.currentVideoIndex = 0;
     this.isAutoplayEnabled = true;
     this.isTheaterMode = false;
+    this.isCleanMode = localStorage.getItem('placementhub_clean_mode') === 'true';
+    this.isPlaying = true;
     this.watchedVideos = new Set();
 
     // DOM Elements
@@ -19,6 +21,8 @@ class VideoPlayerController {
     this.videoLevelBadge = document.getElementById('videoLevelBadge');
     this.videoCategoryBadge = document.getElementById('videoCategoryBadge');
     this.btnMarkWatched = document.getElementById('btnMarkWatched');
+    this.btnTogglePlay = document.getElementById('btnTogglePlay');
+    this.btnCleanMode = document.getElementById('btnCleanMode');
     this.playlistItemsContainer = document.getElementById('playlistItemsContainer');
     this.playlistCountChip = document.getElementById('playlistCountChip');
     this.learningStageGrid = document.getElementById('learningStageGrid');
@@ -27,6 +31,86 @@ class VideoPlayerController {
     this.currentPlaylistId = null;
 
     this.loadWatchedState();
+    this.updateCleanModeButton();
+  }
+
+  // --------------------------------------------------------------------------
+  // YouTube API Communication & Clean Mode Helpers
+  // --------------------------------------------------------------------------
+  sendYTCommand(func, args = []) {
+    if (this.videoIframe && this.videoIframe.contentWindow) {
+      try {
+        this.videoIframe.contentWindow.postMessage(JSON.stringify({
+          event: 'command',
+          func: func,
+          args: args
+        }), '*');
+      } catch (e) {
+        console.warn("Could not postMessage to YouTube player", e);
+      }
+    }
+  }
+
+  getEmbedParams() {
+    const base = 'enablejsapi=1&rel=0&iv_load_policy=3&modestbranding=1&cc_load_policy=0';
+    return this.isCleanMode ? `${base}&controls=0` : `${base}&controls=1`;
+  }
+
+  togglePlay() {
+    this.isPlaying = !this.isPlaying;
+    this.sendYTCommand(this.isPlaying ? 'playVideo' : 'pauseVideo');
+    this.updatePlayPauseButton();
+    if (!this.isPlaying) {
+      window.showToast("⏸ Paused — Screen 100% Clear for Notes", "info");
+    } else {
+      window.showToast("▶ Resumed", "info");
+    }
+  }
+
+  seekRelative(seconds) {
+    // YouTube player relative seek via postMessage
+    this.sendYTCommand('seekTo', [seconds, true]);
+    window.showToast(seconds > 0 ? `⏩ +${seconds}s` : `⏪ ${seconds}s`, "info");
+  }
+
+  updatePlayPauseButton() {
+    if (!this.btnTogglePlay) return;
+    if (this.isPlaying) {
+      this.btnTogglePlay.innerHTML = `<i class="fa-solid fa-pause"></i> <span id="playPauseText">Pause</span>`;
+      this.btnTogglePlay.classList.remove('is-paused');
+    } else {
+      this.btnTogglePlay.innerHTML = `<i class="fa-solid fa-play"></i> <span id="playPauseText">Play</span>`;
+      this.btnTogglePlay.classList.add('is-paused');
+    }
+  }
+
+  toggleCleanMode() {
+    this.isCleanMode = !this.isCleanMode;
+    localStorage.setItem('placementhub_clean_mode', this.isCleanMode ? 'true' : 'false');
+    this.updateCleanModeButton();
+    
+    // Reload video with clean parameters (controls=0)
+    const track = window.appState.tracks[this.currentTrackId];
+    if (track && track.videos[this.currentVideoIndex]) {
+      this.loadVideo(this.currentTrackId, this.currentVideoIndex);
+    }
+
+    if (this.isCleanMode) {
+      window.showToast("🧼 Clean View Enabled: YouTube overlays, buttons & popups removed!", "success");
+    } else {
+      window.showToast("Standard YouTube Player View Restored", "info");
+    }
+  }
+
+  updateCleanModeButton() {
+    if (!this.btnCleanMode) return;
+    if (this.isCleanMode) {
+      this.btnCleanMode.classList.add('active');
+      this.btnCleanMode.innerHTML = `<i class="fa-solid fa-check"></i> <span>Clean View: ON</span>`;
+    } else {
+      this.btnCleanMode.classList.remove('active');
+      this.btnCleanMode.innerHTML = `<i class="fa-solid fa-wand-magic-sparkles"></i> <span>Clean View</span>`;
+    }
   }
 
   // --------------------------------------------------------------------------
@@ -118,24 +202,24 @@ class VideoPlayerController {
 
     // Standard clean YouTube embed format — minimizes clutter, cards & popups
     const BASE = 'https://www.youtube.com/embed';
-    const CLEAN = 'rel=0&iv_load_policy=3&modestbranding=1&cc_load_policy=0';
+    const params = this.getEmbedParams();
 
     if (parsed) {
       if (parsed.type === 'playlist') {
         this.currentPlaylistId = parsed.id;
-        embedUrl = `${BASE}/videoseries?list=${parsed.id}&${CLEAN}&index=${lectureIndex}`;
+        embedUrl = `${BASE}/videoseries?list=${parsed.id}&${params}&index=${lectureIndex}`;
         rawWatchUrl = `https://www.youtube.com/playlist?list=${parsed.id}`;
       } else {
         this.currentPlaylistId = null;
         const listParam = parsed.playlistId ? `&list=${parsed.playlistId}` : '';
-        embedUrl = `${BASE}/${parsed.id}?${CLEAN}${listParam}`;
+        embedUrl = `${BASE}/${parsed.id}?${params}${listParam}`;
         rawWatchUrl = parsed.playlistId
           ? `https://www.youtube.com/watch?v=${parsed.id}&list=${parsed.playlistId}`
           : `https://www.youtube.com/watch?v=${parsed.id}`;
       }
     } else {
       this.currentPlaylistId = null;
-      embedUrl = `${BASE}/${video.youtubeId}?${CLEAN}`;
+      embedUrl = `${BASE}/${video.youtubeId}?${params}`;
     }
 
     // Show iframe, hide placeholder
@@ -145,6 +229,10 @@ class VideoPlayerController {
       this.videoIframe.src = '';
       this.videoIframe.src = embedUrl;
     }
+
+    // Reset playing state
+    this.isPlaying = true;
+    this.updatePlayPauseButton();
 
     // Keep "Open in YouTube" button wired to correct watch URL
     const btnOpenYouTube = document.getElementById('btnOpenYouTube');
@@ -184,8 +272,8 @@ class VideoPlayerController {
     }
 
     const BASE = 'https://www.youtube.com/embed';
-    const CLEAN = 'rel=0&iv_load_policy=3&modestbranding=1&cc_load_policy=0';
-    const embedUrl = `${BASE}/videoseries?list=${this.currentPlaylistId}&${CLEAN}&index=${this.currentPlaylistLectureIndex}&autoplay=1&t=${Date.now()}`;
+    const params = this.getEmbedParams();
+    const embedUrl = `${BASE}/videoseries?list=${this.currentPlaylistId}&${params}&index=${this.currentPlaylistLectureIndex}&autoplay=1&t=${Date.now()}`;
 
     if (this.videoIframe) {
       this.videoIframe.src = '';
