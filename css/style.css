@@ -1716,8 +1716,9 @@ body, button, input, select, textarea {
   display: flex;
   flex-direction: column;
   z-index: 850;
-  overflow-y: auto;
+  overflow: visible !important;
   flex-shrink: 0;
+  position: relative;
 }
 
 @media (min-width: 1024px) {
@@ -1730,16 +1731,26 @@ body, button, input, select, textarea {
     top: 0 !important;
     left: 0 !important;
     height: 100vh !important;
-    transform: none !important;
+    transform: none;
     box-shadow: 4px 0 24px rgba(0, 0, 0, 0.4) !important;
+    transition: margin-left 0.3s cubic-bezier(0.16, 1, 0.3, 1), transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  body.desktop-sidebar-collapsed .side-nav-drawer {
+    margin-left: -280px !important;
+  }
+
+  body.desktop-sidebar-collapsed .side-nav-drawer .drawer-edge-tab {
+    background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%) !important;
+    box-shadow: 4px 4px 18px rgba(99, 102, 241, 0.6) !important;
   }
 
   .side-nav-close-btn {
-    display: none !important;
+    display: flex !important;
   }
 
   .btn-side-nav-toggle {
-    display: none !important;
+    display: inline-flex !important;
   }
 }
 
@@ -1776,60 +1787,62 @@ body, button, input, select, textarea {
 }
 
 /* ==========================================================================
-   FLOATING SIDE BUTTON (Click to see and close side panel)
+   INTEGRATED DRAWER EDGE TAB (Attached directly to right border with 0px gap)
    ========================================================================== */
-.floating-side-tab {
-  position: fixed;
-  left: 0;
-  top: 140px;
-  z-index: 2010;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.45rem;
-  padding: 0.55rem 0.85rem 0.55rem 0.65rem;
-  background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
-  color: #ffffff;
+.drawer-edge-tab {
+  position: absolute;
+  top: 130px;
+  right: -42px;
+  width: 42px;
+  height: 54px;
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
   border: 1px solid rgba(255, 255, 255, 0.25);
   border-left: none;
-  border-radius: 0 30px 30px 0;
-  box-shadow: 0 4px 20px rgba(99, 102, 241, 0.6), 2px 0 10px rgba(0, 0, 0, 0.4);
-  font-size: 0.82rem;
-  font-weight: 700;
-  letter-spacing: 0.3px;
+  border-radius: 0 14px 14px 0;
+  color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
   cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 4px 4px 18px rgba(239, 68, 68, 0.5), 2px 0 8px rgba(0, 0, 0, 0.4);
+  z-index: 2050;
+  transition: all 0.2s ease;
   user-select: none;
 }
 
-.floating-side-tab:hover {
-  background: linear-gradient(135deg, #4f46e5 0%, #4338ca 100%);
-  box-shadow: 0 6px 25px rgba(99, 102, 241, 0.8), 2px 0 12px rgba(0, 0, 0, 0.5);
-  transform: translateX(3px);
+.drawer-edge-tab:hover {
+  transform: scale(1.05);
+  box-shadow: 6px 6px 22px rgba(239, 68, 68, 0.7);
 }
 
-.floating-side-tab:active {
-  transform: scale(0.96);
+.drawer-edge-tab:active {
+  transform: scale(0.95);
 }
 
-.floating-side-tab.drawer-open {
-  left: 310px;
-  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
-  box-shadow: 0 4px 20px rgba(239, 68, 68, 0.6), 2px 0 10px rgba(0, 0, 0, 0.4);
-}
-
-@media (max-width: 480px) {
-  .floating-side-tab.drawer-open {
-    left: min(310px, 86vw);
-  }
-}
-
-.floating-side-tab i {
+.drawer-edge-tab i {
   font-size: 0.88rem;
 }
 
-.floating-side-tab .floating-chevron {
-  font-size: 0.72rem;
-  opacity: 0.85;
+.drawer-edge-tab .drawer-edge-label {
+  font-size: 0.58rem;
+  font-weight: 700;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+  line-height: 1;
+}
+
+/* When drawer is closed (on mobile or collapsed on desktop) */
+.side-nav-drawer:not(.open) .drawer-edge-tab,
+body.desktop-sidebar-collapsed .side-nav-drawer .drawer-edge-tab {
+  background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%) !important;
+  box-shadow: 4px 4px 18px rgba(99, 102, 241, 0.6), 2px 0 8px rgba(0, 0, 0, 0.4) !important;
+}
+
+.side-nav-drawer:not(.open) .drawer-edge-tab:hover,
+body.desktop-sidebar-collapsed .side-nav-drawer .drawer-edge-tab:hover {
+  box-shadow: 6px 6px 22px rgba(99, 102, 241, 0.8) !important;
 }
 
 .side-nav-header {

@@ -35,32 +35,31 @@
 
   <div class="side-nav-backdrop" id="sideNavBackdrop" onclick="window.toggleSideNav(false)"></div>
 
-  <!-- Floating Side Button / Edge Tab (Click to see & close side panel) -->
-  <button class="floating-side-tab" id="btnFloatingSideToggle" onclick="window.toggleSideNav()" aria-label="Toggle Learning Tracks Panel" title="Click to see / close Learning Tracks">
-    <i class="fa-solid fa-layer-group" id="floatingSideIcon"></i>
-    <span class="floating-tab-text" id="floatingTabText">Tracks</span>
-    <i class="fa-solid fa-chevron-right floating-chevron" id="floatingChevron"></i>
-  </button>
-
   <div class="app-shell">
     <!-- ========================================================================
-         LEFT SIDE PANEL / COURSE TRACKS NAVIGATION (Permanent on Desktop)
+         LEFT SIDE PANEL / COURSE TRACKS NAVIGATION
          ======================================================================== -->
     <aside class="side-nav-drawer" id="sideNavDrawer" aria-label="Learning Tracks & Course Navigation">
-    <div class="side-nav-header">
-      <div class="side-nav-brand">
-        <div class="side-nav-brand-icon">
-          <i class="fa-solid fa-graduation-cap"></i>
-        </div>
-        <div class="side-nav-brand-info">
-          <span class="side-nav-brand-name">PlacementHub</span>
-          <span class="side-nav-brand-badge">Learning Hub</span>
-        </div>
-      </div>
-      <button class="side-nav-close-btn" id="btnCloseSideNav" onclick="window.toggleSideNav(false)" aria-label="Close Side Navigation">
-        <i class="fa-solid fa-xmark"></i>
+      <!-- Integrated Drawer Edge Tab Button (Attached directly to right border with 0 gap) -->
+      <button class="drawer-edge-tab" id="btnDrawerEdgeTab" onclick="window.toggleSideNav()" aria-label="Toggle Learning Tracks Panel" title="Click to see / close Learning Tracks">
+        <i class="fa-solid fa-chevron-left" id="drawerEdgeIcon"></i>
+        <span class="drawer-edge-label" id="drawerEdgeLabel">Close</span>
       </button>
-    </div>
+
+      <div class="side-nav-header">
+        <div class="side-nav-brand">
+          <div class="side-nav-brand-icon">
+            <i class="fa-solid fa-graduation-cap"></i>
+          </div>
+          <div class="side-nav-brand-info">
+            <span class="side-nav-brand-name">PlacementHub</span>
+            <span class="side-nav-brand-badge">Learning Hub</span>
+          </div>
+        </div>
+        <button class="side-nav-close-btn" id="btnCloseSideNav" onclick="window.toggleSideNav(false)" aria-label="Close Side Navigation" title="Close Panel">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
 
     <div class="side-nav-body">
       <!-- Active Track Quick Status -->
