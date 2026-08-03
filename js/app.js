@@ -175,6 +175,11 @@ window.selectVideo = function(trackId, videoId) {
   if (index !== -1) {
     window.playerController.loadVideo(track.videos[index], trackId, index);
   }
+
+  // Refresh timestamped notes for this video
+  if (window.notesManager) {
+    window.notesManager.renderNotes();
+  }
 };
 
 // ----------------------------------------------------------------------------
@@ -224,6 +229,11 @@ window.renderTrackView = function(trackId) {
     window.playerController.loadVideo(track.videos[0], trackId, 0);
   } else {
     window.playerController.showPlaceholder("No Videos Available", "Click '+ Add Video / Playlist' to add your custom YouTube learning links.");
+  }
+
+  // 6. Refresh Notes Notebook for current track/video
+  if (window.notesManager) {
+    window.notesManager.renderNotes();
   }
 
   window.updateOverallProgress();
@@ -287,11 +297,14 @@ window.openAddVideoModal = function(trackId = null) {
 // DOM Ready Application Bootstrap
 // ----------------------------------------------------------------------------
 document.addEventListener('DOMContentLoaded', () => {
-  // 1. Init Managers
+  // 1. Init Core Managers
   window.playlistManager = new PlaylistManager();
   window.appState.tracks = window.playlistManager.initData();
 
   window.playerController = new VideoPlayerController();
+  window.notesManager = new NotesManager();
+  window.practiceManager = new PracticeManager();
+  window.pomodoroController = new PomodoroController();
 
   // 2. Setup Track Switching Chips
   const trackChips = document.querySelectorAll('.track-chip');
@@ -307,7 +320,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const btnNext = document.getElementById('btnNextVideo');
   const btnTheater = document.getElementById('btnTheaterMode');
   const btnMark = document.getElementById('btnMarkWatched');
-
 
   // Utility Debounce for search inputs
   const debounce = (func, wait) => {
@@ -327,8 +339,105 @@ document.addEventListener('DOMContentLoaded', () => {
   if (btnTheater) btnTheater.addEventListener('click', () => window.playerController.toggleTheaterMode());
   if (btnMark) btnMark.addEventListener('click', () => window.playerController.toggleCurrentWatched());
 
+  // 4. Toolkit Sub-Tabs Switching
+  const toolkitTabBtns = document.querySelectorAll('.toolkit-tab-btn');
+  const toolkitPanes = document.querySelectorAll('.toolkit-tabs-container .tab-pane');
 
-  // 5. Playlist Sidebar Search Filter
+  toolkitTabBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const targetId = btn.getAttribute('data-tab');
+      toolkitTabBtns.forEach(b => b.classList.remove('active'));
+      toolkitPanes.forEach(p => p.classList.remove('active'));
+
+      btn.classList.add('active');
+      const targetPane = document.getElementById(targetId);
+      if (targetPane) targetPane.classList.add('active');
+
+      if (targetId === 'tab-notes') {
+        window.notesManager.renderNotes();
+      } else if (targetId === 'tab-practice') {
+        window.practiceManager.renderProblems();
+      }
+    });
+  });
+
+  // 5. Notes Notebook Listeners
+  const btnSaveNote = document.getElementById('btnSaveNote');
+  const noteContentInput = document.getElementById('noteContentInput');
+  const noteTimestampInput = document.getElementById('noteTimestampInput');
+
+  const handleSaveNote = () => {
+    const text = noteContentInput ? noteContentInput.value : '';
+    const ts = noteTimestampInput ? noteTimestampInput.value : '';
+    if (window.notesManager.addNote(text, ts)) {
+      if (noteContentInput) noteContentInput.value = '';
+      if (noteTimestampInput) noteTimestampInput.value = '';
+    }
+  };
+
+  if (btnSaveNote) btnSaveNote.addEventListener('click', handleSaveNote);
+
+  if (noteContentInput) {
+    noteContentInput.addEventListener('keydown', (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+        e.preventDefault();
+        handleSaveNote();
+      }
+    });
+  }
+
+  // Notes filter pills
+  const notePills = document.querySelectorAll('.notes-filter-pill');
+  notePills.forEach(pill => {
+    pill.addEventListener('click', () => {
+      notePills.forEach(p => p.classList.remove('active'));
+      pill.classList.add('active');
+      window.notesManager.currentFilter = pill.getAttribute('data-filter');
+      window.notesManager.renderNotes();
+    });
+  });
+
+  // Notes search input
+  const notesSearchInput = document.getElementById('notesSearchInput');
+  if (notesSearchInput) {
+    notesSearchInput.addEventListener('input', debounce((e) => {
+      window.notesManager.searchQuery = e.target.value.trim();
+      window.notesManager.renderNotes();
+    }, 250));
+  }
+
+  // 6. Practice Problems Listeners
+  const topicFilter = document.getElementById('practiceTopicFilter');
+  const diffFilter = document.getElementById('practiceDifficultyFilter');
+  const platFilter = document.getElementById('practicePlatformFilter');
+  const practiceSearch = document.getElementById('practiceSearchInput');
+
+  if (topicFilter) {
+    topicFilter.addEventListener('change', (e) => {
+      window.practiceManager.currentTopic = e.target.value;
+      window.practiceManager.renderProblems();
+    });
+  }
+  if (diffFilter) {
+    diffFilter.addEventListener('change', (e) => {
+      window.practiceManager.currentDifficulty = e.target.value;
+      window.practiceManager.renderProblems();
+    });
+  }
+  if (platFilter) {
+    platFilter.addEventListener('change', (e) => {
+      window.practiceManager.currentPlatform = e.target.value;
+      window.practiceManager.renderProblems();
+    });
+  }
+  if (practiceSearch) {
+    practiceSearch.addEventListener('input', debounce((e) => {
+      window.practiceManager.searchQuery = e.target.value.trim();
+      window.practiceManager.renderProblems();
+    }, 250));
+  }
+
+  // 7. Playlist Sidebar Search Filter
   const playlistSearchInput = document.getElementById('playlistSearchInput');
   if (playlistSearchInput) {
     playlistSearchInput.addEventListener('input', debounce((e) => {
@@ -336,7 +445,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }, 300));
   }
 
-  // 6. Global Header Search (Searches across all tracks)
+  // 8. Global Header Search (Searches across all tracks)
   const headerSearchInput = document.getElementById('headerSearchInput');
   if (headerSearchInput) {
     headerSearchInput.addEventListener('input', debounce((e) => {
@@ -355,7 +464,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }, 500));
   }
 
-  // 7. Add Custom Video Form Submit
+  // 9. Add Custom Video Form Submit
   const addVideoForm = document.getElementById('addVideoForm');
   if (addVideoForm) {
     addVideoForm.addEventListener('submit', (e) => {
@@ -386,7 +495,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // 8. Keyboard Shortcuts
+  // 10. Keyboard Shortcuts
   document.addEventListener('keydown', (e) => {
     // Avoid interfering when typing in inputs/textareas
     if (['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement.tagName)) return;
@@ -402,15 +511,19 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // 9. Pre-populate Settings API Key
+  // 11. Pre-populate Settings API Key
   const savedKey = localStorage.getItem('placementhub_yt_api_key') || '';
   const ytInput = document.getElementById('ytApiKeyInput');
   if (ytInput) ytInput.value = savedKey;
 
-  // 10. Initial Render
+  // 12. Initial Render
   window.renderTrackView('java');
   window.updateTrackChips();
   window.updateOverallProgress();
+  window.notesManager.renderNotes();
+  window.practiceManager.renderProblems();
+  window.pomodoroController.updateUI();
+
   window.showToast("🚀 Welcome to PlacementHub! Ready to crack your placement interviews.", "success");
 });
 

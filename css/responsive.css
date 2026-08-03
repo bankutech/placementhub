@@ -220,6 +220,22 @@
   }
   .modal-footer .btn { width: 100%; justify-content: center; }
 
+  /* --- TOOLKIT TABS, NOTES, PRACTICE & POMODORO (MOBILE) --- */
+  .toolkit-tab-content { padding: 1rem; }
+  .note-editor-card { padding: 1rem; }
+  .note-editor-header { flex-direction: column; align-items: stretch; gap: 0.6rem; }
+  .note-timestamp-controls { justify-content: flex-start; }
+  .notes-filter-bar { flex-direction: column; align-items: stretch; gap: 0.6rem; }
+  .notes-search-box { min-width: 100%; }
+  
+  .practice-header-bar { flex-direction: column; align-items: stretch; gap: 0.75rem; }
+  .practice-filters-row { flex-direction: column; align-items: stretch; gap: 0.5rem; }
+  .practice-select, .practice-search-input { width: 100%; }
+  .problem-card { flex-direction: column; align-items: stretch; gap: 0.75rem; }
+  .problem-card-right { justify-content: space-between; border-top: 1px solid var(--border-subtle); padding-top: 0.5rem; }
+  .pomo-clock-display { font-size: 2.8rem; }
+  .pomo-header-pill { padding: 0.35rem 0.65rem; font-size: 0.75rem; }
+
   /* --- FOOTER --- */
   .app-footer { display: none; } /* hide footer on mobile to save space */
 

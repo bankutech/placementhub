@@ -42,6 +42,10 @@
 
     <div class="header-actions">
       <!-- Mobile search icon (visible only on small screens) -->
+      <button class="pomo-header-pill" id="btnHeaderPomodoro" onclick="window.openModal('pomodoroModal')" title="Pomodoro Study Sprint Timer">
+        <i class="fa-solid fa-fire" style="color: #ef4444;"></i>
+        <span id="headerPomodoroDisplay">25:00</span>
+      </button>
       <button class="btn-header btn-mobile-search" id="btnMobileSearch" title="Search" onclick="document.getElementById('mobileSearchBar').classList.toggle('active')" style="display:none;">
         <i class="fa-solid fa-magnifying-glass"></i>
       </button>
@@ -239,13 +243,119 @@
          PLACEMENT TOOLKIT SUB-TABS (OVERVIEW, SANDBOX, NOTES, INTERVIEW Q&A)
          ====================================================================== -->
     <!-- ======================================================================
-         PLACEMENT ROADMAP SECTION
+         PLACEMENT TOOLKIT SUB-TABS (NOTES NOTEBOOK, LEETCODE/GFG PRACTICE, ROADMAP)
          ====================================================================== -->
     <section class="toolkit-tabs-container">
+      <div class="toolkit-tab-headers">
+        <button class="toolkit-tab-btn active" data-tab="tab-notes">
+          <i class="fa-solid fa-note-sticky"></i> Timestamped Notes Notebook
+        </button>
+        <button class="toolkit-tab-btn" data-tab="tab-practice">
+          <i class="fa-solid fa-puzzle-piece"></i> LeetCode & GFG Practice Sheets
+        </button>
+        <button class="toolkit-tab-btn" data-tab="tab-overview">
+          <i class="fa-solid fa-route"></i> Placement Roadmap & Phases
+        </button>
+      </div>
+
       <div class="toolkit-tab-content">
-        <div class="tab-pane active" id="tab-overview" style="width: 100%;">
-          <div class="overview-grid" style="grid-template-columns: 1fr;">
-            <div class="overview-card" style="width: 100%;">
+        <!-- TAB 1: TIMESTAMPED NOTES NOTEBOOK -->
+        <div class="tab-pane active" id="tab-notes">
+          <div class="notes-container">
+            <!-- Note Editor Box -->
+            <div class="note-editor-card">
+              <div class="note-editor-header">
+                <div class="note-editor-title">
+                  <i class="fa-solid fa-pen-nib" style="color: var(--accent-secondary);"></i>
+                  <span>Capture Note for Current Lecture</span>
+                </div>
+                <div class="note-timestamp-controls">
+                  <span style="font-size: 0.78rem; color: var(--text-muted);"><i class="fa-regular fa-clock"></i> Timestamp:</span>
+                  <input type="text" id="noteTimestampInput" class="note-ts-input" placeholder="e.g. 12:45" />
+                  <button type="button" class="btn-stamp" onclick="document.getElementById('noteTimestampInput').value = '05:00'" title="Quick 5m stamp">+05:00</button>
+                  <button type="button" class="btn-stamp" onclick="document.getElementById('noteTimestampInput').value = '15:00'" title="Quick 15m stamp">+15:00</button>
+                </div>
+              </div>
+              <textarea id="noteContentInput" class="note-textarea" placeholder="Type your placement takeaways, syntax tricks, time complexity or code reminders... (Press Ctrl+Enter to save)"></textarea>
+              <div class="note-editor-footer">
+                <div style="font-size: 0.75rem; color: var(--text-muted);">
+                  <i class="fa-solid fa-circle-info"></i> Auto-tagged with current video title and subject track.
+                </div>
+                <div style="display: flex; gap: 0.5rem;">
+                  <button type="button" class="btn btn-secondary btn-sm" onclick="window.notesManager.exportNotes()" title="Export all notes as Markdown file">
+                    <i class="fa-solid fa-download"></i> Export .md
+                  </button>
+                  <button type="button" class="btn btn-secondary btn-sm" onclick="window.notesManager.copyAllNotes()" title="Copy all notes to clipboard">
+                    <i class="fa-regular fa-copy"></i> Copy All
+                  </button>
+                  <button type="button" class="btn btn-primary btn-sm" id="btnSaveNote">
+                    <i class="fa-solid fa-floppy-disk"></i> Save Note
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Notes List Filter & Search Bar -->
+            <div class="notes-filter-bar">
+              <div class="notes-filter-pills">
+                <button class="notes-filter-pill active" data-filter="current" id="pillNotesCurrent">This Video</button>
+                <button class="notes-filter-pill" data-filter="track" id="pillNotesTrack">This Track</button>
+                <button class="notes-filter-pill" data-filter="all" id="pillNotesAll">All Notes</button>
+                <span class="badge-playlist-pill" id="notesCountBadge">0 Notes</span>
+              </div>
+              <div class="notes-search-box">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" id="notesSearchInput" placeholder="Search notes content or timestamps..." />
+              </div>
+            </div>
+
+            <!-- Notes List Container -->
+            <div class="notes-list" id="notesListContainer">
+              <!-- Dynamically populated by notesManager.js -->
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB 2: LEETCODE & GFG PRACTICE SHEETS -->
+        <div class="tab-pane" id="tab-practice">
+          <div class="practice-container">
+            <div class="practice-header-bar">
+              <div class="practice-stats-summary" id="practiceStatsSummary">
+                <!-- Solved stats populated dynamically -->
+              </div>
+              <div class="practice-filters-row">
+                <select id="practiceTopicFilter" class="practice-select">
+                  <option value="All">All Topics</option>
+                </select>
+                <select id="practiceDifficultyFilter" class="practice-select">
+                  <option value="All">All Difficulties</option>
+                  <option value="Easy">Easy</option>
+                  <option value="Medium">Medium</option>
+                  <option value="Hard">Hard</option>
+                </select>
+                <select id="practicePlatformFilter" class="practice-select">
+                  <option value="All">All Platforms</option>
+                  <option value="LeetCode">LeetCode</option>
+                  <option value="GFG">GeeksforGeeks</option>
+                </select>
+                <div style="position: relative;">
+                  <i class="fa-solid fa-magnifying-glass" style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: var(--text-muted); font-size: 0.75rem;"></i>
+                  <input type="text" id="practiceSearchInput" class="practice-search-input" placeholder="Search problem or company..." />
+                </div>
+              </div>
+            </div>
+
+            <!-- Problem Cards List -->
+            <div class="practice-problems-grid" id="practiceProblemsGrid">
+              <!-- Dynamically populated by practiceManager.js -->
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB 3: PLACEMENT ROADMAP SECTION -->
+        <div class="tab-pane" id="tab-overview">
+          <div class="overview-grid">
+            <div class="overview-card">
               <h3><i class="fa-solid fa-route" style="color: var(--accent-primary);"></i> Placement Roadmap & Preparation Phases</h3>
               <div class="roadmap-timeline" id="roadmapTimeline">
                 <!-- Populated dynamically by app.js -->
@@ -376,6 +486,47 @@
   </div>
 
   <!-- ========================================================================
+       MODAL: POMODORO FOCUS TIMER
+       ======================================================================== -->
+  <div class="modal-backdrop" id="pomodoroModal">
+    <div class="modal-card pomo-modal-card">
+      <div class="modal-header">
+        <h3><i class="fa-solid fa-fire" style="color: #ef4444;"></i> Pomodoro Study Sprint</h3>
+        <button class="modal-close-btn" onclick="window.closeModal('pomodoroModal')">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="pomo-mode-tabs">
+          <button class="pomo-mode-tab active" data-mode="focus" onclick="window.pomodoroController.setMode('focus')">25m Focus</button>
+          <button class="pomo-mode-tab" data-mode="shortBreak" onclick="window.pomodoroController.setMode('shortBreak')">5m Break</button>
+          <button class="pomo-mode-tab" data-mode="longBreak" onclick="window.pomodoroController.setMode('longBreak')">15m Break</button>
+        </div>
+
+        <div class="pomo-clock-display" id="pomoMainTime">25:00</div>
+
+        <div class="pomo-controls-group">
+          <button class="btn btn-primary" id="btnPomoToggle" onclick="window.pomodoroController.toggle()">
+            <i class="fa-solid fa-play"></i> Start Focus
+          </button>
+          <button class="btn btn-secondary" onclick="window.pomodoroController.reset()">
+            <i class="fa-solid fa-rotate-left"></i> Reset
+          </button>
+        </div>
+
+        <div class="pomo-session-tracker">
+          <i class="fa-solid fa-award" style="color: var(--accent-warning);"></i>
+          <span>Completed Sprints:</span>
+          <strong id="pomoSessionsCount" style="color: var(--text-primary);">0 Sprints</strong>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="window.closeModal('pomodoroModal')">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================
        MODAL: SETTINGS & YOUTUBE API
        ======================================================================== -->
   <div class="modal-backdrop" id="settingsModal">
@@ -408,8 +559,12 @@
 
   <!-- Application Scripts -->
   <script src="js/data.js"></script>
+  <script src="js/practiceData.js"></script>
   <script src="js/player.js"></script>
   <script src="js/playlistManager.js"></script>
+  <script src="js/notesManager.js"></script>
+  <script src="js/practiceManager.js"></script>
+  <script src="js/pomodoro.js"></script>
   <script src="js/app.js"></script>
 </body>
 </html>
