@@ -222,6 +222,41 @@ window.selectVideo = function(trackId, videoId) {
 };
 
 // ----------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
+// Side Navigation Drawer Controller ("Sideview Plane")
+// ----------------------------------------------------------------------------
+window.toggleSideNav = function(forceState) {
+  const drawer = document.getElementById('sideNavDrawer');
+  const backdrop = document.getElementById('sideNavBackdrop');
+  if (!drawer || !backdrop) return;
+
+  const shouldOpen = typeof forceState === 'boolean' 
+    ? forceState 
+    : !drawer.classList.contains('open');
+
+  if (shouldOpen) {
+    drawer.classList.add('open');
+    backdrop.classList.add('active');
+    document.body.classList.add('side-nav-open');
+  } else {
+    drawer.classList.remove('open');
+    backdrop.classList.remove('active');
+    document.body.classList.remove('side-nav-open');
+  }
+};
+
+window.switchToolkitTab = function(tabId) {
+  const btn = document.querySelector(`.toolkit-tab-btn[data-tab="${tabId}"]`);
+  if (btn) {
+    btn.click();
+    const section = document.querySelector('.toolkit-tabs-container');
+    if (section) {
+      section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }
+};
+
+// ----------------------------------------------------------------------------
 // Render Subject Track View
 // ----------------------------------------------------------------------------
 window.renderTrackView = function(trackId) {
@@ -230,7 +265,7 @@ window.renderTrackView = function(trackId) {
 
   window.appState.currentTrackId = trackId;
 
-  // 1. Update Track Chips Active State
+  // 1. Update Track Chips Active State across both Top Bar & Sideview Plane
   const chips = document.querySelectorAll('.track-chip');
   chips.forEach(chip => {
     if (chip.getAttribute('data-track') === trackId) {
@@ -240,10 +275,25 @@ window.renderTrackView = function(trackId) {
     }
   });
 
-  // 2. Render Playlist Sidebar
+  // 2. Update Side Navigation & Mobile Active Track Labels
+  const sideNavTrackName = document.getElementById('sideNavCurrentTrackName');
+  if (sideNavTrackName) {
+    sideNavTrackName.textContent = track.name || trackId;
+  }
+  const mobileActiveTrackName = document.getElementById('mobileActiveTrackName');
+  if (mobileActiveTrackName) {
+    mobileActiveTrackName.textContent = track.name || trackId;
+  }
+
+  // Auto-close side drawer on smaller viewports when a track is clicked
+  if (window.innerWidth <= 1024) {
+    window.toggleSideNav(false);
+  }
+
+  // 3. Render Playlist Sidebar
   window.renderPlaylistSidebar(trackId);
 
-  // 3. Render Roadmap Timeline in Overview Pane
+  // 4. Render Roadmap Timeline in Overview Pane
   const timeline = document.getElementById('roadmapTimeline');
   if (timeline) {
     timeline.innerHTML = (track.roadmap || []).map(step => `
@@ -254,14 +304,14 @@ window.renderTrackView = function(trackId) {
     `).join('');
   }
 
-  // 4. Load first video in track if available
+  // 5. Load first video in track if available
   if (track.videos && track.videos.length > 0) {
     window.playerController.loadVideo(track.videos[0], trackId, 0);
   } else {
     window.playerController.showPlaceholder("No Videos Available", "Click '+ Add Video / Playlist' to add your custom YouTube learning links.");
   }
 
-  // 5. Refresh Notes Notebook for current track/video
+  // 6. Refresh Notes Notebook for current track/video
   if (window.notesManager) {
     window.notesManager.renderNotes();
   }
@@ -286,26 +336,22 @@ window.updateOverallProgress = function() {
       }
     });
   });
-
-  // Stats panel removed; updateOverallProgress kept for future extension
-  // (DOM elements totalWatchedStat / streakDaysStat are not in current HTML)
 };
-
 
 window.updateTrackChips = function() {
   const tracks = window.appState.tracks;
   Object.keys(tracks).forEach(tKey => {
-    const badge = document.querySelector(`.track-chip[data-track="${tKey}"] .track-badge`);
-    if (badge) {
+    const badges = document.querySelectorAll(`.track-chip[data-track="${tKey}"] .track-badge`);
+    badges.forEach(badge => {
       badge.textContent = `${tracks[tKey].videos ? tracks[tKey].videos.length : 0}`;
-    }
+    });
   });
   // Update My Playlists badge with real count from localStorage
-  const customBadge = document.querySelector('.track-chip[data-track="custom"] .track-badge');
-  if (customBadge) {
-    const customVideos = (tracks['custom'] && tracks['custom'].videos) ? tracks['custom'].videos.length : 0;
-    customBadge.textContent = customVideos;
-  }
+  const customBadges = document.querySelectorAll('.track-chip[data-track="custom"] .track-badge');
+  const customVideos = (tracks['custom'] && tracks['custom'].videos) ? tracks['custom'].videos.length : 0;
+  customBadges.forEach(badge => {
+    badge.textContent = customVideos;
+  });
 };
 
 // ----------------------------------------------------------------------------
@@ -342,13 +388,20 @@ document.addEventListener('DOMContentLoaded', () => {
   window.practiceManager = new PracticeManager();
   window.pomodoroController = new PomodoroController();
 
-  // 2. Setup Track Switching Chips
+  // 2. Setup Track Switching Chips (Top Bar + Sideview Plane)
   const trackChips = document.querySelectorAll('.track-chip');
   trackChips.forEach(chip => {
     chip.addEventListener('click', () => {
       const trackId = chip.getAttribute('data-track');
       window.renderTrackView(trackId);
     });
+  });
+
+  // Close Side Nav on Escape key
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      window.toggleSideNav(false);
+    }
   });
 
   // 3. Video Player Control Buttons

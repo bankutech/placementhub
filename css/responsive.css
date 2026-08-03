@@ -104,12 +104,21 @@
   /* Show playlist toggle bar */
   .mobile-playlist-toggle { display: block; }
 
-  /* --- HEADER --- */
-
+  /* --- HEADER & SIDE NAV TOGGLE --- */
   .app-header {
     padding: 0 0.85rem;
   }
-  .brand-title { font-size: 1.1rem; }
+  .header-left-group {
+    gap: 0.5rem;
+  }
+  .btn-side-nav-toggle {
+    padding: 0.45rem 0.6rem;
+    font-size: 0.85rem;
+  }
+  .btn-side-nav-label {
+    display: none;
+  }
+  .brand-title { font-size: 1.05rem; }
   .brand-icon-box {
     width: 34px;
     height: 34px;
@@ -122,16 +131,16 @@
     font-size: 0.82rem;
   }
 
-  /* --- TRACK CHIPS: scroll horizontally, smaller pills --- */
+  /* --- TRACK NAV: Show Clean Mobile Track Selector, Keep Chips in Sideview Drawer --- */
+  .track-nav-container {
+    padding: 0.5rem 0.85rem;
+  }
+  .mobile-track-selector-btn {
+    display: flex !important;
+  }
   .track-chips {
-    gap: 0.4rem;
+    display: none; /* Replaced by Sideview Plane on mobile to eliminate all overflow bugs */
   }
-  .track-chip {
-    padding: 0.45rem 0.75rem !important;
-    font-size: 0.78rem !important;
-    gap: 0.4rem !important;
-  }
-  .track-badge { display: none; } /* hide count badge on mobile */
 
   /* --- TRACK BANNER --- */
   .track-banner {
@@ -266,19 +275,18 @@
   }
   .brand-title { font-size: 1rem; }
 
-  /* --- TRACK CHIPS: ultra compact --- */
-  .track-chip {
-    padding: 0.38rem 0.6rem !important;
-    font-size: 0.72rem !important;
-    gap: 0.3rem !important;
-  }
-  .track-chip span:first-of-type {
-    display: none; /* hide text, show icon only */
-  }
-  .track-chip i { font-size: 0.9rem !important; }
-
   /* --- TRACK NAV: tighten --- */
   .track-nav-container { padding: 0.4rem 0.65rem; }
+  .mobile-track-selector-btn {
+    padding: 0.65rem 0.85rem;
+  }
+  .mobile-track-active-name {
+    font-size: 0.86rem;
+  }
+  .mobile-change-pill {
+    padding: 0.2rem 0.5rem;
+    font-size: 0.72rem;
+  }
 
   /* --- MAIN WORKSPACE --- */
   .main-workspace { padding: 0.65rem 0.65rem 1.5rem; gap: 0.75rem; }

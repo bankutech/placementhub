@@ -169,11 +169,15 @@ class PomodoroController {
   updateUI() {
     const timeStr = this.formatTime(this.timeLeft);
 
-    // Header badge
+    // Header badge & Side Nav pill
     const headerDisplay = document.getElementById('headerPomodoroDisplay');
+    const sideNavPomoPill = document.getElementById('sideNavPomoPill');
     const headerBtn = document.getElementById('btnHeaderPomodoro');
     if (headerDisplay) {
       headerDisplay.textContent = timeStr;
+    }
+    if (sideNavPomoPill) {
+      sideNavPomoPill.textContent = timeStr;
     }
 
     // Modal or widget elements
