@@ -444,7 +444,9 @@
 
   /* --- SUB-LECTURES --- */
   .playlist-sub-lectures-container { margin-left: 1rem; }
-  .sub-lecture-title { font-size: 0.72rem; }
+  .playlist-sub-lecture-thumb { width: 56px; height: 32px; }
+  .playlist-sub-lecture { padding: 6px 10px; gap: 10px; }
+  .sub-lecture-title { font-size: 0.8rem; }
 
   /* --- MODAL --- */
   .modal-body { max-height: 60vh; padding: 0.85rem; }
