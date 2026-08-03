@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="110" fill="#07090f"/>
+  <circle cx="256" cy="256" r="200" fill="rgba(99,102,241,0.12)"/>
+  <circle cx="256" cy="256" r="160" fill="none" stroke="rgba(34,211,238,0.25)" stroke-width="2"/>
+  <!-- Graduation cap body -->
+  <polygon points="256,140 380,200 256,260 132,200" fill="#6366f1"/>
+  <rect x="236" y="258" width="40" height="80" rx="4" fill="#6366f1"/>
+  <ellipse cx="256" cy="338" rx="50" ry="20" fill="#4f46e5"/>
+  <!-- Tassel -->
+  <line x1="380" y1="200" x2="380" y2="270" stroke="#22d3ee" stroke-width="4"/>
+  <circle cx="380" cy="276" r="8" fill="#22d3ee"/>
+  <!-- Glow ring -->
+  <circle cx="256" cy="256" r="195" fill="none" stroke="rgba(99,102,241,0.4)" stroke-width="3"/>
+</svg>
