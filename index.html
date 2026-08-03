@@ -175,43 +175,65 @@
         </div>
 
 
-        <!-- Video Player Action Toolbar -->
-        <div class="player-control-bar">
-          <div class="player-controls-left">
-            <button class="btn-ctrl btn-play-pause" id="btnTogglePlay" title="Play / Pause Lecture (Space / K)">
-              <i class="fa-solid fa-pause"></i> <span id="playPauseText">Pause</span>
-            </button>
-            <button class="btn-ctrl" id="btnRewind10" title="Rewind 10s (J / ←)">
-              <i class="fa-solid fa-rotate-left"></i> -10s
-            </button>
-            <button class="btn-ctrl" id="btnForward10" title="Forward 10s (L / →)">
-              <i class="fa-solid fa-rotate-right"></i> +10s
-            </button>
-            <button class="btn-ctrl" id="btnPrevVideo" title="Previous Video (P)">
-              <i class="fa-solid fa-backward-step"></i> Prev
-            </button>
-            <button class="btn-ctrl" id="btnNextVideo" title="Next Video (N)">
-              Next <i class="fa-solid fa-forward-step"></i>
-            </button>
-            <button class="btn-ctrl btn-mark-watched" id="btnMarkWatched" title="Toggle Completion (M)">
-              <i class="fa-regular fa-circle-check"></i> Mark Completed
-            </button>
+        <!-- YouTube-Style Premium Player Control Bar -->
+        <div class="player-control-bar yt-style-control-bar" id="playerControlBar">
+          <!-- Full-Width Interactive Timeline Scrubber -->
+          <div class="yt-progress-container" id="ytProgressContainer" title="Click or drag to seek">
+            <div class="yt-progress-buffered" id="ytProgressBuffered"></div>
+            <div class="yt-progress-played" id="ytProgressPlayed" style="width: 0%;">
+              <div class="yt-scrubber-handle"></div>
+            </div>
           </div>
 
-          <div class="player-controls-right">
-            <button class="btn-ctrl btn-clean-mode" id="btnCleanMode" title="Clean View Mode: Hides YouTube UI overlay and popups for clear note-taking (C)">
-              <i class="fa-solid fa-wand-magic-sparkles"></i> <span>Clean View</span>
-            </button>
-            <button class="btn-ctrl" id="btnOpenYouTube" title="Open this playlist / video on YouTube">
-              <i class="fa-brands fa-youtube" style="color: #ef4444;"></i> Open in YouTube
-            </button>
-            <label class="toggle-switch-label" title="Automatically load next video in playlist">
-              <input type="checkbox" id="autoPlayNextCheck" checked />
-              <span>Autoplay Next</span>
-            </label>
-            <button class="btn-ctrl" id="btnTheaterMode" title="Toggle Theater / Focus Mode (T)">
-              <i class="fa-solid fa-expand"></i> Theater Mode
-            </button>
+          <div class="yt-controls-row">
+            <!-- Left Controls: Play, Prev, Next, Rewind, Forward, Volume, Time, Chapter -->
+            <div class="yt-controls-left">
+              <button class="yt-icon-btn btn-play-pause" id="btnTogglePlay" title="Play / Pause (Space / K)">
+                <i class="fa-solid fa-play" id="playPauseIcon"></i>
+              </button>
+              <button class="yt-icon-btn" id="btnPrevVideo" title="Previous Video (P)">
+                <i class="fa-solid fa-backward-step"></i>
+              </button>
+              <button class="yt-icon-btn" id="btnNextVideo" title="Next Video (N)">
+                <i class="fa-solid fa-forward-step"></i>
+              </button>
+              <button class="yt-icon-btn" id="btnRewind10" title="Rewind 10s (J / ←)">
+                <i class="fa-solid fa-rotate-left"></i>
+              </button>
+              <button class="yt-icon-btn" id="btnForward10" title="Forward 10s (L / →)">
+                <i class="fa-solid fa-rotate-right"></i>
+              </button>
+              <div class="yt-volume-box">
+                <button class="yt-icon-btn" id="btnVolumeMute" title="Mute / Unmute (M)">
+                  <i class="fa-solid fa-volume-high" id="volumeIcon"></i>
+                </button>
+              </div>
+              <div class="yt-time-display" id="ytTimeDisplay">
+                <span id="ytCurrentTime">0:00</span> / <span id="ytTotalTime">16:19</span>
+              </div>
+              <div class="yt-chapter-pill" id="ytChapterPill" title="Current Lecture">
+                <span id="ytChapterTitle">Introduction</span> <i class="fa-solid fa-chevron-right"></i>
+              </div>
+            </div>
+
+            <!-- Right Controls: Mark Done, Clean View, Speed, Theater, Fullscreen -->
+            <div class="yt-controls-right">
+              <button class="btn-ctrl btn-mark-watched" id="btnMarkWatched" title="Toggle Completion (M)">
+                <i class="fa-regular fa-circle-check"></i> <span class="hide-on-mobile">Mark Done</span>
+              </button>
+              <button class="btn-ctrl btn-clean-mode active" id="btnCleanMode" title="Clean View Mode (C)">
+                <i class="fa-solid fa-wand-magic-sparkles"></i> <span>Clean View</span>
+              </button>
+              <button class="yt-icon-btn" id="btnSpeedMenu" title="Playback Speed">
+                <span id="playbackSpeedText">1x</span>
+              </button>
+              <button class="yt-icon-btn" id="btnTheaterMode" title="Theater Mode (T)">
+                <i class="fa-solid fa-table-cells-large"></i>
+              </button>
+              <button class="yt-icon-btn" id="btnFullscreen" title="Fullscreen (F)">
+                <i class="fa-solid fa-expand"></i>
+              </button>
+            </div>
           </div>
         </div>
 

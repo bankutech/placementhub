@@ -43,21 +43,144 @@ class VideoPlayerController {
   // YouTube API Communication & Clean Mode Helpers
   // --------------------------------------------------------------------------
   initInteractionLayer() {
-    if (!this.videoInteractionLayer) return;
-    
-    let clickTimeout = null;
-    this.videoInteractionLayer.addEventListener('click', (e) => {
-      if (clickTimeout === null) {
-        clickTimeout = setTimeout(() => {
+    if (this.videoInteractionLayer) {
+      let clickTimeout = null;
+      this.videoInteractionLayer.addEventListener('click', (e) => {
+        if (clickTimeout === null) {
+          clickTimeout = setTimeout(() => {
+            clickTimeout = null;
+            this.togglePlay();
+          }, 220);
+        } else {
+          clearTimeout(clickTimeout);
           clickTimeout = null;
-          this.togglePlay();
-        }, 220);
-      } else {
-        clearTimeout(clickTimeout);
-        clickTimeout = null;
-        this.toggleTheaterMode();
-      }
+          this.toggleTheaterMode();
+        }
+      });
+    }
+
+    this.initScrubber();
+    this.initControls();
+    this.startProgressTicker();
+  }
+
+  initScrubber() {
+    const progressContainer = document.getElementById('ytProgressContainer');
+    const progressPlayed = document.getElementById('ytProgressPlayed');
+    if (!progressContainer || !progressPlayed) return;
+
+    const handleSeek = (e) => {
+      const rect = progressContainer.getBoundingClientRect();
+      const pos = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+      this.currentTime = pos * this.duration;
+      progressPlayed.style.width = `${pos * 100}%`;
+      this.sendYTCommand('seekTo', [this.currentTime, true]);
+      this.updateTimeDisplay();
+    };
+
+    let isDragging = false;
+    progressContainer.addEventListener('mousedown', (e) => {
+      isDragging = true;
+      handleSeek(e);
     });
+
+    window.addEventListener('mousemove', (e) => {
+      if (isDragging) handleSeek(e);
+    });
+
+    window.addEventListener('mouseup', () => {
+      isDragging = false;
+    });
+
+    progressContainer.addEventListener('touchstart', (e) => {
+      if (e.touches && e.touches[0]) {
+        handleSeek(e.touches[0]);
+      }
+    }, { passive: true });
+  }
+
+  initControls() {
+    this.duration = 979; // Default estimate 16:19
+    this.currentTime = 0;
+    this.isMuted = false;
+    this.playbackSpeeds = [1, 1.25, 1.5, 2, 0.75];
+    this.speedIndex = 0;
+
+    const btnVolume = document.getElementById('btnVolumeMute');
+    if (btnVolume) {
+      btnVolume.addEventListener('click', () => this.toggleMute());
+    }
+
+    const btnSpeed = document.getElementById('btnSpeedMenu');
+    if (btnSpeed) {
+      btnSpeed.addEventListener('click', () => this.cycleSpeed());
+    }
+
+    const btnFullscreen = document.getElementById('btnFullscreen');
+    if (btnFullscreen) {
+      btnFullscreen.addEventListener('click', () => this.toggleFullscreen());
+    }
+  }
+
+  startProgressTicker() {
+    if (this.tickerInterval) clearInterval(this.tickerInterval);
+    this.tickerInterval = setInterval(() => {
+      if (this.isPlaying && this.currentTime < this.duration) {
+        this.currentTime += 1;
+        const pct = (this.currentTime / this.duration) * 100;
+        const progressPlayed = document.getElementById('ytProgressPlayed');
+        if (progressPlayed) {
+          progressPlayed.style.width = `${pct}%`;
+        }
+        this.updateTimeDisplay();
+      }
+    }, 1000);
+  }
+
+  updateTimeDisplay() {
+    const curElem = document.getElementById('ytCurrentTime');
+    const totElem = document.getElementById('ytTotalTime');
+    if (curElem) curElem.textContent = this.formatTime(this.currentTime);
+    if (totElem) totElem.textContent = this.formatTime(this.duration);
+  }
+
+  formatTime(secs) {
+    const m = Math.floor(secs / 60);
+    const s = Math.floor(secs % 60);
+    return `${m}:${s < 10 ? '0' : ''}${s}`;
+  }
+
+  toggleMute() {
+    this.isMuted = !this.isMuted;
+    this.sendYTCommand(this.isMuted ? 'mute' : 'unMute');
+    const volIcon = document.getElementById('volumeIcon');
+    if (volIcon) {
+      volIcon.className = this.isMuted ? 'fa-solid fa-volume-xmark' : 'fa-solid fa-volume-high';
+    }
+    window.showToast(this.isMuted ? "🔇 Muted" : "🔊 Unmuted", "info");
+  }
+
+  cycleSpeed() {
+    this.speedIndex = (this.speedIndex + 1) % this.playbackSpeeds.length;
+    const speed = this.playbackSpeeds[this.speedIndex];
+    this.sendYTCommand('setPlaybackRate', [speed]);
+    const speedText = document.getElementById('playbackSpeedText');
+    if (speedText) {
+      speedText.textContent = `${speed}x`;
+    }
+    window.showToast(`⚡ Playback Speed: ${speed}x`, "info");
+  }
+
+  toggleFullscreen() {
+    const wrapper = document.getElementById('videoFrameWrapper');
+    if (!wrapper) return;
+    if (!document.fullscreenElement) {
+      wrapper.requestFullscreen().catch(err => {
+        console.warn("Fullscreen request error:", err);
+      });
+    } else {
+      document.exitFullscreen();
+    }
   }
 
   flashIndicator(iconClass) {
@@ -103,19 +226,17 @@ class VideoPlayerController {
   }
 
   seekRelative(seconds) {
-    this.sendYTCommand('seekTo', [seconds, true]);
+    this.currentTime = Math.max(0, Math.min(this.duration, this.currentTime + seconds));
+    this.sendYTCommand('seekTo', [this.currentTime, true]);
     this.flashIndicator(seconds > 0 ? 'fa-forward' : 'fa-backward');
+    this.updateTimeDisplay();
     window.showToast(seconds > 0 ? `⏩ +${seconds}s` : `⏪ ${seconds}s`, "info");
   }
 
   updatePlayPauseButton() {
-    if (!this.btnTogglePlay) return;
-    if (this.isPlaying) {
-      this.btnTogglePlay.innerHTML = `<i class="fa-solid fa-pause"></i> <span id="playPauseText">Pause</span>`;
-      this.btnTogglePlay.classList.remove('is-paused');
-    } else {
-      this.btnTogglePlay.innerHTML = `<i class="fa-solid fa-play"></i> <span id="playPauseText">Play</span>`;
-      this.btnTogglePlay.classList.add('is-paused');
+    const icon = document.getElementById('playPauseIcon');
+    if (icon) {
+      icon.className = this.isPlaying ? 'fa-solid fa-pause' : 'fa-solid fa-play';
     }
   }
 
@@ -286,6 +407,10 @@ class VideoPlayerController {
 
     // Update metadata titles and badges
     if (this.videoTitleElem) this.videoTitleElem.textContent = video.title;
+    const chapterTitleElem = document.getElementById('ytChapterTitle');
+    if (chapterTitleElem) {
+      chapterTitleElem.textContent = video.title ? (video.title.length > 28 ? video.title.substring(0, 28) + '...' : video.title) : "Lecture View";
+    }
     if (this.videoDescElem) this.videoDescElem.textContent = video.description || "Comprehensive placement preparation video lecture.";
     if (this.videoTrackBadge) this.videoTrackBadge.textContent = this.currentTrackId.toUpperCase();
     if (this.videoLevelBadge) this.videoLevelBadge.textContent = video.level || "All Levels";
