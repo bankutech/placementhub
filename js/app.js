@@ -411,8 +411,10 @@ window.openModal = function(modalId) {
   if (modal.parentElement !== document.body) {
     document.body.appendChild(modal);
   }
-  modal.classList.add('active');
+  // Lock scroll and reset any scroll offset so modal is truly centered
   document.body.style.overflow = 'hidden';
+  document.documentElement.style.overflow = 'hidden';
+  modal.classList.add('active');
 };
 
 window.closeModal = function(modalId) {
@@ -420,6 +422,7 @@ window.closeModal = function(modalId) {
   if (!modal) return;
   modal.classList.remove('active');
   document.body.style.overflow = '';
+  document.documentElement.style.overflow = '';
 };
 
 window.openAddVideoModal = function(trackId = null) {
