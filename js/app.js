@@ -360,7 +360,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const btnForward10 = document.getElementById('btnForward10');
   const btnPrev = document.getElementById('btnPrevVideo');
   const btnNext = document.getElementById('btnNextVideo');
-  const btnCleanMode = document.getElementById('btnCleanMode');
   const btnTheater = document.getElementById('btnTheaterMode');
   const btnMark = document.getElementById('btnMarkWatched');
 
@@ -380,7 +379,6 @@ document.addEventListener('DOMContentLoaded', () => {
   if (btnTogglePlay) btnTogglePlay.addEventListener('click', () => window.playerController.togglePlay());
   if (btnRewind10) btnRewind10.addEventListener('click', () => window.playerController.seekRelative(-10));
   if (btnForward10) btnForward10.addEventListener('click', () => window.playerController.seekRelative(10));
-  if (btnCleanMode) btnCleanMode.addEventListener('click', () => window.playerController.toggleCleanMode());
   if (btnPrev) btnPrev.addEventListener('click', () => window.playerController.playPrev());
   if (btnNext) btnNext.addEventListener('click', () => window.playerController.playNext());
   if (btnTheater) btnTheater.addEventListener('click', () => window.playerController.toggleTheaterMode());
@@ -567,8 +565,6 @@ document.addEventListener('DOMContentLoaded', () => {
     } else if (e.key === 'l' || e.key === 'L' || e.key === 'ArrowRight') {
       e.preventDefault();
       window.playerController.seekRelative(10);
-    } else if (e.key === 'c' || e.key === 'C') {
-      window.playerController.toggleCleanMode();
     } else if (e.key === 'n' || e.key === 'N') {
       window.playerController.playNext();
     } else if (e.key === 'p' || e.key === 'P') {

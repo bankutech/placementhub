@@ -49,76 +49,6 @@
   border: 0;
 }
 
-/* Clean Zen Click & Gesture Layer (Eliminates YouTube Center UI & Overlays) */
-.video-interaction-layer {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 4;
-  cursor: pointer;
-  background: transparent;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  user-select: none;
-}
-
-.video-interaction-layer.disabled {
-  pointer-events: none;
-  display: none;
-}
-
-.video-center-indicator {
-  width: 72px;
-  height: 72px;
-  border-radius: 50%;
-  background: rgba(15, 23, 42, 0.8);
-  backdrop-filter: blur(8px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #fff;
-  font-size: 1.8rem;
-  opacity: 0;
-  transform: scale(0.7);
-  transition: opacity 0.25s ease, transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  pointer-events: none;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
-}
-
-.video-center-indicator.flash {
-  opacity: 1;
-  transform: scale(1.1);
-}
-
-.clean-mode-floating-badge {
-  position: absolute;
-  top: 12px;
-  left: 12px;
-  padding: 4px 12px;
-  border-radius: 20px;
-  background: rgba(15, 23, 42, 0.85);
-  backdrop-filter: blur(6px);
-  border: 1px solid rgba(168, 85, 247, 0.4);
-  color: #d8b4fe;
-  font-size: 0.72rem;
-  font-weight: 600;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity 0.3s ease;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-}
-
-.video-frame-wrapper:hover .clean-mode-floating-badge {
-  opacity: 0.9;
-}
-
 .video-placeholder-overlay {
   position: absolute;
   top: 0;
@@ -328,26 +258,6 @@
   color: #fff;
   border-color: #10b981;
   box-shadow: 0 0 15px rgba(16, 185, 129, 0.4);
-}
-
-.btn-ctrl.btn-clean-mode {
-  background: rgba(168, 85, 247, 0.15);
-  border-color: rgba(168, 85, 247, 0.4);
-  color: #c084fc;
-  font-weight: 600;
-}
-
-.btn-ctrl.btn-clean-mode:hover {
-  background: rgba(168, 85, 247, 0.25);
-  border-color: rgba(168, 85, 247, 0.6);
-  color: #e9d5ff;
-}
-
-.btn-ctrl.btn-clean-mode.active {
-  background: #9333ea;
-  color: #ffffff;
-  border-color: #a855f7;
-  box-shadow: 0 0 15px rgba(168, 85, 247, 0.45);
 }
 
 .toggle-switch-label {

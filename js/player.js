@@ -8,17 +8,12 @@ class VideoPlayerController {
     this.currentVideoIndex = 0;
     this.isAutoplayEnabled = true;
     this.isTheaterMode = false;
-    // Default to true for crystal clear zero-distraction note-taking
-    this.isCleanMode = localStorage.getItem('placementhub_clean_mode') !== 'false';
     this.isPlaying = true;
     this.watchedVideos = new Set();
 
     // DOM Elements
     this.videoIframe = document.getElementById('videoIframe');
     this.videoPlaceholder = document.getElementById('videoPlaceholder');
-    this.videoInteractionLayer = document.getElementById('videoInteractionLayer');
-    this.videoCenterIndicator = document.getElementById('videoCenterIndicator');
-    this.cleanModeBadge = document.getElementById('cleanModeBadge');
     this.videoTitleElem = document.getElementById('currentVideoTitle');
     this.videoDescElem = document.getElementById('currentVideoDesc');
     this.videoTrackBadge = document.getElementById('videoTrackBadge');
@@ -26,7 +21,6 @@ class VideoPlayerController {
     this.videoCategoryBadge = document.getElementById('videoCategoryBadge');
     this.btnMarkWatched = document.getElementById('btnMarkWatched');
     this.btnTogglePlay = document.getElementById('btnTogglePlay');
-    this.btnCleanMode = document.getElementById('btnCleanMode');
     this.playlistItemsContainer = document.getElementById('playlistItemsContainer');
     this.playlistCountChip = document.getElementById('playlistCountChip');
     this.learningStageGrid = document.getElementById('learningStageGrid');
@@ -35,35 +29,14 @@ class VideoPlayerController {
     this.currentPlaylistId = null;
 
     this.loadWatchedState();
-    this.initInteractionLayer();
-    this.updateCleanModeButton();
-  }
-
-  // --------------------------------------------------------------------------
-  // YouTube API Communication & Clean Mode Helpers
-  // --------------------------------------------------------------------------
-  initInteractionLayer() {
-    if (this.videoInteractionLayer) {
-      let clickTimeout = null;
-      this.videoInteractionLayer.addEventListener('click', (e) => {
-        if (clickTimeout === null) {
-          clickTimeout = setTimeout(() => {
-            clickTimeout = null;
-            this.togglePlay();
-          }, 220);
-        } else {
-          clearTimeout(clickTimeout);
-          clickTimeout = null;
-          this.toggleTheaterMode();
-        }
-      });
-    }
-
     this.initScrubber();
     this.initControls();
     this.startProgressTicker();
   }
 
+  // --------------------------------------------------------------------------
+  // YouTube API Communication & Player Controls
+  // --------------------------------------------------------------------------
   initScrubber() {
     const progressContainer = document.getElementById('ytProgressContainer');
     const progressPlayed = document.getElementById('ytProgressPlayed');
@@ -100,7 +73,7 @@ class VideoPlayerController {
   }
 
   initControls() {
-    this.duration = 979; // Default estimate 16:19
+    this.duration = 979; // Default 16:19
     this.currentTime = 0;
     this.isMuted = false;
     this.playbackSpeeds = [1, 1.25, 1.5, 2, 0.75];
@@ -183,17 +156,6 @@ class VideoPlayerController {
     }
   }
 
-  flashIndicator(iconClass) {
-    if (!this.videoCenterIndicator) return;
-    this.videoCenterIndicator.innerHTML = `<i class="fa-solid ${iconClass}"></i>`;
-    this.videoCenterIndicator.classList.add('flash');
-    setTimeout(() => {
-      if (this.videoCenterIndicator) {
-        this.videoCenterIndicator.classList.remove('flash');
-      }
-    }, 450);
-  }
-
   sendYTCommand(func, args = []) {
     if (this.videoIframe && this.videoIframe.contentWindow) {
       try {
@@ -209,17 +171,15 @@ class VideoPlayerController {
   }
 
   getEmbedParams() {
-    const base = 'enablejsapi=1&rel=0&iv_load_policy=3&modestbranding=1&cc_load_policy=0';
-    return this.isCleanMode ? `${base}&controls=0` : `${base}&controls=1`;
+    return 'enablejsapi=1&rel=0&iv_load_policy=3&modestbranding=1&controls=1&playsinline=1';
   }
 
   togglePlay() {
     this.isPlaying = !this.isPlaying;
     this.sendYTCommand(this.isPlaying ? 'playVideo' : 'pauseVideo');
-    this.flashIndicator(this.isPlaying ? 'fa-play' : 'fa-pause');
     this.updatePlayPauseButton();
     if (!this.isPlaying) {
-      window.showToast("⏸ Paused — 100% Clean Screen for Notes", "info");
+      window.showToast("⏸ Paused", "info");
     } else {
       window.showToast("▶ Resumed", "info");
     }
@@ -228,7 +188,6 @@ class VideoPlayerController {
   seekRelative(seconds) {
     this.currentTime = Math.max(0, Math.min(this.duration, this.currentTime + seconds));
     this.sendYTCommand('seekTo', [this.currentTime, true]);
-    this.flashIndicator(seconds > 0 ? 'fa-forward' : 'fa-backward');
     this.updateTimeDisplay();
     window.showToast(seconds > 0 ? `⏩ +${seconds}s` : `⏪ ${seconds}s`, "info");
   }
@@ -237,44 +196,6 @@ class VideoPlayerController {
     const icon = document.getElementById('playPauseIcon');
     if (icon) {
       icon.className = this.isPlaying ? 'fa-solid fa-pause' : 'fa-solid fa-play';
-    }
-  }
-
-  toggleCleanMode() {
-    this.isCleanMode = !this.isCleanMode;
-    localStorage.setItem('placementhub_clean_mode', this.isCleanMode ? 'true' : 'false');
-    this.updateCleanModeButton();
-    
-    // Reload current video with new parameters
-    const track = window.appState.tracks[this.currentTrackId];
-    if (track && track.videos[this.currentVideoIndex]) {
-      this.loadVideo(this.currentTrackId, this.currentVideoIndex);
-    }
-
-    if (this.isCleanMode) {
-      window.showToast("🧼 Clean View ON: All overlays, buttons & popups removed!", "success");
-    } else {
-      window.showToast("Standard YouTube Player View Restored", "info");
-    }
-  }
-
-  updateCleanModeButton() {
-    if (this.btnCleanMode) {
-      if (this.isCleanMode) {
-        this.btnCleanMode.classList.add('active');
-        this.btnCleanMode.innerHTML = `<i class="fa-solid fa-check"></i> <span>Clean View: ON</span>`;
-      } else {
-        this.btnCleanMode.classList.remove('active');
-        this.btnCleanMode.innerHTML = `<i class="fa-solid fa-wand-magic-sparkles"></i> <span>Clean View</span>`;
-      }
-    }
-
-    if (this.videoInteractionLayer) {
-      if (this.isCleanMode) {
-        this.videoInteractionLayer.classList.remove('disabled');
-      } else {
-        this.videoInteractionLayer.classList.add('disabled');
-      }
     }
   }
 
