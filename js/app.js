@@ -276,25 +276,28 @@ window.renderTrackView = function(trackId) {
   });
 
   // 2. Update Side Navigation, Header Toggle, Desktop Title & Playlist Sidebar Labels
+  const trackName = track.name || trackId;
+  const trackIconClass = track.icon || 'fa-solid fa-graduation-cap';
+
   const headerActiveTrackLabel = document.getElementById('headerActiveTrackLabel');
   if (headerActiveTrackLabel) {
-    headerActiveTrackLabel.textContent = track.name || trackId;
+    headerActiveTrackLabel.textContent = trackName.replace(' Placement Track', '').replace(' Complete Track', '').replace(' Mastery', '');
   }
   const headerDesktopTitle = document.getElementById('headerDesktopTitle');
   if (headerDesktopTitle) {
-    headerDesktopTitle.textContent = `${track.icon || '☕'} ${track.name || trackId}`;
+    headerDesktopTitle.innerHTML = `<i class="${trackIconClass}" style="margin-right: 6px; color: var(--accent-secondary);"></i> ${trackName}`;
   }
   const playlistSidebarTrackName = document.getElementById('playlistSidebarTrackName');
   if (playlistSidebarTrackName) {
-    playlistSidebarTrackName.textContent = track.name || trackId;
+    playlistSidebarTrackName.textContent = trackName;
   }
   const sideNavTrackName = document.getElementById('sideNavCurrentTrackName');
   if (sideNavTrackName) {
-    sideNavTrackName.textContent = track.name || trackId;
+    sideNavTrackName.innerHTML = `<i class="${trackIconClass}" style="margin-right: 6px; color: var(--accent-secondary);"></i> ${trackName}`;
   }
   const mobileActiveTrackName = document.getElementById('mobileActiveTrackName');
   if (mobileActiveTrackName) {
-    mobileActiveTrackName.textContent = track.name || trackId;
+    mobileActiveTrackName.innerHTML = `<i class="${trackIconClass}" style="margin-right: 6px; color: var(--accent-secondary);"></i> ${trackName}`;
   }
 
   // Auto-close side drawer on smaller viewports when a track is clicked
