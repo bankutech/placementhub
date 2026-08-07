@@ -8,15 +8,14 @@
 
 - 🔄 **Zero-Tab Switching**: Watch full YouTube placement courses, playlists, and tutorials directly inside the app without switching tabs or losing focus.
 - ⚡ **Dynamic Video / Playlist Importer**: Add any YouTube playlist or video URL on-the-fly — it automatically gets parsed, categorized, and persisted into your custom playlist track.
-- 💻 **Live Code Playground**: Interactive in-browser multi-language code runner and editor with pre-filled placement templates for Java, C++, C, Python, and JavaScript.
 - 📝 **Timestamped Placement Notes**: Capture key notes and insights synced with the video playback timestamp, and export them as clean Markdown files (`.md`).
-- 🎯 **Company Cheat Sheets & HR Prep**: Instant flashcards for Core CS subjects (Operating Systems, DBMS, Computer Networks, OOPs) and behavioral HR round questions.
-- 🧠 **Interactive Interview Quiz Engine**: Test your readiness with multiple-choice questions from top company placement tests (TCS, Infosys, Amazon, Wipro, Cognizant, Product Startups).
-- 💾 **100% Local Persistence**: All custom playlists, notes, code snippets, and active video progress are automatically saved to `localStorage`.
+- 🎯 **Curated Placement Roadmap**: A step-by-step track through Core CS fundamentals (Operating Systems, DBMS, Computer Networks, OOPs) with hand-picked videos for each stage.
+- 🧩 **LeetCode & GFG Practice Tracker**: A curated set of must-do DSA problems with difficulty tags, direct links, and completion tracking.
+- 💾 **Local Persistence + Backup**: Custom playlists, notes, and progress save to `localStorage` automatically, with one-click export/import in Settings so you can back up or move to another browser.
 
 ---
 
-## 📚 Master Placement Curriculum (12 Preloaded Playlists & Courses)
+## 📚 Master Placement Curriculum (13 Preloaded Playlists & Courses)
 
 PlacementHub comes pre-configured with the tech community's most acclaimed placement courses:
 
@@ -30,6 +29,7 @@ PlacementHub comes pre-configured with the tech community's most acclaimed place
 | 6 | **Complete Java & DSA Bootcamp** | Kunal Kushwaha | Java & DSA | `PL9gnSGHSqcnr_DxHsP7AW9ftq0AtAyYqJ` |
 | 7 | **DSA Practice & C++ Course** | Apna College | C++ & Algorithms | `PLfqMhTWNBTe137I_EPQd34TsgV6IO55pt` |
 | 8 | **Python Language Full Course (2025-26)** | Jenny's Lectures | Python Track | `PLGjplNEQ1it8-0CmoljS5yeV-GlKSUEt0` |
+| 8b | **C++ STL Complete Tutorial — One Shot** | Apna College | C++ & STL | `okhdtEk1iKk` |
 | 9 | **C Language Full Course for Beginners (10.5h)** | Apna College | C Masterclass | `irqbmMNs2Bo` |
 | 10 | **Striver's A2Z DSA Course & Placement Series** | takeUforward | Complete DSA Sheet | `PLgUwDviBIf0oF6QL8m22w1hIDC1vJ_BHz` |
 | 11 | **Core Engineering & Placement Series** | Neso Academy | Core CS / OS / CN | `PLBlnK6fEyqRhgMzWqbZXXd8TrBXtQiV3l` |
@@ -39,12 +39,12 @@ PlacementHub comes pre-configured with the tech community's most acclaimed place
 
 ## 🛠️ Technology Stack & Architecture
 
-- **Frontend**: Semantic HTML5, Vanilla JavaScript (ES6+ Modules), Modern CSS3.
+- **Frontend**: Semantic HTML5, Vanilla JavaScript (ES6+, loaded as classic scripts in a fixed order — no bundler, build step, or module system), Modern CSS3.
 - **Design System**: 
   - **Cyber-Dark Theme**: Deep space background (`#0b0f19`), neon accent borders (`#6366f1`, `#06b6d4`, `#10b981`, `#f59e0b`).
   - **Glassmorphism**: `backdrop-filter: blur(16px)`, translucent layers (`rgba(255,255,255,0.03)`), smooth micro-interactions.
   - **Typography**: Google Fonts (*Outfit* for headings, *Inter* for body, *Fira Code* for syntax).
-  - **Icons**: FontAwesome 6 Pro CDN.
+  - **Icons**: Font Awesome 6 Free (cdnjs).
 - **Video Engine**: YouTube IFrame API with intelligent URL parsing (supports regular videos, `youtu.be` links, and playlist IDs `PL...`).
 - **Storage**: Browser `localStorage` API for client-side state persistence with zero server latency.
 
@@ -53,19 +53,29 @@ PlacementHub comes pre-configured with the tech community's most acclaimed place
 ## 📁 Project Directory Structure
 
 ```text
-quirky-nobel/
-├── index.html              # Main application shell with navbar, video player, sidebar & toolkits
+placementhub/
+├── index.html              # Main application shell — navbar, video player, sidebar & toolkit tabs
+├── manifest.json           # PWA manifest (installable app metadata)
+├── sw.js                   # Service worker — network-first caching for offline support
+├── vercel.json             # Static hosting / deployment config
 ├── README.md               # Project documentation & reference guide
+├── icons/                  # Favicon, PWA icons, apple-touch-icon
 ├── css/
-│   └── style.css           # Complete cyber-dark design system, glassmorphism & responsive layout
+│   ├── main.css             # Base layout, header, navigation
+│   ├── player.css           # Video player & controls
+│   ├── toolkit.css          # Notes / Practice / Roadmap tab styles
+│   ├── components.css       # Buttons, modals, shared UI primitives
+│   ├── style.css            # Visual theme layer (colors, effects, glassmorphism)
+│   └── responsive.css       # Breakpoints for tablet & mobile
 └── js/
-    ├── app.js              # Application bootstrapper, routing & modal management
-    ├── data.js             # Master placement database (roadmaps, videos, cheat sheets, quizzes)
-    ├── player.js           # YouTube video player controller & playback state sync
-    ├── playlistManager.js  # Dynamic track switcher, playlist search & custom link manager
-    ├── codeSandbox.js      # Live multi-language code editor & execution simulation engine
-    ├── notes.js            # Video timestamp notes engine & Markdown export generator
-    └── interviewPrep.js    # Interactive quiz system & core CS flashcards
+    ├── data.js              # Master placement database + shared helpers (escapeHtml, etc.)
+    ├── practiceData.js      # Curated LeetCode / GFG problem set
+    ├── player.js            # YouTube IFrame API controller & playback state
+    ├── playlistManager.js   # Track/video CRUD, localStorage persistence, backup/restore
+    ├── notesManager.js      # Timestamped notes engine & Markdown export
+    ├── practiceManager.js   # Practice tracker UI (filtering, completion state)
+    ├── pomodoro.js          # Focus timer controller
+    └── app.js               # Application bootstrapper, rendering & event wiring
 ```
 
 ---
@@ -80,8 +90,8 @@ quirky-nobel/
 
 #### Option A: Using Python (Recommended)
 ```bash
-# Navigate to the project directory
-cd quirky-nobel
+# Navigate into the project folder (wherever you cloned/extracted it)
+cd placementhub
 
 # Start Python HTTP Server
 python -m http.server 3000
@@ -107,30 +117,36 @@ Click on any track pill in the top navigation bar:
 - 🚀 **C Language**: Apna College 10.5-Hour C masterclass, Neso Academy C series, dynamic memory & output MCQs.
 - 🐍 **Python Track**: Jenny's Lectures & Neso Academy Python full courses, OOPs, and problem solving.
 - 🧩 **DSA & Aptitude**: Striver's A2Z DSA course, Amit Khurana aptitude, and CareerRide shortcuts.
-- ⭐ **My Custom Links**: Your personal library containing all 12 preloaded series + any URLs you add.
+- ⭐ **My Custom Links**: Your personal library containing all 13 preloaded series + any URLs you add.
 
 ### 2. Adding New Videos or Playlists
-1. Click the **"+ Add Video / Link"** button in the header or sidebar.
+1. Click the **"Add Video / Playlist"** button in the header or sidebar.
 2. Paste any YouTube video link (`https://youtube.com/watch?v=...`), short link (`https://youtu.be/...`), or playlist link (`https://youtube.com/playlist?list=...`).
-3. Fill in the title, select the language track, and click **"Save to Track"**.
+3. Fill in the title, select the target track, and click **"Add to Playlist"**.
 4. The video is immediately playable and saved permanently in your browser.
 
 ### 3. Taking Timestamped Notes
-1. Click the **"Notes"** tab below the video player.
+1. Click the **"Timestamped Notes Notebook"** tab below the video player.
 2. Type your note in the input box — it automatically grabs the current video timestamp.
 3. Click **"Save Note"**.
 4. Click any saved timestamp note to jump directly to that moment in the video.
-5. Click **"Export Notes (.md)"** to download all your revision notes formatted in clean Markdown.
+5. Click **"Export .md"** to download all your revision notes formatted in clean Markdown.
 
-### 4. Live Coding While Watching
-1. Click the **"Code Editor"** tab below the player.
-2. Select your language (Java, C++, C, Python, JavaScript).
-3. Write your code and click **"▶ Run Code"** to see live simulated outputs and test cases without switching tabs.
+### 4. Tracking LeetCode & GFG Practice
+1. Click the **"LeetCode & GFG Practice Sheets"** tab below the player.
+2. Filter by difficulty or topic, then click a problem to open it on LeetCode or GeeksforGeeks.
+3. Check a problem off once you've solved it — your progress is saved automatically.
 
-### 5. Practicing Quizzes & Cheatsheets
-1. Click the **"Interview Prep"** tab.
-2. Toggle between **"Topic Cheatsheets"** (OS, DBMS, CN, OOPs) and **"Practice Quiz"** (TCS/Infosys/Amazon placement MCQs).
-3. Select your answers to get instant explanations and score tracking.
+### 5. Following the Placement Roadmap
+1. Click the **"Placement Roadmap & Phases"** tab below the player.
+2. Work through each stage — DSA, Core CS fundamentals (OS, DBMS, CN, OOPs), and interview prep — in order.
+3. Each stage links directly to the curated videos that cover it.
+
+### 6. Backing Up or Resetting Your Data
+1. Open **Settings** (gear icon in the header).
+2. Click **"Export Backup"** to download a JSON snapshot of your playlists and custom videos — handy before clearing browser data or when switching devices.
+3. Click **"Import Backup"** to restore from a previously exported file.
+4. Click **"Reset to Defaults"** to discard custom changes and restore the original curriculum.
 
 ---
 
@@ -138,10 +154,14 @@ Click on any track pill in the top navigation bar:
 
 | Action | Shortcut / Interaction |
 |---|---|
-| Toggle Sidebar | Click `≡` menu button in navbar |
+| Toggle Sidebar | Click the `☰` menu button in the navbar |
 | Jump Video to Timestamp | Click any blue timestamp pill in Notes |
-| Quick Code Reset | Click `↺ Reset Code` in Editor tab |
-| Close Modal | Press `Esc` or click outside modal |
+| Play / Pause | `Space` or `K` |
+| Seek back / forward 10s | `J` / `L` or `←` / `→` |
+| Next / Previous video | `N` / `P` |
+| Toggle watched | `M` |
+| Toggle theater mode | `T` |
+| Close Modal | `Esc` or click outside modal |
 | Search Playlists | Use the search bar in the playlist sidebar |
 
 ---

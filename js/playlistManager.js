@@ -5,21 +5,55 @@
 class PlaylistManager {
   constructor() {
     this.storageKey = 'placementhub_user_playlists_v6';
+    // IDs of shipped/default videos the user has explicitly deleted. Tracked
+    // separately from storageKey because initData() below always rebuilds
+    // from the fresh INITIAL_PLACEMENT_DATA defaults (so new curriculum
+    // additions reach existing users) — without this list, that rebuild had
+    // no way to know a given default was deliberately removed, so it just
+    // came back on every reload.
+    this.deletedDefaultsKey = 'placementhub_deleted_defaults_v6';
+  }
+
+  loadDeletedDefaults() {
+    try {
+      const data = localStorage.getItem(this.deletedDefaultsKey);
+      return new Set(data ? JSON.parse(data) : []);
+    } catch (e) {
+      console.error("Failed to load deleted-defaults list:", e);
+      return new Set();
+    }
+  }
+
+  saveDeletedDefaults(deletedSet) {
+    try {
+      localStorage.setItem(this.deletedDefaultsKey, JSON.stringify(Array.from(deletedSet)));
+    } catch (e) {
+      console.error("Failed to save deleted-defaults list:", e);
+    }
   }
 
   // Initialize tracks data from localStorage or fallback to defaults
   initData() {
+    const deletedDefaults = this.loadDeletedDefaults();
     try {
       const savedData = localStorage.getItem(this.storageKey);
       if (savedData) {
         const parsed = JSON.parse(savedData);
         // Create a deep copy of the fresh INITIAL_PLACEMENT_DATA defaults
         const tracks = JSON.parse(JSON.stringify(INITIAL_PLACEMENT_DATA));
-        
+
+        // Drop any default video the user explicitly deleted before merging
+        Object.keys(tracks).forEach(tKey => {
+          tracks[tKey].videos = tracks[tKey].videos.filter(v => !deletedDefaults.has(v.id));
+        });
+
         // Merge user-added custom videos without overwriting updated defaults
         Object.keys(parsed).forEach(tKey => {
           if (tracks[tKey] && parsed[tKey].videos) {
-            const defaultIds = new Set(tracks[tKey].videos.map(v => v.id));
+            // Compare against the ORIGINAL default ID set, not the
+            // already-filtered copy above, so a just-deleted default isn't
+            // mistaken for a "new" user video and re-added.
+            const defaultIds = new Set((INITIAL_PLACEMENT_DATA[tKey] && INITIAL_PLACEMENT_DATA[tKey].videos || []).map(v => v.id));
             const userVideos = parsed[tKey].videos.filter(v => !defaultIds.has(v.id));
             // Append user videos gracefully
             tracks[tKey].videos.push(...userVideos);
@@ -30,7 +64,13 @@ class PlaylistManager {
     } catch (e) {
       console.error("Failed to load tracks from localStorage, loading defaults:", e);
     }
-    return JSON.parse(JSON.stringify(INITIAL_PLACEMENT_DATA));
+
+    // First-ever load (or corrupted storage) — still respect deletions
+    const fresh = JSON.parse(JSON.stringify(INITIAL_PLACEMENT_DATA));
+    Object.keys(fresh).forEach(tKey => {
+      fresh[tKey].videos = fresh[tKey].videos.filter(v => !deletedDefaults.has(v.id));
+    });
+    return fresh;
   }
 
   // Save current tracks data to localStorage
@@ -85,6 +125,12 @@ class PlaylistManager {
     const tracks = window.appState.tracks;
     if (!tracks[trackId]) return;
 
+    if (DEFAULT_VIDEO_IDS.has(videoId)) {
+      const deletedDefaults = this.loadDeletedDefaults();
+      deletedDefaults.add(videoId);
+      this.saveDeletedDefaults(deletedDefaults);
+    }
+
     tracks[trackId].videos = tracks[trackId].videos.filter(v => v.id !== videoId);
     this.saveData(tracks);
 
@@ -105,6 +151,7 @@ class PlaylistManager {
   resetToDefaults() {
     if (confirm("Are you sure you want to reset all tracks to original defaults? Any custom added videos will be restored.")) {
       localStorage.removeItem(this.storageKey);
+      localStorage.removeItem(this.deletedDefaultsKey);
       window.appState.tracks = JSON.parse(JSON.stringify(INITIAL_PLACEMENT_DATA));
       this.saveData(window.appState.tracks);
       
@@ -131,15 +178,22 @@ class PlaylistManager {
   importData(jsonString) {
     try {
       const parsed = JSON.parse(jsonString);
-      if (parsed && typeof parsed === 'object') {
-        window.appState.tracks = parsed;
-        this.saveData(parsed);
-        window.renderTrackView(window.appState.currentTrackId);
-        window.updateTrackChips();
-        window.updateOverallProgress();
-        window.showToast("📤 Playlists imported successfully!", "success");
-        return true;
+      const looksValid = parsed && typeof parsed === 'object' && !Array.isArray(parsed) &&
+        Object.values(parsed).every(track => track && Array.isArray(track.videos));
+
+      if (!looksValid) {
+        window.showToast("That file doesn't look like a PlacementHub backup.", "warning");
+        return false;
       }
+
+      window.appState.tracks = parsed;
+      localStorage.removeItem(this.deletedDefaultsKey); // don't let old deletions hide restored videos
+      this.saveData(parsed);
+      window.renderTrackView(window.appState.currentTrackId);
+      window.updateTrackChips();
+      window.updateOverallProgress();
+      window.showToast("📤 Playlists imported successfully!", "success");
+      return true;
     } catch (e) {
       window.showToast("Invalid JSON file format!", "warning");
     }

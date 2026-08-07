@@ -671,6 +671,27 @@
             <a href="https://console.cloud.google.com/apis/library/youtube.googleapis.com" target="_blank" rel="noopener noreferrer" style="color: var(--accent-secondary); text-decoration: underline;">Get a free API key here</a>.
           </span>
         </div>
+
+        <hr style="border: none; border-top: 1px solid var(--border-subtle); margin: 1.25rem 0;" />
+
+        <div class="form-group">
+          <label>Playlist Data</label>
+          <span class="form-help" style="display: block; margin-bottom: 0.75rem;">
+            Back up your custom videos and progress, restore them on another device, or reset everything back to the original curriculum.
+          </span>
+          <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+            <button type="button" class="btn btn-secondary" onclick="window.playlistManager.exportData()">
+              <i class="fa-solid fa-download"></i> Export Backup
+            </button>
+            <button type="button" class="btn btn-secondary" onclick="document.getElementById('importFileInput').click()">
+              <i class="fa-solid fa-upload"></i> Import Backup
+            </button>
+            <button type="button" class="btn btn-danger" onclick="window.playlistManager.resetToDefaults()">
+              <i class="fa-solid fa-rotate-left"></i> Reset to Defaults
+            </button>
+            <input type="file" id="importFileInput" accept="application/json,.json" style="display: none;" />
+          </div>
+        </div>
       </div>
       <div class="modal-footer">
         <button class="btn btn-secondary" onclick="window.closeModal('settingsModal')">Cancel</button>
@@ -707,20 +728,20 @@
   </nav>
 
   <!-- Application Scripts (Version 6 Cache-Busted) -->
-  <script src="js/data.js?v=6"></script>
-  <script src="js/practiceData.js?v=6"></script>
-  <script src="js/player.js?v=6"></script>
-  <script src="js/playlistManager.js?v=6"></script>
-  <script src="js/notesManager.js?v=6"></script>
-  <script src="js/practiceManager.js?v=6"></script>
-  <script src="js/pomodoro.js?v=6"></script>
-  <script src="js/app.js?v=6"></script>
+  <script src="js/data.js?v=7"></script>
+  <script src="js/practiceData.js?v=7"></script>
+  <script src="js/player.js?v=7"></script>
+  <script src="js/playlistManager.js?v=7"></script>
+  <script src="js/notesManager.js?v=7"></script>
+  <script src="js/practiceManager.js?v=7"></script>
+  <script src="js/pomodoro.js?v=7"></script>
+  <script src="js/app.js?v=7"></script>
 
   <!-- PWA Service Worker Registration & Live Auto-Update -->
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/sw.js?v=6')
+        navigator.serviceWorker.register('/sw.js?v=7')
           .then(reg => {
             reg.update();
             console.log('PlacementHub SW active & updated:', reg.scope);

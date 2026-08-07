@@ -15,6 +15,7 @@ class PomodoroController {
     this.timerInterval = null;
 
     this.sessionsCompleted = this.loadCompletedSessions();
+    this.restoreTimerState(); // resumes wherever the last session left off (paused)
 
     this.initAudio();
   }
@@ -33,6 +34,41 @@ class PomodoroController {
       localStorage.setItem('placementhub_pomo_sessions', this.sessionsCompleted.toString());
     } catch (e) {
       console.error(e);
+    }
+  }
+
+  // Restores mode + time remaining across page reloads. Always comes back
+  // paused (never auto-resumes running) so a tab left open/closed for a
+  // long time can't silently keep "running" against a clock nobody saw.
+  restoreTimerState() {
+    try {
+      const raw = localStorage.getItem('placementhub_pomo_state');
+      if (!raw) return;
+      const saved = JSON.parse(raw);
+      const durations = { focus: this.focusDuration, shortBreak: this.shortBreakDuration, longBreak: this.longBreakDuration };
+      const maxForMode = durations[saved.currentMode];
+      if (
+        maxForMode !== undefined &&
+        Number.isFinite(saved.timeLeft) &&
+        saved.timeLeft >= 0 &&
+        saved.timeLeft <= maxForMode
+      ) {
+        this.currentMode = saved.currentMode;
+        this.timeLeft = saved.timeLeft;
+      }
+    } catch (e) {
+      console.error("Failed to restore pomodoro timer state:", e);
+    }
+  }
+
+  saveTimerState() {
+    try {
+      localStorage.setItem('placementhub_pomo_state', JSON.stringify({
+        currentMode: this.currentMode,
+        timeLeft: this.timeLeft
+      }));
+    } catch (e) {
+      console.error("Failed to save pomodoro timer state:", e);
     }
   }
 
@@ -92,6 +128,7 @@ class PomodoroController {
       this.timeLeft = this.longBreakDuration;
     }
 
+    this.saveTimerState();
     this.updateUI();
   }
 
@@ -139,6 +176,7 @@ class PomodoroController {
   tick() {
     if (this.timeLeft > 0) {
       this.timeLeft--;
+      this.saveTimerState();
       this.updateUI();
     } else {
       this.onComplete();

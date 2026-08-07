@@ -23,10 +23,16 @@ window.showToast = function(message, type = 'info') {
 
   const toast = document.createElement('div');
   toast.className = `toast toast-${type}`;
-  toast.innerHTML = `
-    <i class="${iconMap[type] || iconMap.info}"></i>
-    <div class="toast-message">${message}</div>
-  `;
+
+  // Built via DOM APIs (not innerHTML) so a dynamic message — e.g. a video
+  // title pulled from user input or the YouTube API — can never be parsed
+  // as markup, regardless of what characters it contains.
+  const icon = document.createElement('i');
+  icon.className = iconMap[type] || iconMap.info;
+  const msgEl = document.createElement('div');
+  msgEl.className = 'toast-message';
+  msgEl.textContent = message;
+  toast.append(icon, msgEl);
 
   container.appendChild(toast);
 
@@ -111,7 +117,10 @@ window.renderPlaylistSidebar = function(trackId, filterText = '') {
 
   container.innerHTML = filtered.map((video, idx) => {
     const isWatched = window.playerController.watchedVideos.has(video.id);
-    const isCustom = video.id.startsWith('custom-');
+    // A video is user-added if its ID isn't part of the shipped curriculum —
+    // NOT based on an ID prefix, since the "My Playlists" track's own
+    // preloaded videos also happen to start with "custom-".
+    const isCustom = !DEFAULT_VIDEO_IDS.has(video.id);
 
     // Detect if this is a playlist ID (not a standard 11-char video ID)
     const isPlaylist = video.youtubeId && video.youtubeId.length > 11;
@@ -136,10 +145,10 @@ window.renderPlaylistSidebar = function(trackId, filterText = '') {
               return `
                 <div class="playlist-sub-lecture ${isLecActive ? 'active' : ''}" onclick="event.preventDefault(); event.stopPropagation(); window.selectPlaylistLecture('${video.id}', '${video.youtubeId}', ${lec.index}, '${lec.id}', ${JSON.stringify(lec.title).replace(/"/g, '&quot;')})">
                   <div class="playlist-sub-lecture-thumb">
-                    <img src="${lec.thumbnail}" alt="" />
+                    <img src="${escapeHtml(lec.thumbnail)}" alt="" />
                   </div>
                   <div class="playlist-sub-lecture-info">
-                    <span class="sub-lecture-title">${lec.title}</span>
+                    <span class="sub-lecture-title">${escapeHtml(lec.title)}</span>
                   </div>
                 </div>
               `;
@@ -173,11 +182,11 @@ window.renderPlaylistSidebar = function(trackId, filterText = '') {
             <div class="play-icon-hover"><i class="fa-solid fa-${isPlaylist ? 'list-ul' : 'play'}"></i></div>
           </div>
           <div class="playlist-item-content">
-            <div class="playlist-item-title" title="${video.title}">${video.title}</div>
+            <div class="playlist-item-title" title="${escapeHtml(video.title)}">${escapeHtml(video.title)}</div>
             <div class="playlist-item-meta">
-              <span><i class="fa-regular fa-clock"></i> ${video.duration || 'Full Video'}</span>
+              <span><i class="fa-regular fa-clock"></i> ${escapeHtml(video.duration) || 'Full Video'}</span>
               <span>•</span>
-              <span style="color: var(--accent-secondary);">${video.category || 'Module'}</span>
+              <span style="color: var(--accent-secondary);">${escapeHtml(video.category) || 'Module'}</span>
               ${isPlaylist ? `<span class="badge-playlist-pill"><i class="fa-solid fa-list-ul"></i> Playlist</span>` : ''}
             </div>
           </div>
@@ -707,6 +716,20 @@ document.addEventListener('DOMContentLoaded', () => {
   const ytInput = document.getElementById('ytApiKeyInput');
   if (ytInput) ytInput.value = savedKey;
 
+  // Wire up playlist backup import (Settings modal > Import Backup)
+  const importInput = document.getElementById('importFileInput');
+  if (importInput) {
+    importInput.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (evt) => window.playlistManager.importData(evt.target.result);
+      reader.onerror = () => window.showToast("Couldn't read that file.", "warning");
+      reader.readAsText(file);
+      importInput.value = ''; // reset so re-selecting the same file fires 'change' again
+    });
+  }
+
   // 12. Initial Render
   window.renderTrackView('java');
   window.updateTrackChips();
@@ -741,7 +764,12 @@ window.loadPlaylistItems = async function(playlistId, trackId) {
   // Mark as loading immediately to block parallel duplicate fetch triggers
   window.appState.playlistItemsCache[playlistId] = 'loading';
 
-  const apiKey = localStorage.getItem('placementhub_yt_api_key') || 'AIzaSyB0Fv95z1wTMFKfAMCSMuNg8RsvQirFcXE';
+  // Uses the visitor's own key from Settings only — never hardcode a key here.
+  // A key baked into shipped client JS is public (visible to every visitor
+  // and readable in the deployed bundle) and can be scraped and reused
+  // against your quota/billing. With no key set, this gracefully falls
+  // through to the mock lecture list below.
+  const apiKey = localStorage.getItem('placementhub_yt_api_key');
   
   if (apiKey) {
     try {

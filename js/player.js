@@ -254,20 +254,28 @@ class VideoPlayerController {
       this.resetAutoHideTimer();
     });
 
-    // 3. Cursor tracking fallback across screen
+    // 3. Cursor tracking fallback across screen — throttled to one
+    // getBoundingClientRect()/check per animation frame instead of running
+    // on every raw mousemove event firing anywhere on the page.
+    let mousemoveRAFPending = false;
     document.addEventListener('mousemove', (e) => {
-      if (!this.videoWrapper) return;
-      const rect = this.videoWrapper.getBoundingClientRect();
-      const isInside = (
-        e.clientX >= rect.left &&
-        e.clientX <= rect.right &&
-        e.clientY >= rect.top &&
-        e.clientY <= rect.bottom
-      );
-
-      if (isInside) {
-        this.resetAutoHideTimer();
-      }
+      if (!this.videoWrapper || mousemoveRAFPending) return;
+      mousemoveRAFPending = true;
+      const { clientX, clientY } = e;
+      requestAnimationFrame(() => {
+        mousemoveRAFPending = false;
+        if (!this.videoWrapper) return;
+        const rect = this.videoWrapper.getBoundingClientRect();
+        const isInside = (
+          clientX >= rect.left &&
+          clientX <= rect.right &&
+          clientY >= rect.top &&
+          clientY <= rect.bottom
+        );
+        if (isInside) {
+          this.resetAutoHideTimer();
+        }
+      });
     });
 
     // Start initial 3-second auto-hide timer
@@ -522,6 +530,18 @@ class VideoPlayerController {
         id: embedMatch[1],
         playlistId: playlistMatch ? playlistMatch[1] : null 
       };
+    }
+
+    // 6b. Shorts URL (youtube.com/shorts/ID)
+    const shortsMatch = clean.match(/youtube\.com\/shorts\/([a-zA-Z0-9_-]{11})/);
+    if (shortsMatch) {
+      return { type: 'video', id: shortsMatch[1], playlistId: playlistMatch ? playlistMatch[1] : null };
+    }
+
+    // 6c. Live URL (youtube.com/live/ID)
+    const liveMatch = clean.match(/youtube\.com\/live\/([a-zA-Z0-9_-]{11})/);
+    if (liveMatch) {
+      return { type: 'video', id: liveMatch[1], playlistId: playlistMatch ? playlistMatch[1] : null };
     }
 
     // 7. Playlist URL (with list= parameter and no video ID)

@@ -252,13 +252,13 @@ class NotesManager {
           <div class="note-card-header">
             <div class="note-meta-group">
               ${note.timestamp ? `
-                <span class="note-timestamp-badge" title="Click to seek player to ${note.timestamp}" onclick="window.notesManager.jumpToTimestamp('${note.id}')">
-                  <i class="fa-regular fa-clock"></i> ${note.timestamp}
+                <span class="note-timestamp-badge" title="Click to seek player to ${escapeHtml(note.timestamp)}" onclick="window.notesManager.jumpToTimestamp('${note.id}')">
+                  <i class="fa-regular fa-clock"></i> ${escapeHtml(note.timestamp)}
                   <i class="fa-solid fa-play" style="font-size: 0.62rem; margin-left: 4px; opacity: 0.85;"></i>
                 </span>
               ` : ''}
-              <span class="note-video-tag" title="${note.videoTitle}">
-                <i class="fa-solid fa-video" style="color: var(--accent-primary);"></i> ${note.videoTitle}
+              <span class="note-video-tag" title="${escapeHtml(note.videoTitle)}">
+                <i class="fa-solid fa-video" style="color: var(--accent-primary);"></i> ${escapeHtml(note.videoTitle)}
               </span>
             </div>
             <div class="note-actions">
