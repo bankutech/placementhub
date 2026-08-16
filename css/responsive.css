@@ -282,7 +282,7 @@
   .track-desc { font-size: 0.8rem; }
 
   /* --- PLAYER CONTROL BAR: two rows --- */
-  .player-control-bar {
+  .yt-controls-row {
     flex-direction: column;
     align-items: stretch;
     padding: 0.65rem 0.85rem;
@@ -425,7 +425,7 @@
   .current-video-title { font-size: 0.9rem; }
 
   /* --- PLAYER CONTROL BAR --- */
-  .player-control-bar {
+  .yt-controls-row {
     padding: 0.5rem 0.65rem;
   }
   .btn-ctrl {
