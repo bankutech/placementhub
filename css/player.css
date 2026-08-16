@@ -60,6 +60,8 @@
   transition: all 0.2s ease;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4), 0 0 0 2px rgba(59, 130, 246, 0.5);
   animation: pulse-border 2s infinite;
+  user-select: none;
+  -webkit-user-select: none;
 }
 
 @keyframes pulse-border {
