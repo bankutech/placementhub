@@ -199,6 +199,44 @@ class PlaylistManager {
     }
     return false;
   }
+
+  // Generate Shareable Link
+  generateShareableLink() {
+    try {
+      const jsonStr = JSON.stringify(window.appState.tracks);
+      // Encode to base64, replacing characters to make it url safe
+      const base64Str = btoa(unescape(encodeURIComponent(jsonStr)));
+      const shareUrl = `${window.location.origin}${window.location.pathname}#import=${base64Str}`;
+      
+      navigator.clipboard.writeText(shareUrl).then(() => {
+        window.showToast("Shareable link copied to clipboard! 🔗", "success");
+      }).catch(err => {
+        window.showToast("Failed to copy link. Try exporting JSON instead.", "warning");
+      });
+    } catch (e) {
+      window.showToast("Failed to generate link.", "warning");
+    }
+  }
+
+  // Check for shared link on load
+  checkForImportHash() {
+    if (window.location.hash.startsWith('#import=')) {
+      try {
+        const base64Str = window.location.hash.replace('#import=', '');
+        const jsonStr = decodeURIComponent(escape(atob(base64Str)));
+        if (this.importData(jsonStr)) {
+          window.showToast("Shared syllabus imported! 🎉", "success");
+        }
+        // Clean URL
+        window.history.replaceState(null, null, window.location.pathname);
+      } catch (e) {
+        window.showToast("Failed to load shared syllabus. Link might be broken.", "warning");
+        window.history.replaceState(null, null, window.location.pathname);
+      }
+    }
+  }
 }
 
-window.PlaylistManager = PlaylistManager;
+if (typeof window !== 'undefined') {
+  window.PlaylistManager = PlaylistManager;
+}

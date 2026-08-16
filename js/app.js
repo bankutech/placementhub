@@ -449,6 +449,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // 1. Init Core Managers
   window.playlistManager = new PlaylistManager();
   window.appState.tracks = window.playlistManager.initData();
+  window.playlistManager.checkForImportHash();
 
   window.playerController = new VideoPlayerController();
   window.notesManager = new NotesManager();

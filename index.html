@@ -161,6 +161,19 @@
             <i class="fa-solid fa-plus"></i>
             <span>Add Video / Playlist</span>
           </button>
+          <button class="side-nav-tool-item" onclick="window.toggleSideNav(false); window.playlistManager.generateShareableLink();">
+            <i class="fa-solid fa-share-nodes" style="color: #3b82f6;"></i>
+            <span>Share Syllabus Link</span>
+          </button>
+          <div style="display:flex; gap: 8px; margin-top: 4px; padding: 0 10px;">
+            <button class="side-nav-tool-item" style="flex:1; justify-content:center; padding: 8px; margin:0;" onclick="window.playlistManager.exportData();" title="Backup Syllabus (JSON)">
+              <i class="fa-solid fa-download"></i> Backup
+            </button>
+            <label class="side-nav-tool-item" style="flex:1; justify-content:center; padding: 8px; cursor: pointer; margin: 0;" title="Restore Syllabus (JSON)">
+              <i class="fa-solid fa-upload"></i> Restore
+              <input type="file" style="display:none;" accept=".json" onchange="if(this.files[0]){const fr=new FileReader(); fr.onload=e=>window.playlistManager.importData(e.target.result); fr.readAsText(this.files[0]); this.value='';}" />
+            </label>
+          </div>
         </div>
       </div>
     </div>
@@ -241,6 +254,10 @@
             allowfullscreen
             loading="lazy">
           </iframe>
+          
+          <button id="btnRestoreCustomUI" class="btn-restore-ui" style="display: none;" title="Restore Custom Player Controls">
+            <i class="fa-solid fa-xmark"></i> Close Settings
+          </button>
 
           <!-- Seamless Click-to-Play/Pause Surface & Animation Indicator -->
           <div class="video-click-surface" id="videoClickSurface" title="Click to Play / Pause | Double-click for Theater Mode">
@@ -301,6 +318,9 @@
                 <button class="yt-icon-btn" id="btnSpeedMenu" title="Playback Speed">
                   <span id="playbackSpeedText">1x</span>
                 </button>
+                <button class="yt-icon-btn" id="btnNativeQuality" title="Video Quality / Settings (Native)">
+                  <i class="fa-solid fa-gear"></i>
+                </button>
                 <button class="yt-icon-btn" id="btnTheaterMode" title="Theater Mode (T)">
                   <i class="fa-solid fa-table-cells-large"></i>
                 </button>
@@ -318,6 +338,13 @@
             <h1 class="current-video-title" id="currentVideoTitle">Select a lecture to begin</h1>
           </div>
           <p class="current-video-desc" id="currentVideoDesc"></p>
+          <div class="practice-cta" id="practiceCta" style="display: flex; margin-top: 1rem; padding: 12px; background: rgba(16, 185, 129, 0.05); border: 1px solid rgba(16, 185, 129, 0.15); border-radius: 8px; align-items: center; justify-content: space-between;">
+            <div>
+              <strong style="color: #10b981; font-size: 0.9rem;"><i class="fa-solid fa-brain"></i> Test Your Knowledge</strong>
+              <p style="font-size: 0.8rem; color: #94a3b8; margin: 4px 0 0 0;">Apply what you've learned with placement coding problems.</p>
+            </div>
+            <button class="btn btn-primary btn-sm" onclick="window.switchToolkitTab('tab-practice'); window.scrollTo({top: document.body.scrollHeight, behavior: 'smooth'});" style="background: #10b981; border-color: #10b981; color: #fff;">Practice Now</button>
+          </div>
         </div>
       </div>
 

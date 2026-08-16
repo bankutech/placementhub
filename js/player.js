@@ -339,6 +339,64 @@ class VideoPlayerController {
     if (btnFullscreen) {
       btnFullscreen.addEventListener('click', () => this.toggleFullscreen());
     }
+
+    const btnQuality = document.getElementById('btnNativeQuality');
+    if (btnQuality) {
+      btnQuality.addEventListener('click', () => this.showNativeControls());
+    }
+
+    const btnRestoreUI = document.getElementById('btnRestoreCustomUI');
+    if (btnRestoreUI) {
+      btnRestoreUI.addEventListener('click', () => this.restoreCustomUI());
+    }
+  }
+
+  showNativeControls() {
+    // Hide custom control bar
+    if (this.controlBar) {
+      this.controlBar.style.display = 'none';
+    }
+    // Disable custom click surface to allow interacting with native controls
+    const surface = document.getElementById('videoClickSurface');
+    if (surface) {
+      surface.style.pointerEvents = 'none';
+    }
+    // Unclip iframe to show native controls
+    const iframe = document.getElementById('videoIframe');
+    if (iframe) {
+      iframe.style.top = '0';
+      iframe.style.height = '100%';
+    }
+    // Show the "Restore" button
+    const btnRestore = document.getElementById('btnRestoreCustomUI');
+    if (btnRestore) {
+      btnRestore.style.display = 'flex';
+    }
+    window.showToast("Native YouTube controls revealed. Click the gear icon to change quality.", "info");
+  }
+
+  restoreCustomUI() {
+    // Restore custom control bar
+    if (this.controlBar) {
+      this.controlBar.style.display = '';
+      if (this.resetAutoHideTimer) this.resetAutoHideTimer();
+    }
+    // Re-enable custom click surface
+    const surface = document.getElementById('videoClickSurface');
+    if (surface) {
+      surface.style.pointerEvents = '';
+    }
+    // Re-clip iframe
+    const iframe = document.getElementById('videoIframe');
+    if (iframe) {
+      iframe.style.top = '';
+      iframe.style.height = '';
+    }
+    // Hide the "Restore" button
+    const btnRestore = document.getElementById('btnRestoreCustomUI');
+    if (btnRestore) {
+      btnRestore.style.display = 'none';
+    }
   }
 
   // Ticker removed — real time polling is done by _startProgressPoll() via YT API
@@ -419,7 +477,7 @@ class VideoPlayerController {
   }
 
   getEmbedParams() {
-    return 'enablejsapi=1&rel=0&iv_load_policy=3&modestbranding=1&controls=0&playsinline=1&origin=' + encodeURIComponent(window.location.origin);
+    return 'enablejsapi=1&rel=0&iv_load_policy=3&modestbranding=1&controls=1&playsinline=1&origin=' + encodeURIComponent(window.location.origin);
   }
 
   togglePlay() {
