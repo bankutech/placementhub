@@ -18,8 +18,13 @@
   <link rel="icon" type="image/png" sizes="192x192" href="/icons/icon-192.png" />
   <link rel="icon" type="image/png" sizes="512x512" href="/icons/icon-512.png" />
 
+  <!-- Preconnect for performance optimization -->
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com" />
+  <link rel="preconnect" href="https://www.youtube.com" />
+  
   <!-- Font Awesome Icons -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" media="print" onload="this.media='all'" />
+  <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" /></noscript>
 
   <!-- Application Stylesheets (Version 5 Cache-Busted) -->
   <link rel="stylesheet" href="css/main.css?v=5" />
@@ -790,14 +795,14 @@
   </nav>
 
   <!-- Application Scripts (Version 6 Cache-Busted) -->
-  <script src="js/data.js?v=7"></script>
-  <script src="js/practiceData.js?v=7"></script>
-  <script src="js/player.js?v=7"></script>
-  <script src="js/playlistManager.js?v=7"></script>
-  <script src="js/notesManager.js?v=7"></script>
-  <script src="js/practiceManager.js?v=7"></script>
-  <script src="js/pomodoro.js?v=7"></script>
-  <script src="js/app.js?v=7"></script>
+  <script src="js/data.js?v=7" defer></script>
+  <script src="js/practiceData.js?v=7" defer></script>
+  <script src="js/player.js?v=7" defer></script>
+  <script src="js/playlistManager.js?v=7" defer></script>
+  <script src="js/notesManager.js?v=7" defer></script>
+  <script src="js/practiceManager.js?v=7" defer></script>
+  <script src="js/pomodoro.js?v=7" defer></script>
+  <script src="js/app.js?v=7" defer></script>
 
   <!-- PWA Service Worker Registration & Live Auto-Update -->
   <script>
