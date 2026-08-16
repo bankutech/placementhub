@@ -176,7 +176,7 @@ class VideoPlayerController {
       } else {
         clearTimeout(clickTimer);
         clickTimer = null;
-        this.toggleZenMode();
+        this.toggleTheaterMode();
       }
     });
   }
@@ -856,7 +856,6 @@ class VideoPlayerController {
     if (isNowWatched) {
       this.watchedVideos.add(currentVideo.id);
       window.showToast("Marked as Completed! 🎉", "success");
-      this.checkSafeSync();
     } else {
       this.watchedVideos.delete(currentVideo.id);
       window.showToast("Unmarked as Completed", "info");
@@ -874,21 +873,11 @@ class VideoPlayerController {
       this.watchedVideos.delete(videoId);
     } else {
       this.watchedVideos.add(videoId);
-      this.checkSafeSync();
     }
     this.saveWatchedState();
     this.updateMarkWatchedButton(this.watchedVideos.has(videoId));
     this.highlightActivePlaylistItem();
     window.updateOverallProgress();
-  }
-
-  checkSafeSync() {
-    if (!window.appState) return;
-    window.appState.unbackedUpVideos = (window.appState.unbackedUpVideos || 0) + 1;
-    if (window.appState.unbackedUpVideos >= 3) {
-      window.showToast("⚠️ You've completed a few videos! Remember to Backup your Syllabus & Analytics to save your progress safely offline.", "warning");
-      // Don't reset it here, reset it when they actually export.
-    }
   }
 
   updateMarkWatchedButton(isWatched) {
@@ -961,21 +950,17 @@ class VideoPlayerController {
   // --------------------------------------------------------------------------
   // Theater / Focus Mode
   // --------------------------------------------------------------------------
-  toggleZenMode() {
-    document.body.classList.toggle('zen-mode');
-    if (document.body.classList.contains('zen-mode')) {
-      window.showToast("Zen Focus Mode Active", "info");
-      this.scrollToTop();
-    } else {
-      window.showToast("Exited Zen Mode", "info");
+  toggleTheaterMode() {
+    this.isTheaterMode = !this.isTheaterMode;
+    if (this.learningStageGrid) {
+      if (this.isTheaterMode) {
+        this.learningStageGrid.classList.add('theater-mode');
+        window.showToast("Theater Mode Enabled", "info");
+      } else {
+        this.learningStageGrid.classList.remove('theater-mode');
+        window.showToast("Normal View Restored", "info");
+      }
     }
-    
-    // Trigger resize to fix iframe sizing
-    setTimeout(() => { window.dispatchEvent(new Event('resize')); }, 300);
-  }
-
-  scrollToTop() {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
   // --------------------------------------------------------------------------

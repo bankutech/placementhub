@@ -499,7 +499,7 @@ document.addEventListener('DOMContentLoaded', () => {
   if (btnForward10) btnForward10.addEventListener('click', () => window.playerController.seekRelative(10));
   if (btnPrev) btnPrev.addEventListener('click', () => window.playerController.playPrev());
   if (btnNext) btnNext.addEventListener('click', () => window.playerController.playNext());
-  if (btnTheater) btnTheater.addEventListener('click', () => window.playerController.toggleZenMode());
+  if (btnTheater) btnTheater.addEventListener('click', () => window.playerController.toggleTheaterMode());
   if (btnMark) btnMark.addEventListener('click', () => window.playerController.toggleCurrentWatched());
 
   // 4. Toolkit Sub-Tabs Switching
@@ -520,8 +520,6 @@ document.addEventListener('DOMContentLoaded', () => {
         window.notesManager.renderNotes();
       } else if (targetId === 'tab-practice') {
         window.practiceManager.renderProblems();
-      } else if (targetId === 'tab-analytics') {
-        window.renderStudentAnalytics();
       }
     });
   });
@@ -853,83 +851,3 @@ window.selectPlaylistLecture = function(parentId, playlistId, index, videoIdReal
   }
 };
 
-// ----------------------------------------------------------------------------
-// Teacher Analytics Dashboard
-// ----------------------------------------------------------------------------
-window.renderStudentAnalytics = function(tracksData = null, watchedData = null) {
-  let tracks = tracksData || window.appState.tracks;
-  let watched = watchedData || (window.playerController ? window.playerController.watchedVideos : new Set());
-  
-  const container = document.getElementById('analyticsDashboardGrid');
-  if (!container) return;
-  
-  let totalVideos = 0;
-  let watchedTotal = 0;
-  let trackStats = {};
-
-  Object.keys(tracks).forEach(tKey => {
-    const tVideos = tracks[tKey].videos || [];
-    let trackWatched = 0;
-    tVideos.forEach(v => {
-      totalVideos++;
-      if (watched instanceof Set ? watched.has(v.id) : watched.includes(v.id)) {
-        watchedTotal++;
-        trackWatched++;
-      }
-    });
-    trackStats[tKey] = {
-      name: tracks[tKey].name,
-      total: tVideos.length,
-      watched: trackWatched,
-      percent: tVideos.length ? Math.round((trackWatched / tVideos.length) * 100) : 0
-    };
-  });
-
-  const overallPercent = totalVideos ? Math.round((watchedTotal / totalVideos) * 100) : 0;
-
-  let html = `
-    <div style="background: rgba(30, 41, 59, 0.7); padding: 1.5rem; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05); grid-column: 1 / -1;">
-      <h3 style="color: #94a3b8; font-size: 0.9rem; margin-bottom: 0.5rem; text-transform: uppercase; font-weight: 700;">OVERALL COURSE COMPLETION</h3>
-      <div style="display: flex; align-items: baseline; gap: 12px; margin-bottom: 1rem;">
-        <span style="font-size: 2.5rem; font-weight: 800; color: #fff;">${overallPercent}%</span>
-        <span style="color: #64748b; font-size: 1rem;">${watchedTotal} / ${totalVideos} Videos Completed</span>
-      </div>
-      <div style="width: 100%; height: 8px; background: rgba(0,0,0,0.5); border-radius: 4px; overflow: hidden;">
-        <div style="height: 100%; width: ${overallPercent}%; background: linear-gradient(90deg, #3b82f6, #10b981); border-radius: 4px; transition: width 1s ease;"></div>
-      </div>
-    </div>
-  `;
-
-  Object.keys(trackStats).forEach(tKey => {
-    const stat = trackStats[tKey];
-    html += `
-      <div style="background: rgba(30, 41, 59, 0.7); padding: 1.5rem; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05);">
-        <h3 style="color: #fff; font-size: 1.1rem; margin-bottom: 1rem; font-weight: 600;"><i class="fa-solid fa-layer-group" style="color: #a855f7; margin-right: 6px;"></i> ${stat.name}</h3>
-        <div style="display: flex; justify-content: space-between; margin-bottom: 0.6rem; color: #94a3b8; font-size: 0.9rem;">
-          <span>Track Progress</span>
-          <span style="color: #fff; font-weight: 600;">${stat.percent}% <span style="color: #64748b; font-weight: normal;">(${stat.watched}/${stat.total})</span></span>
-        </div>
-        <div style="width: 100%; height: 6px; background: rgba(0,0,0,0.5); border-radius: 3px; overflow: hidden;">
-          <div style="height: 100%; width: ${stat.percent}%; background: #a855f7; border-radius: 3px; transition: width 1s ease;"></div>
-        </div>
-      </div>
-    `;
-  });
-
-  container.innerHTML = html;
-};
-
-window.loadStudentAnalytics = function(jsonString) {
-  try {
-    const parsed = JSON.parse(jsonString);
-    if (parsed.tracks && parsed.watched) {
-      window.renderStudentAnalytics(parsed.tracks, parsed.watched);
-      window.showToast("Loaded student report successfully!", "success");
-    } else {
-      window.renderStudentAnalytics(parsed, []);
-      window.showToast("Loaded legacy syllabus report. Watch history not included.", "info");
-    }
-  } catch(e) {
-    window.showToast("Invalid report file format.", "warning");
-  }
-};
