@@ -162,37 +162,57 @@ class PlaylistManager {
     }
   }
 
-  // Export Playlist as JSON
+  // Export Playlist & Analytics as JSON
   exportData() {
-    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(window.appState.tracks, null, 2));
-    const downloadAnchor = document.createElement('a');
-    downloadAnchor.setAttribute("href", dataStr);
-    downloadAnchor.setAttribute("download", "placementhub_playlists_backup.json");
-    document.body.appendChild(downloadAnchor);
-    downloadAnchor.click();
-    downloadAnchor.remove();
-    window.showToast("📥 Playlists exported successfully!", "success");
-  }
-
+    try {
+      const exportObj = {
+        tracks: window.appState.tracks,
+        watched: Array.from(window.playerController ? window.playerController.watchedVideos : new Set())
+      };
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(exportObj));
+      const dlAnchorElem = document.createElement('a');
+      dlAnchorElem.setAttribute("href", dataStr);
+      dlAnchorElem.setAttribute("download", `placementhub_syllabus_backup_${new Date().toISOString().slice(0,10)}.json`);
+      dlAnchorElem.click();
+      window.showToast("Syllabus & Analytics backed up successfully! 💾", "success");
+      
+      // Reset safe sync counter
+      if (window.appState) window.appState.unbackedUpVideos = 0;
+    } catch (e) {
+      window.showToast("Failed to export data.", "warning");
+    }
   // Import Playlist from JSON
   importData(jsonString) {
     try {
       const parsed = JSON.parse(jsonString);
-      const looksValid = parsed && typeof parsed === 'object' && !Array.isArray(parsed) &&
-        Object.values(parsed).every(track => track && Array.isArray(track.videos));
+      let tracksData = parsed;
+      let watchedData = [];
+
+      if (parsed.tracks) {
+        tracksData = parsed.tracks;
+        if (parsed.watched) watchedData = parsed.watched;
+      }
+
+      const looksValid = tracksData && typeof tracksData === 'object' && !Array.isArray(tracksData) &&
+        Object.values(tracksData).every(track => track && Array.isArray(track.videos));
 
       if (!looksValid) {
         window.showToast("That file doesn't look like a PlacementHub backup.", "warning");
         return false;
       }
 
-      window.appState.tracks = parsed;
+      window.appState.tracks = tracksData;
+      if (window.playerController && watchedData.length > 0) {
+        window.playerController.watchedVideos = new Set(watchedData);
+        window.playerController.saveWatched();
+      }
+
       localStorage.removeItem(this.deletedDefaultsKey); // don't let old deletions hide restored videos
-      this.saveData(parsed);
+      this.saveData(tracksData);
       window.renderTrackView(window.appState.currentTrackId);
       window.updateTrackChips();
       window.updateOverallProgress();
-      window.showToast("📤 Playlists imported successfully!", "success");
+      window.showToast("📤 Playlists & Analytics restored successfully!", "success");
       return true;
     } catch (e) {
       window.showToast("Invalid JSON file format!", "warning");

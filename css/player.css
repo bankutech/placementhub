@@ -9,13 +9,34 @@
   align-items: start;
 }
 
-/* Theater / Focus Mode expands the player */
-.learning-stage-grid.theater-mode {
-  grid-template-columns: 1fr;
+/* Zen Focus Mode */
+body.zen-mode .app-header,
+body.zen-mode .playlist-sidebar-wrapper,
+body.zen-mode .video-meta-section,
+body.zen-mode .toolkit-tabs-container,
+body.zen-mode .mobile-bottom-nav {
+  display: none !important;
 }
 
-.learning-stage-grid.theater-mode .playlist-sidebar-wrapper {
-  margin-top: 1.5rem;
+body.zen-mode .app-layout {
+  padding-top: 0;
+}
+
+body.zen-mode .learning-stage-grid {
+  grid-template-columns: 1fr;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 1rem;
+}
+
+body.zen-mode .player-container-card {
+  height: calc(100vh - 2rem);
+  display: flex;
+  flex-direction: column;
+}
+
+body.zen-mode .video-frame-wrapper {
+  flex: 1;
 }
 
 /* ==========================================================================
