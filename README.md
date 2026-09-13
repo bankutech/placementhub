@@ -1,5 +1,6 @@
-# PlacementHub
+# placementhub
 
+## Overview
 ![PlacementHub](https://img.shields.io/badge/Status-Active-success)
 ![Vanilla JS](https://img.shields.io/badge/Vanilla-JavaScript-f7df1e?logo=javascript&logoColor=black)
 ![Architecture](https://img.shields.io/badge/Architecture-ES_Modules-blue)
@@ -72,3 +73,9 @@ placementhub/
 ## License
 
 © 2026 PlacementHub. Built for campus placement excellence. All rights reserved.
+
+## Getting Started
+Please refer to the source files for specific installation and usage instructions. Ensure that your local environment meets the standard requirements for the associated technologies.
+
+## Project Structure
+This project is organized into standard directories. Key configuration files and primary source code are located in the root directory.
