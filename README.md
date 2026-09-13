@@ -1,4 +1,4 @@
-# PlacementHub 🎓
+# PlacementHub
 
 ![PlacementHub](https://img.shields.io/badge/Status-Active-success)
 ![Vanilla JS](https://img.shields.io/badge/Vanilla-JavaScript-f7df1e?logo=javascript&logoColor=black)
@@ -7,24 +7,24 @@
 
 PlacementHub is a powerful, sleek, and highly scalable learning platform designed specifically for campus placement preparation. Built entirely with Vanilla JavaScript, it offers a zero-distraction, highly customizable environment for mastering Data Structures, Algorithms, and core programming languages (Java, C++, Python).
 
-## ✨ Features
+## Features
 
-- 🎥 **Dynamic Video Learning Hub**: Seamlessly stream curated YouTube playlists and videos directly in the platform. Add your own custom YouTube video links or playlist IDs to tailor your curriculum.
-- 📝 **Timestamped Notebook**: Take markdown-compatible notes linked to the exact timestamp of the video you are watching. Clicking a note instantly jumps the video to that moment.
-- 💾 **Infinite Local Storage**: Built on **IndexedDB** (via `localForage`), your custom playlists, practice progress, and thousands of notes are safely persisted in your browser asynchronously—no database required.
-- 🍅 **Integrated Pomodoro Timer**: A built-in study timer (25m Focus / 5m Break) with ambient audio chimes keeps you locked in on your coding sprints.
-- 🧩 **Practice Problem Tracker**: Track your progress across high-frequency placement coding questions categorised by difficulty. Includes direct links to LeetCode and GeeksforGeeks.
-- 🎨 **Premium UI/UX**: Designed using the "Nyalazone Sleek Dark Mode" design system, featuring deep blue accents, micro-animations, glassmorphism, and WCAG-compliant accessibility focus rings.
-- 📤 **Data Portability**: Export and import your entire custom curriculum and timestamped notes as a portable JSON file to back up or share your learning path.
+- **Dynamic Video Learning Hub**: Seamlessly stream curated YouTube playlists and videos directly in the platform. Add your own custom YouTube video links or playlist IDs to tailor your curriculum.
+- **Timestamped Notebook**: Take markdown-compatible notes linked to the exact timestamp of the video you are watching. Clicking a note instantly jumps the video to that moment.
+- **Infinite Local Storage**: Built on **IndexedDB** (via `localForage`), your custom playlists, practice progress, and thousands of notes are safely persisted in your browser asynchronously—no database required.
+- **Integrated Pomodoro Timer**: A built-in study timer (25m Focus / 5m Break) with ambient audio chimes keeps you locked in on your coding sprints.
+- **Practice Problem Tracker**: Track your progress across high-frequency placement coding questions categorised by difficulty. Includes direct links to LeetCode and GeeksforGeeks.
+- **Premium UI/UX**: Designed using the "Nyalazone Sleek Dark Mode" design system, featuring deep blue accents, micro-animations, glassmorphism, and WCAG-compliant accessibility focus rings.
+- **Data Portability**: Export and import your entire custom curriculum and timestamped notes as a portable JSON file to back up or share your learning path.
 
-## 🚀 Architecture & Tech Stack
+## Architecture & Tech Stack
 
 PlacementHub is intentionally lightweight and blazingly fast. 
 - **Core:** HTML5, CSS3, Vanilla JavaScript (ES6+). No heavy frameworks (React/Vue/Angular) are used, ensuring instantaneous load times.
 - **Modularity:** The application utilizes native **ES Modules** (`<script type="module">`). Logic is heavily decoupled into domain-specific managers (`PlaylistManager`, `NotesManager`, `PomodoroController`).
 - **Data Persistence:** `localForage` is used to abstract `IndexedDB`, allowing for async, high-capacity local data storage that blows past standard `localStorage` limits.
 
-## 🛠️ Installation & Usage
+## Installation & Usage
 
 Because PlacementHub uses native ES Modules, it must be run over a local web server (to avoid CORS policies on local `file://` protocols).
 
@@ -47,7 +47,7 @@ Because PlacementHub uses native ES Modules, it must be run over a local web ser
 3. **Open the App:**
    Navigate to `http://localhost:3001` in your web browser.
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 placementhub/
@@ -69,6 +69,6 @@ placementhub/
     └── pomodoro.js           # Study Timer Logic
 ```
 
-## 📜 License
+## License
 
 © 2026 PlacementHub. Built for campus placement excellence. All rights reserved.
