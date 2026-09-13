@@ -1,6 +1,4 @@
-/* ==========================================================================
-   VIDEO PLAYER & PLAYLIST SIDEBAR STYLES (NO-TAB IN-APP SWITCHING)
-   ========================================================================== */
+
 
 .learning-stage-grid {
   display: grid;
@@ -9,7 +7,6 @@
   align-items: start;
 }
 
-/* Theater / Focus Mode expands the player */
 .learning-stage-grid.theater-mode {
   grid-template-columns: 1fr;
 }
@@ -18,9 +15,6 @@
   margin-top: 1.5rem;
 }
 
-/* ==========================================================================
-   VIDEO PLAYER STAGE
-   ========================================================================== */
 .player-container-card {
   background: var(--bg-card);
   border: 1px solid var(--border-subtle);
@@ -35,7 +29,7 @@
 .video-frame-wrapper {
   position: relative;
   width: 100%;
-  padding-top: 56.25%; /* 16:9 Aspect Ratio */
+  padding-top: 56.25%; 
   background: #000;
   overflow: hidden;
 }
@@ -76,31 +70,13 @@
   transform: translateY(-1px);
 }
 
-/* Hide YouTube top title bar, channel header, and bottom more videos shelf */
 .video-frame-wrapper iframe {
-  position: absolute;
-  top: -60px;
-  left: 0;
-  width: 100%;
-  height: calc(100% + 120px);
-  border: 0;
-  transition: top 0.4s cubic-bezier(0.4, 0, 0.2, 1), height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-/* Interactive click surface over video */
-.video-click-surface {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
-  height: calc(100% - 54px);
-  z-index: 6;
-  cursor: pointer;
-  background: transparent;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  user-select: none;
+  height: 100%;
+  border: 0;
 }
 
 .video-center-indicator {
@@ -156,168 +132,6 @@
   color: var(--text-primary);
 }
 
-/* ==========================================================================
-   YOUTUBE-STYLE PREMIUM PLAYER CONTROL BAR (OVERLAYS BOTTOM OF VIDEO)
-   ========================================================================== */
-.yt-style-control-bar {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  z-index: 10;
-  padding: 16px 0 0 0;
-  background: linear-gradient(to top, rgba(15, 23, 42, 0.96) 0%, rgba(15, 23, 42, 0.75) 65%, transparent 100%);
-  display: flex;
-  flex-direction: column;
-  user-select: none;
-  opacity: 1;
-  visibility: visible;
-  transform: translateY(0);
-  transition: opacity 0.28s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.28s ease, transform 0.28s ease;
-}
-
-.yt-style-control-bar.controls-hidden {
-  opacity: 0;
-  visibility: hidden;
-  pointer-events: none;
-  transform: translateY(8px);
-}
-
-/* Full-Width Interactive Timeline Scrubber */
-.yt-progress-container {
-  width: 100%;
-  height: 5px;
-  background: rgba(255, 255, 255, 0.25);
-  cursor: pointer;
-  position: relative;
-  transition: height 0.15s ease;
-}
-
-.yt-progress-container:hover {
-  height: 8px;
-}
-
-.yt-progress-buffered {
-  position: absolute;
-  top: 0;
-  left: 0;
-  height: 100%;
-  width: 45%;
-  background: rgba(255, 255, 255, 0.35);
-  pointer-events: none;
-}
-
-.yt-progress-played {
-  position: absolute;
-  top: 0;
-  left: 0;
-  height: 100%;
-  background: #ef4444;
-  pointer-events: none;
-  transition: width 0.1s linear;
-}
-
-.yt-scrubber-handle {
-  position: absolute;
-  right: -6px;
-  top: 50%;
-  transform: translateY(-50%) scale(0);
-  width: 14px;
-  height: 14px;
-  border-radius: 50%;
-  background: #ef4444;
-  box-shadow: 0 0 8px rgba(239, 68, 68, 0.6);
-  transition: transform 0.15s ease;
-}
-
-.yt-progress-container:hover .yt-scrubber-handle {
-  transform: translateY(-50%) scale(1);
-}
-
-/* Bottom Controls Row */
-.yt-controls-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 8px 14px;
-  gap: 10px;
-  flex-wrap: wrap;
-}
-
-.yt-controls-left,
-.yt-controls-right {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  flex-wrap: wrap;
-}
-
-/* YouTube Style Icon Buttons */
-.yt-icon-btn {
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  border: none;
-  background: transparent;
-  color: #f1f5f9;
-  font-size: 0.95rem;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: background 0.15s ease, transform 0.15s ease;
-}
-
-.yt-icon-btn:hover {
-  background: rgba(255, 255, 255, 0.12);
-  color: #fff;
-  transform: scale(1.05);
-}
-
-.yt-icon-btn:active {
-  transform: scale(0.95);
-}
-
-.yt-icon-btn.btn-play-pause {
-  background: rgba(255, 255, 255, 0.1);
-  font-size: 1rem;
-}
-
-.yt-icon-btn.btn-play-pause:hover {
-  background: rgba(255, 255, 255, 0.2);
-}
-
-/* Time Display */
-.yt-time-display {
-  font-size: 0.82rem;
-  font-weight: 500;
-  color: #cbd5e1;
-  padding: 0 6px;
-  font-variant-numeric: tabular-nums;
-  display: flex;
-  align-items: center;
-  gap: 3px;
-}
-
-/* Chapter Pill */
-.yt-chapter-pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  background: rgba(255, 255, 255, 0.1);
-  padding: 4px 12px;
-  border-radius: 16px;
-  font-size: 0.78rem;
-  color: #f1f5f9;
-  font-weight: 500;
-  cursor: default;
-  transition: background 0.15s ease;
-}
-
-.yt-chapter-pill:hover {
-  background: rgba(255, 255, 255, 0.16);
-}
-
 .btn-ctrl {
   padding: 0.45rem 0.85rem;
   border-radius: var(--radius-sm);
@@ -369,7 +183,6 @@
   cursor: pointer;
 }
 
-/* Video Information Block */
 .video-meta-block {
   padding: 1.25rem 1.5rem;
   display: flex;
@@ -433,9 +246,6 @@
   border: 1px solid var(--border-subtle);
 }
 
-/* ==========================================================================
-   PLAYLIST SYLLABUS SIDEBAR
-   ========================================================================== */
 .playlist-sidebar-wrapper {
   background: var(--bg-card);
   border: 1px solid var(--border-subtle);
@@ -518,7 +328,6 @@
   font-size: 0.78rem;
 }
 
-/* Playlist Scrollable Items List */
 .playlist-items-list {
   flex: 1;
   overflow-y: auto;
@@ -528,7 +337,6 @@
   gap: 0.5rem;
 }
 
-/* Individual Playlist Item */
 .playlist-item {
   display: flex;
   align-items: flex-start;
@@ -668,7 +476,6 @@
   transform: scale(1.2);
 }
 
-/* Playlist Footer / Quick Add */
 .playlist-footer {
   padding: 0.85rem 1rem;
   border-top: 1px solid var(--border-subtle);
@@ -702,7 +509,6 @@
   color: var(--accent-primary);
 }
 
-/* Empty Playlist State */
 .playlist-empty-state {
   display: flex;
   flex-direction: column;
@@ -719,7 +525,6 @@
   color: var(--text-secondary);
 }
 
-/* Responsive */
 @media (max-width: 1024px) {
   .learning-stage-grid {
     grid-template-columns: 1fr;

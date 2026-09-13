@@ -1,9 +1,5 @@
-/* ==========================================================================
-   VIDEO PLAYER CONTROLLER - IN-PAGE SEAMLESS EMBED (NO TAB SWITCHING)
-   Uses official YouTube IFrame Player API for real play/pause/seek control.
-   ========================================================================== */
 
-/* ---- Load YouTube IFrame API script once ---- */
+
 (function() {
   if (document.getElementById('yt-iframe-api-script')) return;
   const tag = document.createElement('script');
@@ -12,7 +8,7 @@
   document.head.appendChild(tag);
 })();
 
-class VideoPlayerController {
+export class VideoPlayerController {
   constructor() {
     this.currentTrackId = 'java';
     this.currentVideoIndex = 0;
@@ -21,13 +17,11 @@ class VideoPlayerController {
     this.isPlaying = false;
     this.watchedVideos = new Set();
 
-    // YouTube IFrame API player instance
     this.ytPlayer = null;
     this.ytPlayerReady = false;
     this.pendingEmbedUrl = null;
     this.progressPollInterval = null;
 
-    // DOM Elements
     this.videoIframe = document.getElementById('videoIframe');
     this.videoPlaceholder = document.getElementById('videoPlaceholder');
     this.videoTitleElem = document.getElementById('currentVideoTitle');
@@ -52,11 +46,8 @@ class VideoPlayerController {
     this.initClickSurface();
   }
 
-  // --------------------------------------------------------------------------
-  // YouTube IFrame Player API — Real Integration
-  // --------------------------------------------------------------------------
   initYouTubeAPI() {
-    // Called by YouTube API when ready — or we poll until it is
+    
     const tryInit = () => {
       if (window.YT && window.YT.Player) {
         this._createYTPlayer();
@@ -68,19 +59,19 @@ class VideoPlayerController {
     if (window.YT && window.YT.Player) {
       this._createYTPlayer();
     } else {
-      // YT API calls onYouTubeIframeAPIReady when loaded
+      
       const existing = window.onYouTubeIframeAPIReady;
       window.onYouTubeIframeAPIReady = () => {
         if (existing) existing();
         this._createYTPlayer();
       };
-      // Fallback poll in case callback already fired
+      
       setTimeout(tryInit, 1500);
     }
   }
 
   _createYTPlayer() {
-    if (this.ytPlayer) return; // already created
+    if (this.ytPlayer) return; 
     const iframe = document.getElementById('videoIframe');
     if (!iframe) return;
 
@@ -101,7 +92,7 @@ class VideoPlayerController {
           } else if (e.data === S.PAUSED || e.data === S.ENDED) {
             this.isPlaying = false;
           }
-          // BUFFERING (-1, 3) — keep current state, don't change isPlaying
+          
           this.updatePlayPauseButton();
         }
       }
@@ -109,7 +100,7 @@ class VideoPlayerController {
   }
 
   _loadUrlIntoPlayer(embedUrl) {
-    // Fix: check for loadVideoById (real API method), not loadVideoByUrl (doesn't exist)
+    
     if (this.ytPlayer && this.ytPlayerReady && typeof this.ytPlayer.loadVideoById === 'function') {
       try {
         const url = new URL(embedUrl);
@@ -122,7 +113,7 @@ class VideoPlayerController {
         } else if (videoId && videoId !== 'videoseries') {
           this.ytPlayer.loadVideoById({ videoId: videoId, startSeconds: 0 });
         } else {
-          // Fallback for edge cases
+          
           const frame = document.getElementById('videoIframe');
           if (frame) { frame.src = ''; frame.src = embedUrl; }
         }
@@ -134,7 +125,7 @@ class VideoPlayerController {
         if (frame) { frame.src = ''; frame.src = embedUrl; }
       }
     } else {
-      // API not ready — set iframe src directly
+      
       const frame = document.getElementById('videoIframe');
       if (frame) { frame.src = ''; frame.src = embedUrl; }
     }
@@ -155,13 +146,10 @@ class VideoPlayerController {
           if (bar) bar.style.width = `${pct}%`;
           this.updateTimeDisplay();
         }
-      } catch (e) { /* player not ready */ }
+      } catch (e) {  }
     }, 500);
   }
 
-  // --------------------------------------------------------------------------
-  // YouTube API Communication & Player Controls
-  // --------------------------------------------------------------------------
   initClickSurface() {
     const surface = document.getElementById('videoClickSurface');
     if (!surface) return;
@@ -222,7 +210,6 @@ class VideoPlayerController {
       }, 3000);
     };
 
-    // 1. User activity over video wrapper & card
     if (this.videoWrapper) {
       this.videoWrapper.addEventListener('mousemove', () => this.resetAutoHideTimer());
       this.videoWrapper.addEventListener('mouseenter', () => this.resetAutoHideTimer());
@@ -242,7 +229,6 @@ class VideoPlayerController {
       });
     }
 
-    // 2. Hovering directly over the control bar pauses the timer
     this.controlBar.addEventListener('mouseenter', () => {
       this.isHoveringControls = true;
       if (this.autoHideTimer) clearTimeout(this.autoHideTimer);
@@ -254,9 +240,6 @@ class VideoPlayerController {
       this.resetAutoHideTimer();
     });
 
-    // 3. Cursor tracking fallback across screen — throttled to one
-    // getBoundingClientRect()/check per animation frame instead of running
-    // on every raw mousemove event firing anywhere on the page.
     let mousemoveRAFPending = false;
     document.addEventListener('mousemove', (e) => {
       if (!this.videoWrapper || mousemoveRAFPending) return;
@@ -278,7 +261,6 @@ class VideoPlayerController {
       });
     });
 
-    // Start initial 3-second auto-hide timer
     this.resetAutoHideTimer();
   }
 
@@ -352,22 +334,22 @@ class VideoPlayerController {
   }
 
   showNativeControls() {
-    // Hide custom control bar
+    
     if (this.controlBar) {
       this.controlBar.style.display = 'none';
     }
-    // Disable custom click surface to allow interacting with native controls
+    
     const surface = document.getElementById('videoClickSurface');
     if (surface) {
       surface.style.pointerEvents = 'none';
     }
-    // Unclip iframe to show native controls
+    
     const iframe = document.getElementById('videoIframe');
     if (iframe) {
       iframe.style.top = '0';
       iframe.style.height = '100%';
     }
-    // Show the "Restore" button
+    
     const btnRestore = document.getElementById('btnRestoreCustomUI');
     if (btnRestore) {
       btnRestore.style.display = 'flex';
@@ -376,30 +358,28 @@ class VideoPlayerController {
   }
 
   restoreCustomUI() {
-    // Restore custom control bar
+    
     if (this.controlBar) {
       this.controlBar.style.display = '';
       if (this.resetAutoHideTimer) this.resetAutoHideTimer();
     }
-    // Re-enable custom click surface
+    
     const surface = document.getElementById('videoClickSurface');
     if (surface) {
       surface.style.pointerEvents = '';
     }
-    // Re-clip iframe
+    
     const iframe = document.getElementById('videoIframe');
     if (iframe) {
       iframe.style.top = '';
       iframe.style.height = '';
     }
-    // Hide the "Restore" button
+    
     const btnRestore = document.getElementById('btnRestoreCustomUI');
     if (btnRestore) {
       btnRestore.style.display = 'none';
     }
   }
-
-  // Ticker removed — real time polling is done by _startProgressPoll() via YT API
 
   updateTimeDisplay() {
     const curElem = document.getElementById('ytCurrentTime');
@@ -454,7 +434,6 @@ class VideoPlayerController {
     if (this.resetAutoHideTimer) this.resetAutoHideTimer();
   }
 
-  // Legacy postMessage fallback — used only when YT API unavailable
   sendYTCommand(func, args = []) {
     try {
       const p = this.ytPlayer;
@@ -467,7 +446,7 @@ class VideoPlayerController {
         if (func === 'setPlaybackRate') { p.setPlaybackRate(args[0]); return; }
       }
     } catch (e) {}
-    // Fallback postMessage
+    
     const frame = document.getElementById('videoIframe');
     if (frame && frame.contentWindow) {
       try {
@@ -535,27 +514,20 @@ class VideoPlayerController {
     }
   }
 
-  // --------------------------------------------------------------------------
-  // Intelligent YouTube URL / ID Parser
-  // --------------------------------------------------------------------------
   static parseYouTubeUrl(urlOrId) {
     if (!urlOrId || typeof urlOrId !== 'string') return null;
     const clean = urlOrId.trim();
 
-    // 1. Direct Playlist ID (starts with PL, RD, UU, FL, LP, OLAK5uy_ or length > 11)
     if (/^(?:PL|RD|UU|FL|LP|OLAK5uy_)[a-zA-Z0-9_-]+$/.test(clean) || (clean.startsWith('PL') && clean.length > 11)) {
       return { type: 'playlist', id: clean };
     }
 
-    // 2. Direct 11-character video ID
     if (/^[a-zA-Z0-9_-]{11}$/.test(clean)) {
       return { type: 'video', id: clean };
     }
 
-    // 3. Extract list= parameter from any full URL
     const playlistMatch = clean.match(/[?&]list=([a-zA-Z0-9_-]+)/);
-    
-    // 4. youtu.be/ID format
+
     const shortMatch = clean.match(/youtu\.be\/([a-zA-Z0-9_-]{11})/);
     if (shortMatch) {
       return { 
@@ -565,7 +537,6 @@ class VideoPlayerController {
       };
     }
 
-    // 5. Standard watch?v=ID format
     const watchMatch = clean.match(/[?&]v=([a-zA-Z0-9_-]{11})/);
     if (watchMatch) {
       return { 
@@ -575,7 +546,6 @@ class VideoPlayerController {
       };
     }
 
-    // 6. Embed URL format (youtube.com/embed/videoseries?list=ID or youtube.com/embed/ID)
     const embedSeriesMatch = clean.match(/youtube\.com\/embed\/videoseries\?list=([a-zA-Z0-9_-]+)/);
     if (embedSeriesMatch) {
       return { type: 'playlist', id: embedSeriesMatch[1] };
@@ -590,24 +560,20 @@ class VideoPlayerController {
       };
     }
 
-    // 6b. Shorts URL (youtube.com/shorts/ID)
     const shortsMatch = clean.match(/youtube\.com\/shorts\/([a-zA-Z0-9_-]{11})/);
     if (shortsMatch) {
       return { type: 'video', id: shortsMatch[1], playlistId: playlistMatch ? playlistMatch[1] : null };
     }
 
-    // 6c. Live URL (youtube.com/live/ID)
     const liveMatch = clean.match(/youtube\.com\/live\/([a-zA-Z0-9_-]{11})/);
     if (liveMatch) {
       return { type: 'video', id: liveMatch[1], playlistId: playlistMatch ? playlistMatch[1] : null };
     }
 
-    // 7. Playlist URL (with list= parameter and no video ID)
     if (playlistMatch) {
       return { type: 'playlist', id: playlistMatch[1] };
     }
 
-    // Fallback: If longer than standard video ID (11 chars), treat as playlist
     if (clean.length > 11) {
       return { type: 'playlist', id: clean };
     }
@@ -615,9 +581,6 @@ class VideoPlayerController {
     return { type: 'video', id: clean };
   }
 
-  // --------------------------------------------------------------------------
-  // Render / Play Video In-Place Without Leaving Page
-  // --------------------------------------------------------------------------
   loadVideo(video, trackId, index = 0, lectureIndex = 0) {
     if (!video) {
       this.showPlaceholder("No video selected", "Choose a video from the playlist to start learning.");
@@ -628,13 +591,11 @@ class VideoPlayerController {
     this.currentVideoIndex = index;
     this.currentPlaylistLectureIndex = lectureIndex;
 
-    // Parse the stored ID or URL — must happen BEFORE building embedUrl
     const parsed = VideoPlayerController.parseYouTubeUrl(video.youtubeId || video.youtubeUrl);
 
     let embedUrl = "";
     let rawWatchUrl = video.youtubeUrl || `https://www.youtube.com/watch?v=${video.youtubeId}`;
 
-    // Standard clean YouTube embed format — minimizes clutter, cards & popups
     const BASE = 'https://www.youtube.com/embed';
     const params = this.getEmbedParams();
 
@@ -656,34 +617,29 @@ class VideoPlayerController {
       embedUrl = `${BASE}/${video.youtubeId}?${params}`;
     }
 
-    // Show iframe, hide placeholder
     if (this.videoPlaceholder) this.videoPlaceholder.style.display = 'none';
 
-    // Use real YT API if ready, otherwise store as pending for when API loads
     if (this.ytPlayer && this.ytPlayerReady) {
       this._loadUrlIntoPlayer(embedUrl);
     } else if (this.ytPlayer) {
-      // Player created but not yet ready — store and load on onReady
+      
       this.pendingEmbedUrl = embedUrl;
     } else {
-      // API not yet loaded at all — set iframe src directly as fallback
+      
       const frame = document.getElementById('videoIframe');
       if (frame) { frame.src = ''; frame.src = embedUrl; }
       this.pendingEmbedUrl = embedUrl;
     }
 
-    // Reset progress display while new video loads
     this.currentTime = 0;
     this.duration = 0;
     const bar = document.getElementById('ytProgressPlayed');
     if (bar) bar.style.width = '0%';
     this.updateTimeDisplay();
 
-    // Reset playing state
     this.isPlaying = true;
     this.updatePlayPauseButton();
 
-    // Enable note editor now that a video is loaded
     const noteEditor = document.getElementById('noteContentInput');
     const noteTimestamp = document.getElementById('noteTimestampInput');
     const noteSave = document.getElementById('btnSaveNote');
@@ -695,26 +651,21 @@ class VideoPlayerController {
     const noteEditorCard = document.querySelector('.note-editor-card');
     if (noteEditorCard) noteEditorCard.classList.remove('no-video-loaded');
 
-    // Keep "Open in YouTube" button wired to correct watch URL
     const btnOpenYouTube = document.getElementById('btnOpenYouTube');
     if (btnOpenYouTube) {
       btnOpenYouTube.onclick = () => window.open(rawWatchUrl, '_blank', 'noopener,noreferrer');
     }
 
-    // Update metadata title
     if (this.videoTitleElem) this.videoTitleElem.textContent = video.title || 'Untitled Lecture';
     const chapterTitleElem = document.getElementById('ytChapterTitle');
     if (chapterTitleElem) {
       chapterTitleElem.textContent = video.title ? (video.title.length > 28 ? video.title.substring(0, 28) + '...' : video.title) : 'Lecture View';
     }
     if (this.videoDescElem) this.videoDescElem.textContent = video.description || '';
-    // Badge elements removed from HTML — skip those refs
 
-    // Update Mark as Watched button state
     const isWatched = this.watchedVideos.has(video.id);
     this.updateMarkWatchedButton(isWatched);
 
-    // Re-render sidebar fully so sub-lectures expand for the active playlist item
     if (typeof window.renderPlaylistSidebar === 'function') {
       window.renderPlaylistSidebar(trackId);
     }
@@ -727,7 +678,6 @@ class VideoPlayerController {
     if (!this.currentPlaylistId) return;
     this.currentPlaylistLectureIndex = Math.max(0, lectureIndex);
 
-    // Retrieve real video details from cache if available
     const cached = window.appState.playlistItemsCache[this.currentPlaylistId];
     if (cached && cached[this.currentPlaylistLectureIndex]) {
       const lec = cached[this.currentPlaylistLectureIndex];
@@ -735,13 +685,11 @@ class VideoPlayerController {
       return;
     }
 
-    // Use YT API if available, else iframe fallback
     const embedUrl = `https://www.youtube.com/embed/videoseries?list=${this.currentPlaylistId}&${this.getEmbedParams()}&index=${this.currentPlaylistLectureIndex}&autoplay=1`;
     this._loadUrlIntoPlayer(embedUrl);
 
     window.showToast(`Switched to Lecture #${this.currentPlaylistLectureIndex + 1}`, 'info');
 
-    // Sync sub-lectures active highlight in sidebar
     if (typeof window.renderPlaylistSidebar === 'function') {
       window.renderPlaylistSidebar(this.currentTrackId);
     }
@@ -783,11 +731,8 @@ class VideoPlayerController {
     }
   }
 
-  // --------------------------------------------------------------------------
-  // Navigation Controls (Prev / Next)
-  // --------------------------------------------------------------------------
   playNext() {
-    // If currently playing a sub-lecture playlist, go to next lecture within it
+    
     if (this.currentPlaylistId) {
       const cached = window.appState.playlistItemsCache[this.currentPlaylistId];
       const currentIdx = this.currentPlaylistLectureIndex || 0;
@@ -801,7 +746,6 @@ class VideoPlayerController {
       }
     }
 
-    // Otherwise navigate between main course items
     const track = window.appState.tracks[this.currentTrackId];
     if (!track || !track.videos.length) return;
 
@@ -816,7 +760,7 @@ class VideoPlayerController {
   }
 
   playPrev() {
-    // If currently playing a sub-lecture playlist, go to previous lecture within it
+    
     if (this.currentPlaylistId) {
       const currentIdx = this.currentPlaylistLectureIndex || 0;
       const prevIdx = currentIdx - 1;
@@ -829,7 +773,6 @@ class VideoPlayerController {
       }
     }
 
-    // Otherwise navigate between main course items
     const track = window.appState.tracks[this.currentTrackId];
     if (!track || !track.videos.length) return;
 
@@ -843,9 +786,6 @@ class VideoPlayerController {
     }
   }
 
-  // --------------------------------------------------------------------------
-  // Progress & Watched State
-  // --------------------------------------------------------------------------
   toggleCurrentWatched() {
     const track = window.appState.tracks[this.currentTrackId];
     if (!track || !track.videos[this.currentVideoIndex]) return;
@@ -905,7 +845,6 @@ class VideoPlayerController {
         item.classList.remove('active');
       }
 
-      // Update checkmark state
       const checkBtn = item.querySelector('.playlist-item-check i');
       if (checkBtn) {
         if (this.watchedVideos.has(vId)) {
@@ -918,9 +857,9 @@ class VideoPlayerController {
   }
 
   scrollToActivePlaylistItem() {
-    // Scroll active item into view
+    
     setTimeout(() => {
-      // 1. Scroll inner container if the active item is a sub-lecture
+      
       const activeSubLec = document.querySelector('.playlist-sub-lecture.active');
       if (activeSubLec) {
         const subContainer = activeSubLec.closest('.playlist-sub-lectures-container');
@@ -933,7 +872,6 @@ class VideoPlayerController {
         }
       }
 
-      // 2. Scroll outer sidebar for the main playlist item wrapper
       const activeItem = activeSubLec ? activeSubLec.closest('.playlist-item-wrapper') : document.querySelector('.playlist-item-wrapper.is-active');
       const sidebar = document.getElementById('playlistItemsContainer');
       if (activeItem && sidebar) {
@@ -947,9 +885,6 @@ class VideoPlayerController {
     }, 150);
   }
 
-  // --------------------------------------------------------------------------
-  // Theater / Focus Mode
-  // --------------------------------------------------------------------------
   toggleTheaterMode() {
     this.isTheaterMode = !this.isTheaterMode;
     if (this.learningStageGrid) {
@@ -963,9 +898,6 @@ class VideoPlayerController {
     }
   }
 
-  // --------------------------------------------------------------------------
-  // Persistence
-  // --------------------------------------------------------------------------
   saveWatchedState() {
     try {
       localStorage.setItem('placementhub_watched_videos', JSON.stringify(Array.from(this.watchedVideos)));
@@ -986,4 +918,3 @@ class VideoPlayerController {
   }
 }
 
-window.VideoPlayerController = VideoPlayerController;

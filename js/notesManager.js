@@ -1,35 +1,37 @@
-/* ==========================================================================
-   PLACEMENTHUB - TIMESTAMPED NOTES NOTEBOOK CONTROLLER
-   Full Persistence, Instant Timestamp Jumping, Markdown Export & Filtering
-   ========================================================================== */
 
-class NotesManager {
+
+import { escapeHtml } from './data.js';
+
+export class NotesManager {
   constructor() {
     this.storageKey = 'placementhub_notes_v2';
-    this.notes = this.loadNotes();
-    this.currentFilter = 'current'; // 'current' or 'all'
+    this.notes = [];
+    this.currentFilter = 'current'; 
     this.searchQuery = '';
   }
 
-  loadNotes() {
+  async init() {
+    this.notes = await this.loadNotes();
+  }
+
+  async loadNotes() {
     try {
-      const data = localStorage.getItem(this.storageKey);
+      const data = await localforage.getItem(this.storageKey);
       return data ? JSON.parse(data) : [];
     } catch (e) {
-      console.error("Failed to load notes from localStorage:", e);
+      console.error("Failed to load notes from localforage:", e);
       return [];
     }
   }
 
-  saveNotes() {
+  async saveNotes() {
     try {
-      localStorage.setItem(this.storageKey, JSON.stringify(this.notes));
+      await localforage.setItem(this.storageKey, JSON.stringify(this.notes));
     } catch (e) {
-      console.error("Failed to save notes to localStorage:", e);
+      console.error("Failed to save notes to localforage:", e);
     }
   }
 
-  // Parse string timestamp (e.g. "12:34" or "1:05:20") to total seconds
   static timestampToSeconds(tsStr) {
     if (!tsStr) return 0;
     const parts = tsStr.trim().split(':').map(Number);
@@ -44,7 +46,6 @@ class NotesManager {
     return 0;
   }
 
-  // Format seconds to MM:SS or HH:MM:SS
   static formatSeconds(sec) {
     const s = Math.max(0, Math.floor(sec));
     const hours = Math.floor(s / 3600);
@@ -100,7 +101,7 @@ class NotesManager {
 
     if (note.timestampSeconds > 0) {
       if (note.youtubeId && window.playerController && window.playerController.videoIframe) {
-        // If it's a playlist or standard video, seek to start time in the embedded player
+        
         const isPlaylist = note.youtubeId.length > 11;
         const BASE = 'https://www.youtube.com/embed';
         const params = window.playerController.getEmbedParams();
@@ -201,14 +202,12 @@ class NotesManager {
 
     let filtered = this.notes;
 
-    // Filter by current video vs all
     if (this.currentFilter === 'current' && currentVideoId) {
       filtered = filtered.filter(n => n.videoId === currentVideoId);
     } else if (this.currentFilter === 'track' && trackId) {
       filtered = filtered.filter(n => n.trackId === trackId);
     }
 
-    // Filter by search query
     if (this.searchQuery) {
       const q = this.searchQuery.toLowerCase();
       filtered = filtered.filter(n => 
@@ -241,7 +240,6 @@ class NotesManager {
         minute: '2-digit'
       });
 
-      // YouTube timestamp jump link
       let jumpLink = '';
       if (note.youtubeId && note.timestampSeconds > 0) {
         jumpLink = `https://www.youtube.com/watch?v=${note.youtubeId}&t=${note.timestampSeconds}s`;

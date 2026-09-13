@@ -1,8 +1,5 @@
-/* ==========================================================================
-   PLACEMENT TOOLKIT: TABS, NOTES NOTEBOOK, PRACTICE PROBLEMS & ROADMAP
-   ========================================================================== */
 
-/* Sub-Tab Navigation Below Player */
+
 .toolkit-tabs-container {
   background: var(--bg-card);
   border: 1px solid var(--border-subtle);
@@ -76,9 +73,6 @@
   to { opacity: 1; transform: translateY(0); }
 }
 
-/* ==========================================================================
-   1. TIMESTAMPED NOTES NOTEBOOK
-   ========================================================================== */
 .notes-container {
   display: flex;
   flex-direction: column;
@@ -375,9 +369,6 @@
   opacity: 0.6;
 }
 
-/* ==========================================================================
-   2. PRACTICE PROBLEMS & CODING SHEETS
-   ========================================================================== */
 .practice-container {
   display: flex;
   flex-direction: column;
@@ -654,9 +645,6 @@
   margin-bottom: 0.5rem;
 }
 
-/* ==========================================================================
-   3. POMODORO FOCUS TIMER (MODAL & HEADER WIDGET)
-   ========================================================================== */
 .pomo-header-pill {
   display: inline-flex;
   align-items: center;
@@ -739,9 +727,6 @@
   margin-top: 1rem;
 }
 
-/* ==========================================================================
-   4. ROADMAP OVERVIEW
-   ========================================================================== */
 .overview-grid {
   display: grid;
   grid-template-columns: 1fr;

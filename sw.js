@@ -1,6 +1,4 @@
-/* ==========================================================================
-   PLACEMENTHUB SERVICE WORKER — Network-First Strategy for Instant Updates
-   ========================================================================== */
+
 
 const CACHE_NAME = 'placementhub-v7';
 const CORE_ASSETS = [
@@ -26,7 +24,6 @@ const CORE_ASSETS = [
   '/manifest.json'
 ];
 
-// Install: cache core assets and skip waiting
 self.addEventListener('install', (event) => {
   self.skipWaiting();
   event.waitUntil(
@@ -36,7 +33,6 @@ self.addEventListener('install', (event) => {
   );
 });
 
-// Activate: instantly remove any older cache versions and claim clients
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys().then((keys) =>
@@ -47,7 +43,6 @@ self.addEventListener('activate', (event) => {
   );
 });
 
-// Fetch: NETWORK FIRST with offline cache fallback
 self.addEventListener('fetch', (event) => {
   if (!event.request.url.startsWith(self.location.origin)) return;
 

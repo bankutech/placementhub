@@ -1,22 +1,18 @@
-/* ==========================================================================
-   DYNAMIC PLAYLIST & CUSTOM VIDEO MANAGER (LOCALSTORAGE PERSISTENCE)
-   ========================================================================== */
 
-class PlaylistManager {
+
+import { INITIAL_PLACEMENT_DATA, DEFAULT_VIDEO_IDS } from './data.js';
+import { VideoPlayerController } from './player.js';
+
+export class PlaylistManager {
   constructor() {
     this.storageKey = 'placementhub_user_playlists_v6';
-    // IDs of shipped/default videos the user has explicitly deleted. Tracked
-    // separately from storageKey because initData() below always rebuilds
-    // from the fresh INITIAL_PLACEMENT_DATA defaults (so new curriculum
-    // additions reach existing users) — without this list, that rebuild had
-    // no way to know a given default was deliberately removed, so it just
-    // came back on every reload.
+
     this.deletedDefaultsKey = 'placementhub_deleted_defaults_v6';
   }
 
-  loadDeletedDefaults() {
+  async loadDeletedDefaults() {
     try {
-      const data = localStorage.getItem(this.deletedDefaultsKey);
+      const data = await localforage.getItem(this.deletedDefaultsKey);
       return new Set(data ? JSON.parse(data) : []);
     } catch (e) {
       console.error("Failed to load deleted-defaults list:", e);
@@ -24,38 +20,33 @@ class PlaylistManager {
     }
   }
 
-  saveDeletedDefaults(deletedSet) {
+  async saveDeletedDefaults(deletedSet) {
     try {
-      localStorage.setItem(this.deletedDefaultsKey, JSON.stringify(Array.from(deletedSet)));
+      await localforage.setItem(this.deletedDefaultsKey, JSON.stringify(Array.from(deletedSet)));
     } catch (e) {
       console.error("Failed to save deleted-defaults list:", e);
     }
   }
 
-  // Initialize tracks data from localStorage or fallback to defaults
-  initData() {
-    const deletedDefaults = this.loadDeletedDefaults();
+  async initData() {
+    const deletedDefaults = await this.loadDeletedDefaults();
     try {
-      const savedData = localStorage.getItem(this.storageKey);
+      const savedData = await localforage.getItem(this.storageKey);
       if (savedData) {
         const parsed = JSON.parse(savedData);
-        // Create a deep copy of the fresh INITIAL_PLACEMENT_DATA defaults
+        
         const tracks = JSON.parse(JSON.stringify(INITIAL_PLACEMENT_DATA));
 
-        // Drop any default video the user explicitly deleted before merging
         Object.keys(tracks).forEach(tKey => {
           tracks[tKey].videos = tracks[tKey].videos.filter(v => !deletedDefaults.has(v.id));
         });
 
-        // Merge user-added custom videos without overwriting updated defaults
         Object.keys(parsed).forEach(tKey => {
           if (tracks[tKey] && parsed[tKey].videos) {
-            // Compare against the ORIGINAL default ID set, not the
-            // already-filtered copy above, so a just-deleted default isn't
-            // mistaken for a "new" user video and re-added.
+
             const defaultIds = new Set((INITIAL_PLACEMENT_DATA[tKey] && INITIAL_PLACEMENT_DATA[tKey].videos || []).map(v => v.id));
             const userVideos = parsed[tKey].videos.filter(v => !defaultIds.has(v.id));
-            // Append user videos gracefully
+            
             tracks[tKey].videos.push(...userVideos);
           }
         });
@@ -65,7 +56,6 @@ class PlaylistManager {
       console.error("Failed to load tracks from localStorage, loading defaults:", e);
     }
 
-    // First-ever load (or corrupted storage) — still respect deletions
     const fresh = JSON.parse(JSON.stringify(INITIAL_PLACEMENT_DATA));
     Object.keys(fresh).forEach(tKey => {
       fresh[tKey].videos = fresh[tKey].videos.filter(v => !deletedDefaults.has(v.id));
@@ -73,17 +63,15 @@ class PlaylistManager {
     return fresh;
   }
 
-  // Save current tracks data to localStorage
-  saveData(tracksData) {
+  async saveData(tracksData) {
     try {
-      localStorage.setItem(this.storageKey, JSON.stringify(tracksData));
+      await localforage.setItem(this.storageKey, JSON.stringify(tracksData));
     } catch (e) {
-      console.error("Failed to save tracks to localStorage:", e);
+      console.error("Failed to save tracks to localforage:", e);
       window.showToast("Storage quota exceeded or unavailable", "warning");
     }
   }
 
-  // Add a new video/link dynamically
   addVideo(targetTrackId, videoObj) {
     const tracks = window.appState.tracks;
     if (!tracks[targetTrackId]) {
@@ -111,7 +99,6 @@ class PlaylistManager {
     tracks[targetTrackId].videos.push(newVideo);
     this.saveData(tracks);
 
-    // Refresh UI
     window.renderPlaylistSidebar(targetTrackId);
     window.updateTrackChips();
     window.updateOverallProgress();
@@ -120,15 +107,15 @@ class PlaylistManager {
     return newVideo;
   }
 
-  // Delete a video
   deleteVideo(trackId, videoId) {
     const tracks = window.appState.tracks;
     if (!tracks[trackId]) return;
 
     if (DEFAULT_VIDEO_IDS.has(videoId)) {
-      const deletedDefaults = this.loadDeletedDefaults();
-      deletedDefaults.add(videoId);
-      this.saveDeletedDefaults(deletedDefaults);
+      this.loadDeletedDefaults().then(deletedDefaults => {
+        deletedDefaults.add(videoId);
+        this.saveDeletedDefaults(deletedDefaults);
+      });
     }
 
     tracks[trackId].videos = tracks[trackId].videos.filter(v => v.id !== videoId);
@@ -139,7 +126,6 @@ class PlaylistManager {
     window.updateOverallProgress();
     window.showToast("Video removed from playlist", "info");
 
-    // If current video was deleted, load the first available one
     if (window.playerController.currentTrackId === trackId && tracks[trackId].videos.length > 0) {
       window.playerController.loadVideo(tracks[trackId].videos[0], trackId, 0);
     } else if (tracks[trackId].videos.length === 0) {
@@ -147,11 +133,10 @@ class PlaylistManager {
     }
   }
 
-  // Reset to original curated default curriculum
   resetToDefaults() {
     if (confirm("Are you sure you want to reset all tracks to original defaults? Any custom added videos will be restored.")) {
-      localStorage.removeItem(this.storageKey);
-      localStorage.removeItem(this.deletedDefaultsKey);
+      localforage.removeItem(this.storageKey);
+      localforage.removeItem(this.deletedDefaultsKey);
       window.appState.tracks = JSON.parse(JSON.stringify(INITIAL_PLACEMENT_DATA));
       this.saveData(window.appState.tracks);
       
@@ -162,7 +147,6 @@ class PlaylistManager {
     }
   }
 
-  // Export Playlist as JSON
   exportData() {
     const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(window.appState.tracks, null, 2));
     const downloadAnchor = document.createElement('a');
@@ -174,7 +158,6 @@ class PlaylistManager {
     window.showToast("📥 Playlists exported successfully!", "success");
   }
 
-  // Import Playlist from JSON
   importData(jsonString) {
     try {
       const parsed = JSON.parse(jsonString);
@@ -187,7 +170,7 @@ class PlaylistManager {
       }
 
       window.appState.tracks = parsed;
-      localStorage.removeItem(this.deletedDefaultsKey); // don't let old deletions hide restored videos
+      localforage.removeItem(this.deletedDefaultsKey); 
       this.saveData(parsed);
       window.renderTrackView(window.appState.currentTrackId);
       window.updateTrackChips();
@@ -200,11 +183,10 @@ class PlaylistManager {
     return false;
   }
 
-  // Generate Shareable Link
   generateShareableLink() {
     try {
       const jsonStr = JSON.stringify(window.appState.tracks);
-      // Encode to base64, replacing characters to make it url safe
+      
       const base64Str = btoa(unescape(encodeURIComponent(jsonStr)));
       const shareUrl = `${window.location.origin}${window.location.pathname}#import=${base64Str}`;
       
@@ -218,7 +200,6 @@ class PlaylistManager {
     }
   }
 
-  // Check for shared link on load
   checkForImportHash() {
     if (window.location.hash.startsWith('#import=')) {
       try {
@@ -227,7 +208,7 @@ class PlaylistManager {
         if (this.importData(jsonStr)) {
           window.showToast("Shared syllabus imported! 🎉", "success");
         }
-        // Clean URL
+        
         window.history.replaceState(null, null, window.location.pathname);
       } catch (e) {
         window.showToast("Failed to load shared syllabus. Link might be broken.", "warning");

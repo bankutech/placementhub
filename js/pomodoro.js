@@ -1,21 +1,18 @@
-/* ==========================================================================
-   PLACEMENTHUB - POMODORO FOCUS TIMER CONTROLLER
-   25m Focus / 5m Break / Web Audio Ambient Chime / Session Tracking
-   ========================================================================== */
 
-class PomodoroController {
+
+export class PomodoroController {
   constructor() {
-    this.focusDuration = 25 * 60; // 25 minutes
-    this.shortBreakDuration = 5 * 60; // 5 minutes
-    this.longBreakDuration = 15 * 60; // 15 minutes
+    this.focusDuration = 25 * 60; 
+    this.shortBreakDuration = 5 * 60; 
+    this.longBreakDuration = 15 * 60; 
 
-    this.currentMode = 'focus'; // 'focus' | 'shortBreak' | 'longBreak'
+    this.currentMode = 'focus'; 
     this.timeLeft = this.focusDuration;
     this.isRunning = false;
     this.timerInterval = null;
 
     this.sessionsCompleted = this.loadCompletedSessions();
-    this.restoreTimerState(); // resumes wherever the last session left off (paused)
+    this.restoreTimerState(); 
 
     this.initAudio();
   }
@@ -37,9 +34,6 @@ class PomodoroController {
     }
   }
 
-  // Restores mode + time remaining across page reloads. Always comes back
-  // paused (never auto-resumes running) so a tab left open/closed for a
-  // long time can't silently keep "running" against a clock nobody saw.
   restoreTimerState() {
     try {
       const raw = localStorage.getItem('placementhub_pomo_state');
@@ -76,7 +70,6 @@ class PomodoroController {
     this.audioCtx = null;
   }
 
-  // Pure Web Audio API Synthesized Ambient Chime
   playAmbientChime() {
     try {
       const AudioCtxClass = window.AudioContext || window.webkitAudioContext;
@@ -90,7 +83,7 @@ class PomodoroController {
       }
 
       const now = this.audioCtx.currentTime;
-      // Harmonious Tibetan Singing Bowl / Zen chime chord (C5, E5, G5, C6)
+      
       const chord = [523.25, 659.25, 783.99, 1046.50];
 
       chord.forEach((freq, index) => {
@@ -100,7 +93,6 @@ class PomodoroController {
         osc.type = 'sine';
         osc.frequency.setValueAtTime(freq, now + (index * 0.08));
 
-        // Smooth exponential attack and long lingering decay
         gain.gain.setValueAtTime(0.001, now + (index * 0.08));
         gain.gain.linearRampToValueAtTime(0.18 / (index + 1), now + (index * 0.08) + 0.05);
         gain.gain.exponentialRampToValueAtTime(0.0001, now + (index * 0.08) + 3.2);
@@ -144,7 +136,6 @@ class PomodoroController {
     if (this.isRunning) return;
     this.isRunning = true;
 
-    // Wake up audio context on user gesture
     if (!this.audioCtx) {
       const AudioCtxClass = window.AudioContext || window.webkitAudioContext;
       if (AudioCtxClass) this.audioCtx = new AudioCtxClass();
@@ -207,7 +198,6 @@ class PomodoroController {
   updateUI() {
     const timeStr = this.formatTime(this.timeLeft);
 
-    // Header badge & Side Nav pill
     const headerDisplay = document.getElementById('headerPomodoroDisplay');
     const sideNavPomoPill = document.getElementById('sideNavPomoPill');
     const headerBtn = document.getElementById('btnHeaderPomodoro');
@@ -218,7 +208,6 @@ class PomodoroController {
       sideNavPomoPill.textContent = timeStr;
     }
 
-    // Modal or widget elements
     const mainTimeDisplay = document.getElementById('pomoMainTime');
     const toggleBtn = document.getElementById('btnPomoToggle');
     const sessionsBadge = document.getElementById('pomoSessionsCount');
@@ -252,15 +241,11 @@ class PomodoroController {
       });
     }
 
-    // Update document title if running
     if (this.isRunning) {
       document.title = `(${timeStr}) PlacementHub - ${this.currentMode === 'focus' ? 'Focusing' : 'Break'}`;
     } else {
       document.title = 'PlacementHub – Placement Coding & Aptitude Prep';
     }
   }
-}
 
-if (typeof window !== 'undefined') {
-  window.PomodoroController = PomodoroController;
 }

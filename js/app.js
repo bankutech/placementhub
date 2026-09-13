@@ -1,8 +1,12 @@
-/* ==========================================================================
-   PLACEMENT LEARNING PORTAL - MASTER APPLICATION CONTROLLER
-   ========================================================================== */
 
-// Global State
+
+import { PlaylistManager } from './playlistManager.js';
+import { NotesManager } from './notesManager.js';
+import { PracticeManager } from './practiceManager.js';
+import { PomodoroController } from './pomodoro.js';
+import { VideoPlayerController } from './player.js';
+import { INITIAL_PLACEMENT_DATA, DEFAULT_VIDEO_IDS, escapeHtml } from './data.js';
+
 window.appState = {
   tracks: {},
   currentTrackId: 'java',
@@ -10,7 +14,6 @@ window.appState = {
   playlistItemsCache: {}
 };
 
-// Global Toast Dispatcher
 window.showToast = function(message, type = 'info') {
   const container = document.getElementById('toastContainer');
   if (!container) return;
@@ -24,9 +27,6 @@ window.showToast = function(message, type = 'info') {
   const toast = document.createElement('div');
   toast.className = `toast toast-${type}`;
 
-  // Built via DOM APIs (not innerHTML) so a dynamic message — e.g. a video
-  // title pulled from user input or the YouTube API — can never be parsed
-  // as markup, regardless of what characters it contains.
   const icon = document.createElement('i');
   icon.className = iconMap[type] || iconMap.info;
   const msgEl = document.createElement('div');
@@ -42,11 +42,6 @@ window.showToast = function(message, type = 'info') {
   }, 3500);
 };
 
-
-
-// ----------------------------------------------------------------------------
-// Render Playlist Sidebar
-// ----------------------------------------------------------------------------
 window.renderPlaylistSidebar = function(trackId, filterText = '') {
   const track = window.appState.tracks[trackId];
   const container = document.getElementById('playlistItemsContainer');
@@ -59,7 +54,6 @@ window.renderPlaylistSidebar = function(trackId, filterText = '') {
     videos.filter(v => v.title.toLowerCase().includes(filterText.toLowerCase()) || (v.category && v.category.toLowerCase().includes(filterText.toLowerCase())))
     : videos;
 
-  // Calculate accurate syllabus items count including sub-lectures and pluralization
   let totalLectures = 0;
   if (filterText) {
     let matchedSub = 0;
@@ -117,17 +111,13 @@ window.renderPlaylistSidebar = function(trackId, filterText = '') {
 
   container.innerHTML = filtered.map((video, idx) => {
     const isWatched = window.playerController.watchedVideos.has(video.id);
-    // A video is user-added if its ID isn't part of the shipped curriculum —
-    // NOT based on an ID prefix, since the "My Playlists" track's own
-    // preloaded videos also happen to start with "custom-".
+
     const isCustom = !DEFAULT_VIDEO_IDS.has(video.id);
 
-    // Detect if this is a playlist ID (not a standard 11-char video ID)
     const isPlaylist = video.youtubeId && video.youtubeId.length > 11;
-    // For playlists we can't get a direct thumbnail from YouTube without an API key
-    // Use a styled fallback instead
+
     const thumbUrl = isPlaylist
-      ? `https://img.youtube.com/vi/0/mqdefault.jpg`  // generic fallback
+      ? `https://img.youtube.com/vi/0/mqdefault.jpg`  
       : `https://img.youtube.com/vi/${video.youtubeId}/mqdefault.jpg`;
 
     const isActive = (window.playerController.currentTrackId === trackId && window.playerController.currentVideoIndex === idx);
@@ -191,14 +181,14 @@ window.renderPlaylistSidebar = function(trackId, filterText = '') {
             </div>
           </div>
           <div class="playlist-item-actions" style="display: flex; align-items: center; gap: 0.35rem; margin-left: 0.25rem;">
-            <a href="${video.youtubeUrl || (isPlaylist ? 'https://www.youtube.com/playlist?list=' + video.youtubeId : 'https://www.youtube.com/watch?v=' + video.youtubeId)}" target="_blank" rel="noopener noreferrer" class="btn-ctrl" style="padding: 0.25rem 0.45rem; font-size: 0.75rem; border-radius: 6px;" title="Open directly in YouTube" onclick="event.stopPropagation()">
+            <a href="${video.youtubeUrl || (isPlaylist ? 'https://www.youtube.com/playlist?list=' + video.youtubeId : 'https://www.youtube.com/watch?v=' + video.youtubeId)}" target="_blank" rel="noopener noreferrer" class="btn-ctrl hover-only-action" style="padding: 0.25rem 0.45rem; font-size: 0.75rem; border-radius: 6px;" title="Open directly in YouTube" onclick="event.stopPropagation()">
               <i class="fa-solid fa-arrow-up-right-from-square"></i>
             </a>
             <div class="playlist-item-check" title="${isWatched ? 'Mark as unwatched' : 'Mark as completed'}" onclick="event.stopPropagation(); window.playerController.toggleVideoWatched('${video.id}')">
               <i class="${isWatched ? 'fa-solid fa-circle-check checked' : 'fa-regular fa-circle'}"></i>
             </div>
             ${isCustom ? `
-              <button class="btn-delete-note" onclick="event.stopPropagation(); window.playlistManager.deleteVideo('${trackId}', '${video.id}')" title="Delete custom video">
+              <button class="btn-delete-note hover-only-action" onclick="event.stopPropagation(); window.playlistManager.deleteVideo('${trackId}', '${video.id}')" title="Delete custom video">
                 <i class="fa-solid fa-trash-can"></i>
               </button>
             ` : ''}
@@ -445,14 +435,20 @@ window.openAddVideoModal = function(trackId = null) {
 // ----------------------------------------------------------------------------
 // DOM Ready Application Bootstrap
 // ----------------------------------------------------------------------------
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
   // 1. Init Core Managers
   window.playlistManager = new PlaylistManager();
-  window.appState.tracks = window.playlistManager.initData();
-  window.playlistManager.checkForImportHash();
+  window.appState.tracks = await window.playlistManager.initData();
+  
+  if (typeof window.playlistManager.checkForImportHash === 'function') {
+    window.playlistManager.checkForImportHash();
+  }
 
   window.playerController = new VideoPlayerController();
+  
   window.notesManager = new NotesManager();
+  await window.notesManager.init();
+  
   window.practiceManager = new PracticeManager();
   window.pomodoroController = new PomodoroController();
 
@@ -465,21 +461,24 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
+  // Scroll listener for sticky header transition (Nyalazone style)
+  const appHeader = document.querySelector('.app-header');
+  if (appHeader) {
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 20) {
+        appHeader.classList.add('scrolled');
+      } else {
+        appHeader.classList.remove('scrolled');
+      }
+    });
+  }
+
   // Close Side Nav on Escape key
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') {
       window.toggleSideNav(false);
     }
   });
-
-  // 3. Video Player Control Buttons
-  const btnTogglePlay = document.getElementById('btnTogglePlay');
-  const btnRewind10 = document.getElementById('btnRewind10');
-  const btnForward10 = document.getElementById('btnForward10');
-  const btnPrev = document.getElementById('btnPrevVideo');
-  const btnNext = document.getElementById('btnNextVideo');
-  const btnTheater = document.getElementById('btnTheaterMode');
-  const btnMark = document.getElementById('btnMarkWatched');
 
   // Utility Debounce for search inputs
   const debounce = (func, wait) => {
@@ -494,13 +493,17 @@ document.addEventListener('DOMContentLoaded', () => {
     };
   };
 
-  if (btnTogglePlay) btnTogglePlay.addEventListener('click', () => window.playerController.togglePlay());
-  if (btnRewind10) btnRewind10.addEventListener('click', () => window.playerController.seekRelative(-10));
-  if (btnForward10) btnForward10.addEventListener('click', () => window.playerController.seekRelative(10));
-  if (btnPrev) btnPrev.addEventListener('click', () => window.playerController.playPrev());
-  if (btnNext) btnNext.addEventListener('click', () => window.playerController.playNext());
-  if (btnTheater) btnTheater.addEventListener('click', () => window.playerController.toggleTheaterMode());
+  // 3. Video Player Control Buttons (Reduced for UI Simplicity)
+  const btnMark = document.getElementById('btnMarkWatched');
+  const btnYouTube = document.getElementById('btnOpenYouTube');
+
   if (btnMark) btnMark.addEventListener('click', () => window.playerController.toggleCurrentWatched());
+  if (btnYouTube) btnYouTube.addEventListener('click', () => {
+    const video = window.playerController.getCurrentVideo();
+    if (video && video.youtubeId) {
+      window.open(`https://www.youtube.com/watch?v=${video.youtubeId}`, '_blank', 'noopener,noreferrer');
+    }
+  });
 
   // 4. Toolkit Sub-Tabs Switching
   const toolkitTabBtns = document.querySelectorAll('.toolkit-tab-btn');
@@ -766,17 +769,14 @@ window.loadPlaylistItems = async function(playlistId, trackId) {
   window.appState.playlistItemsCache[playlistId] = 'loading';
 
   // Uses the visitor's own key from Settings only — never hardcode a key here.
-  // A key baked into shipped client JS is public (visible to every visitor
-  // and readable in the deployed bundle) and can be scraped and reused
-  // against your quota/billing. With no key set, this gracefully falls
-  // through to the mock lecture list below.
+
   const apiKey = localStorage.getItem('placementhub_yt_api_key');
   
   if (apiKey) {
     try {
       let allItems = [];
       let nextPageToken = '';
-      let pagesToFetch = 2; // Fetch up to 100 items (50 per page)
+      let pagesToFetch = 2; 
       
       for (let page = 0; page < pagesToFetch; page++) {
         const url = `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&maxResults=50&playlistId=${playlistId}&key=${apiKey}${nextPageToken ? '&pageToken=' + nextPageToken : ''}`;
@@ -807,7 +807,6 @@ window.loadPlaylistItems = async function(playlistId, trackId) {
     }
   }
 
-  // Fallback: If no API key or API fails, build 40 mock lecture cards dynamically
   const fallbackList = Array.from({ length: 40 }).map((_, index) => ({
     id: `fallback-${playlistId}-${index}`,
     title: `Lecture #${index + 1} (Live Playlist Video)`,
@@ -819,9 +818,6 @@ window.loadPlaylistItems = async function(playlistId, trackId) {
   window.renderPlaylistSidebar(trackId);
 };
 
-// ----------------------------------------------------------------------------
-// Switch between playlist sub-lectures
-// ----------------------------------------------------------------------------
 window.selectPlaylistLecture = function(parentId, playlistId, index, videoIdReal, title) {
   window.playerController.currentPlaylistLectureIndex = index;
   
@@ -836,7 +832,6 @@ window.selectPlaylistLecture = function(parentId, playlistId, index, videoIdReal
     embedUrl = `${BASE}/videoseries?list=${playlistId}&${params}&index=${index}&autoplay=1`;
   }
 
-  // Use real YT API if available, fall back to iframe src
   pc._loadUrlIntoPlayer(embedUrl);
 
   if (pc.videoTitleElem) {

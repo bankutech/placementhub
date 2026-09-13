@@ -1,12 +1,7 @@
-/* ==========================================================================
-   PLACEMENT LEARNING PORTAL - USER PLAYLISTS DATABASE
-   Strictly Curated: Contains ONLY user-provided courses and playlists.
-   ========================================================================== */
 
-const INITIAL_PLACEMENT_DATA = {
-  // --------------------------------------------------------------------------
-  // TRACK 1: JAVA PLACEMENT TRACK
-  // --------------------------------------------------------------------------
+
+export const INITIAL_PLACEMENT_DATA = {
+
   java: {
     id: "java",
     name: "Java Placement Track",
@@ -35,9 +30,6 @@ const INITIAL_PLACEMENT_DATA = {
     ]
   },
 
-  // --------------------------------------------------------------------------
-  // TRACK 2: C++ & STL PLACEMENT TRACK
-  // --------------------------------------------------------------------------
   cpp: {
     id: "cpp",
     name: "C++ & STL Placement Track",
@@ -76,9 +68,6 @@ const INITIAL_PLACEMENT_DATA = {
     ]
   },
 
-  // --------------------------------------------------------------------------
-  // TRACK 3: C PROGRAMMING TRACK
-  // --------------------------------------------------------------------------
   c: {
     id: "c",
     name: "C Programming Track",
@@ -117,9 +106,6 @@ const INITIAL_PLACEMENT_DATA = {
     ]
   },
 
-  // --------------------------------------------------------------------------
-  // TRACK 4: PYTHON PLACEMENT TRACK
-  // --------------------------------------------------------------------------
   python: {
     id: "python",
     name: "Python Placement Track",
@@ -158,9 +144,6 @@ const INITIAL_PLACEMENT_DATA = {
     ]
   },
 
-  // --------------------------------------------------------------------------
-  // TRACK 5: DSA, CS & APTITUDE PLACEMENT TRACK
-  // --------------------------------------------------------------------------
   dsa: {
     id: "dsa",
     name: "DSA & Placement Track",
@@ -197,9 +180,6 @@ const INITIAL_PLACEMENT_DATA = {
     ]
   },
 
-  // --------------------------------------------------------------------------
-  // TRACK 6: APTITUDE & REASONING
-  // --------------------------------------------------------------------------
   aptitude: {
     id: "aptitude",
     name: "Aptitude Track",
@@ -256,9 +236,6 @@ const INITIAL_PLACEMENT_DATA = {
     ]
   },
 
-  // --------------------------------------------------------------------------
-  // TRACK 7: ALL MY PLAYLISTS (USER CURATED COLLECTION)
-  // --------------------------------------------------------------------------
   custom: {
     id: "custom",
     name: "My Playlists",
@@ -406,24 +383,12 @@ const INITIAL_PLACEMENT_DATA = {
   }
 };
 
-// ----------------------------------------------------------------------------
-// Set of every video ID that ships as part of the built-in curriculum
-// (used to tell "default" videos apart from ones the user added, instead of
-// relying on ID naming conventions which can collide — see DEFAULT_VIDEO_IDS
-// usage in app.js / playlistManager.js)
-// ----------------------------------------------------------------------------
-const DEFAULT_VIDEO_IDS = new Set(
+export const DEFAULT_VIDEO_IDS = new Set(
   Object.values(INITIAL_PLACEMENT_DATA).flatMap(track => (track.videos || []).map(v => v.id))
 );
 
-// ----------------------------------------------------------------------------
-// Shared HTML-escaping helper — every place that injects user- or
-// third-party-supplied text (video titles, categories, playlist item titles
-// pulled from the YouTube API, etc.) into innerHTML MUST run it through this
-// first to prevent stored XSS.
-// ----------------------------------------------------------------------------
-function escapeHtml(str) {
-  if (str === null || str === undefined) return '';
+export function escapeHtml(str) {
+  if (!str) return '';
   return String(str)
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')

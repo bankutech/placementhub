@@ -1,79 +1,7 @@
-/* ==========================================================================
-   PLACEMENTHUB - MODERN DESIGN SYSTEM & MAIN STYLES
-   ========================================================================== */
+
 
 @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
 
-:root {
-  /* Core Colors */
-  --bg-primary: #090d16;
-  --bg-secondary: #0f1626;
-  --bg-tertiary: #162035;
-  --bg-card: rgba(18, 27, 47, 0.75);
-  --bg-card-hover: rgba(26, 38, 66, 0.85);
-  --bg-glass: rgba(15, 23, 42, 0.65);
-  --bg-glass-heavy: rgba(11, 17, 32, 0.85);
-  --bg-input: rgba(10, 15, 29, 0.85);
-
-  /* Borders & Glows */
-  --border-subtle: rgba(255, 255, 255, 0.08);
-  --border-medium: rgba(255, 255, 255, 0.15);
-  --border-focus: rgba(99, 102, 241, 0.5);
-  --glow-primary: rgba(99, 102, 241, 0.25);
-
-  /* Text Colors (High Contrast WCAG AAA / AA for Dark Theme) */
-  --text-primary: #f8fafc;
-  --text-secondary: #cbd5e1;
-  --text-muted: #94a3b8;
-  --text-inverse: #090d16;
-
-  /* Accent & Track Colors */
-  --accent-primary: #6366f1;
-  --accent-primary-hover: #4f46e5;
-  --accent-secondary: #06b6d4;
-  --accent-success: #10b981;
-  --accent-warning: #f59e0b;
-  --accent-danger: #ef4444;
-
-  /* Language Track Specific Colors */
-  --track-java: #f97316;
-  --track-java-glow: rgba(249, 115, 22, 0.25);
-  --track-cpp: #0284c7;
-  --track-cpp-glow: rgba(2, 132, 199, 0.25);
-  --track-c: #06b6d4;
-  --track-c-glow: rgba(6, 182, 212, 0.25);
-  --track-python: #eab308;
-  --track-python-glow: rgba(234, 179, 8, 0.25);
-  --track-dsa: #a855f7;
-  --track-dsa-glow: rgba(168, 85, 247, 0.25);
-  --track-aptitude: #10b981;
-  --track-aptitude-glow: rgba(16, 185, 129, 0.25);
-  --track-custom: #ec4899;
-  --track-custom-glow: rgba(236, 72, 153, 0.25);
-
-  /* Typography */
-  --font-main: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
-  --font-body: 'Plus Jakarta Sans', sans-serif;
-  --font-code: 'Fira Code', monospace;
-
-  /* Shadows & Glass */
-  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
-  --shadow-md: 0 4px 20px rgba(0, 0, 0, 0.4);
-  --shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.5);
-  --shadow-glow: 0 0 25px var(--glow-primary);
-  --backdrop-blur: blur(14px);
-
-  /* Layout */
-  --header-height: 72px;
-  --sidebar-width: 380px;
-  --radius-sm: 8px;
-  --radius-md: 12px;
-  --radius-lg: 18px;
-  --radius-full: 9999px;
-  --transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-/* Base Resets */
 *, *::before, *::after {
   box-sizing: border-box;
   margin: 0;
@@ -101,7 +29,6 @@ body {
   background-attachment: fixed;
 }
 
-/* Custom Scrollbar */
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
@@ -118,7 +45,6 @@ body {
   background: var(--accent-primary);
 }
 
-/* Typography Styles */
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-main);
   color: var(--text-primary);
@@ -141,9 +67,6 @@ button, input, select, textarea {
   color: inherit;
 }
 
-/* ==========================================================================
-   HEADER & NAVBAR
-   ========================================================================== */
 .app-header {
   position: sticky;
   top: 0;
@@ -204,7 +127,6 @@ button, input, select, textarea {
   opacity: 0.95;
 }
 
-/* Header Search & Actions */
 .header-search {
   position: relative;
   width: 320px;
@@ -276,9 +198,6 @@ button, input, select, textarea {
   box-shadow: 0 6px 20px rgba(99, 102, 241, 0.5);
 }
 
-/* ==========================================================================
-   TRACK NAVIGATION (LANGUAGE / SUBJECT BAR)
-   ========================================================================== */
 .track-nav-container {
   background: var(--bg-secondary);
   border-bottom: 1px solid var(--border-subtle);
@@ -325,7 +244,6 @@ button, input, select, textarea {
   transform: translateY(-2px);
 }
 
-/* Active Track State Colors */
 .track-chip.active[data-track="java"] {
   background: rgba(249, 115, 22, 0.15);
   border-color: var(--track-java);
@@ -408,9 +326,6 @@ button, input, select, textarea {
   color: var(--text-primary);
 }
 
-/* ==========================================================================
-   MAIN WORKSPACE CONTAINER
-   ========================================================================== */
 .main-workspace {
   flex: 1;
   display: flex;
@@ -422,7 +337,6 @@ button, input, select, textarea {
   gap: 1.75rem;
 }
 
-/* Quick Banner / Track Header */
 .track-banner {
   background: linear-gradient(135deg, rgba(22, 32, 53, 0.8), rgba(15, 22, 38, 0.9));
   border: 1px solid var(--border-subtle);
@@ -507,9 +421,6 @@ button, input, select, textarea {
   transition: width 0.4s ease;
 }
 
-/* ==========================================================================
-   FOOTER
-   ========================================================================== */
 .app-footer {
   margin-top: auto;
   border-top: 1px solid var(--border-subtle);
@@ -527,7 +438,6 @@ button, input, select, textarea {
   gap: 1.25rem;
 }
 
-/* Responsive adjustments */
 @media (max-width: 1024px) {
   .app-header {
     padding: 0 1.25rem;

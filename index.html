@@ -3,10 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>PlacementHub - All-in-One Placement Learning & Video Portal</title>
+  <title>PlacementHub: All-in-One Placement Learning & Video Portal</title>
   <meta name="description" content="Master Java, C++, C, Python, and DSA with seamless in-page video playlists, live code sandbox, timestamped notes, and interview prep." />
 
-  <!-- PWA: Installable on Android & iOS -->
   <link rel="manifest" href="/manifest.json" />
   <meta name="theme-color" content="#6366f1" />
   <meta name="mobile-web-app-capable" content="yes" />
@@ -18,17 +17,16 @@
   <link rel="icon" type="image/png" sizes="192x192" href="/icons/icon-192.png" />
   <link rel="icon" type="image/png" sizes="512x512" href="/icons/icon-512.png" />
 
-  <!-- Font Awesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
 
-  <!-- Application Stylesheets (Version 5 Cache-Busted) -->
   <link rel="stylesheet" href="css/main.css?v=5" />
   <link rel="stylesheet" href="css/player.css?v=5" />
   <link rel="stylesheet" href="css/toolkit.css?v=5" />
   <link rel="stylesheet" href="css/components.css?v=5" />
-  <!-- Visual Enhancement Layer -->
+  
   <link rel="stylesheet" href="css/style.css?v=6" />
-  <!-- Responsive / Mobile-First Overrides -->
+  <link rel="stylesheet" href="css/nyalazone-overrides.css" />
+  
   <link rel="stylesheet" href="css/responsive.css?v=5" />
 </head>
 <body>
@@ -36,11 +34,9 @@
   <div class="side-nav-backdrop" id="sideNavBackdrop" onclick="window.toggleSideNav(false)"></div>
 
   <div class="app-shell">
-    <!-- ========================================================================
-         LEFT SIDE PANEL / COURSE TRACKS NAVIGATION
-         ======================================================================== -->
+    
     <aside class="side-nav-drawer" id="sideNavDrawer" aria-label="Learning Tracks & Course Navigation">
-      <!-- Integrated Drawer Edge Tab Button (Attached directly to right border with 0 gap) -->
+      
       <button class="drawer-edge-tab" id="btnDrawerEdgeTab" onclick="window.toggleSideNav()" aria-label="Toggle Learning Tracks Panel" title="Click to see / close Learning Tracks">
         <i class="fa-solid fa-chevron-left" id="drawerEdgeIcon"></i>
         <span class="drawer-edge-label" id="drawerEdgeLabel">Close</span>
@@ -56,20 +52,15 @@
             <span class="side-nav-brand-badge">Learning Hub</span>
           </div>
         </div>
-        <button class="side-nav-close-btn" id="btnCloseSideNav" onclick="window.toggleSideNav(false)" aria-label="Close Side Navigation" title="Close Panel">
-          <i class="fa-solid fa-xmark"></i>
-        </button>
       </div>
 
     <div class="side-nav-body">
-      <!-- Active Track Quick Status -->
+      
       <div class="side-nav-status-card" id="sideNavStatusCard">
         <div class="status-label">CURRENT ACTIVE TRACK</div>
         <div class="status-track-name" id="sideNavCurrentTrackName"><i class="fa-brands fa-java" style="color: #fb923c; margin-right: 6px;"></i> Java Placement Track</div>
       </div>
 
-      <!-- Section: Course Tracks -->
-      <!-- Section: Course Tracks (Pills matching layout) -->
       <div class="side-nav-section">
         <div class="side-nav-section-header">
           <span><i class="fa-solid fa-layer-group"></i> LEARNING TRACKS</span>
@@ -134,7 +125,6 @@
         </div>
       </div>
 
-      <!-- Section: Quick Tools -->
       <div class="side-nav-section">
         <div class="side-nav-section-header">
           <span><i class="fa-solid fa-bolt"></i> QUICK TOOLS</span>
@@ -179,9 +169,6 @@
     </div>
     </aside>
 
-    <!-- ========================================================================
-         MAIN APP CONTAINER (HEADER + WORKSPACE + FOOTER)
-         ======================================================================== -->
     <div class="app-main-container">
       <header class="app-header">
         <div class="header-left-group">
@@ -217,7 +204,6 @@
     </div>
   </header>
 
-  <!-- Mobile Quick Track Bar (Tap anywhere on mobile to open Side Panel) -->
   <div class="mobile-track-bar" id="mobileTrackBar" onclick="window.toggleSideNav(true)" role="button" aria-label="Open Course Tracks Side Panel">
     <div class="mobile-track-bar-left">
       <span class="mobile-track-bar-tag"><i class="fa-solid fa-layer-group"></i> ACTIVE TRACK</span>
@@ -229,15 +215,10 @@
     </div>
   </div>
 
-  <!-- ========================================================================
-       MAIN WORKSPACE
-       ======================================================================== -->
   <main class="main-workspace">
 
-    <!-- Learning Stage: Video Player + Playlist Syllabus Sidebar -->
     <section class="learning-stage-grid" id="learningStageGrid">
-      
-      <!-- Video Player Card -->
+
       <div class="player-container-card">
         <div class="video-frame-wrapper" id="videoFrameWrapper">
           <div class="video-placeholder-overlay" id="videoPlaceholder" style="display: none;">
@@ -254,88 +235,20 @@
             allowfullscreen
             loading="lazy">
           </iframe>
-          
-          <button id="btnRestoreCustomUI" class="btn-restore-ui" style="display: none;" title="Restore Custom Player Controls">
-            <i class="fa-solid fa-xmark"></i> Close Settings
-          </button>
 
-          <!-- Seamless Click-to-Play/Pause Surface & Animation Indicator -->
-          <div class="video-click-surface" id="videoClickSurface" title="Click to Play / Pause | Double-click for Theater Mode">
-            <div class="video-center-indicator" id="videoCenterIndicator">
-              <i class="fa-solid fa-play"></i>
-            </div>
-          </div>
-
-          <!-- YouTube-Style Premium Player Control Bar (Overlays Bottom of Video Frame) -->
-          <div class="player-control-bar yt-style-control-bar" id="playerControlBar">
-            <!-- Full-Width Interactive Timeline Scrubber -->
-            <div class="yt-progress-container" id="ytProgressContainer" title="Click or drag to seek">
-              <div class="yt-progress-buffered" id="ytProgressBuffered"></div>
-              <div class="yt-progress-played" id="ytProgressPlayed" style="width: 0%;">
-                <div class="yt-scrubber-handle"></div>
-              </div>
-            </div>
-
-            <div class="yt-controls-row">
-              <!-- Left Controls: Play, Prev, Next, Rewind, Forward, Volume, Time, Chapter -->
-              <div class="yt-controls-left">
-                <button class="yt-icon-btn btn-play-pause" id="btnTogglePlay" title="Play / Pause (Space / K)">
-                  <i class="fa-solid fa-play" id="playPauseIcon"></i>
-                </button>
-                <button class="yt-icon-btn" id="btnPrevVideo" title="Previous Video (P)">
-                  <i class="fa-solid fa-backward-step"></i>
-                </button>
-                <button class="yt-icon-btn" id="btnNextVideo" title="Next Video (N)">
-                  <i class="fa-solid fa-forward-step"></i>
-                </button>
-                <button class="yt-icon-btn" id="btnRewind10" title="Rewind 10s (J / ←)">
-                  <i class="fa-solid fa-rotate-left"></i>
-                </button>
-                <button class="yt-icon-btn" id="btnForward10" title="Forward 10s (L / →)">
-                  <i class="fa-solid fa-rotate-right"></i>
-                </button>
-                <div class="yt-volume-box">
-                  <button class="yt-icon-btn" id="btnVolumeMute" title="Mute / Unmute (M)">
-                    <i class="fa-solid fa-volume-high" id="volumeIcon"></i>
-                  </button>
-                </div>
-                <div class="yt-time-display" id="ytTimeDisplay">
-                  <span id="ytCurrentTime">0:00</span> / <span id="ytTotalTime">16:19</span>
-                </div>
-                <div class="yt-chapter-pill" id="ytChapterPill" title="Current Lecture">
-                  <span id="ytChapterTitle">Introduction</span> <i class="fa-solid fa-chevron-right"></i>
-                </div>
-              </div>
-
-              <!-- Right Controls: Mark Done, Open YouTube, Speed, Theater, Fullscreen -->
-              <div class="yt-controls-right">
-                <button class="btn-ctrl btn-mark-watched" id="btnMarkWatched" title="Toggle Completion (M)">
-                  <i class="fa-regular fa-circle-check"></i> <span class="hide-on-mobile">Mark Done</span>
-                </button>
-                <button class="btn-ctrl" id="btnOpenYouTube" title="Open this playlist / video on YouTube">
-                  <i class="fa-brands fa-youtube" style="color: #ef4444;"></i> <span class="hide-on-mobile">YouTube</span>
-                </button>
-                <button class="yt-icon-btn" id="btnSpeedMenu" title="Playback Speed">
-                  <span id="playbackSpeedText">1x</span>
-                </button>
-                <button class="yt-icon-btn" id="btnNativeQuality" title="Video Quality / Settings (Native)">
-                  <i class="fa-solid fa-gear"></i>
-                </button>
-                <button class="yt-icon-btn" id="btnTheaterMode" title="Theater Mode (T)">
-                  <i class="fa-solid fa-table-cells-large"></i>
-                </button>
-                <button class="yt-icon-btn" id="btnFullscreen" title="Fullscreen (F)">
-                  <i class="fa-solid fa-expand"></i>
-                </button>
-              </div>
-            </div>
-          </div>
         </div>
 
-        <!-- Video Metadata Info -->
         <div class="video-meta-block">
-          <div class="video-title-row">
+          <div class="video-title-row" style="display: flex; justify-content: space-between; align-items: flex-start; gap: 16px;">
             <h1 class="current-video-title" id="currentVideoTitle">Select a lecture to begin</h1>
+            <div class="video-primary-actions" style="display: flex; gap: 10px; flex-shrink: 0;">
+              <button class="btn btn-secondary btn-sm" id="btnMarkWatched" title="Toggle Completion (M)">
+                <i class="fa-regular fa-circle-check"></i> <span class="hide-on-mobile">Mark Done</span>
+              </button>
+              <button class="btn btn-secondary btn-sm" id="btnOpenYouTube" title="Open this playlist / video on YouTube">
+                <i class="fa-brands fa-youtube" style="color: #ef4444;"></i> <span class="hide-on-mobile">YouTube</span>
+              </button>
+            </div>
           </div>
           <p class="current-video-desc" id="currentVideoDesc"></p>
           <div class="practice-cta" id="practiceCta" style="display: flex; margin-top: 1rem; padding: 12px; background: rgba(16, 185, 129, 0.05); border: 1px solid rgba(16, 185, 129, 0.15); border-radius: 8px; align-items: center; justify-content: space-between;">
@@ -348,10 +261,9 @@
         </div>
       </div>
 
-      <!-- Playlist Syllabus Sidebar -->
       <aside class="playlist-sidebar-wrapper">
         <div class="playlist-header">
-          <!-- Active Track Banner Pill inside Side Panel -->
+          
           <div class="playlist-track-banner-pill" onclick="window.toggleSideNav(true)" title="Click to switch track in Side Panel">
             <div class="track-pill-active-left">
               <span class="track-pill-label">TRACK:</span>
@@ -376,12 +288,10 @@
           </div>
         </div>
 
-        <!-- Scrollable Playlist Items -->
         <div class="playlist-items-list" id="playlistItemsContainer">
-          <!-- Populated dynamically by app.js -->
+          
         </div>
 
-        <!-- Playlist Footer with Quick Add Button -->
         <div class="playlist-footer">
           <button class="btn-add-to-playlist" onclick="window.openAddVideoModal(window.appState.currentTrackId)">
             <i class="fa-solid fa-plus"></i> Add Video / Playlist Link
@@ -390,12 +300,6 @@
       </aside>
     </section>
 
-    <!-- ======================================================================
-         PLACEMENT TOOLKIT SUB-TABS (OVERVIEW, SANDBOX, NOTES, INTERVIEW Q&A)
-         ====================================================================== -->
-    <!-- ======================================================================
-         PLACEMENT TOOLKIT SUB-TABS (NOTES NOTEBOOK, LEETCODE/GFG PRACTICE, ROADMAP)
-         ====================================================================== -->
     <section class="toolkit-tabs-container">
       <div class="toolkit-tab-headers">
         <button class="toolkit-tab-btn active" data-tab="tab-notes">
@@ -410,10 +314,10 @@
       </div>
 
       <div class="toolkit-tab-content">
-        <!-- TAB 1: TIMESTAMPED NOTES NOTEBOOK -->
+        
         <div class="tab-pane active" id="tab-notes">
           <div class="notes-container">
-            <!-- Note Editor Box -->
+            
             <div class="note-editor-card">
               <div class="note-editor-header">
                 <div class="note-editor-title">
@@ -445,7 +349,6 @@
               </div>
             </div>
 
-            <!-- Notes List Filter & Search Bar -->
             <div class="notes-filter-bar">
               <div class="notes-filter-pills">
                 <button class="notes-filter-pill active" data-filter="current" id="pillNotesCurrent">This Video</button>
@@ -459,19 +362,17 @@
               </div>
             </div>
 
-            <!-- Notes List Container -->
             <div class="notes-list" id="notesListContainer">
-              <!-- Dynamically populated by notesManager.js -->
+              
             </div>
           </div>
         </div>
 
-        <!-- TAB 2: LEETCODE & GFG PRACTICE SHEETS -->
         <div class="tab-pane" id="tab-practice">
           <div class="practice-container">
             <div class="practice-header-bar">
               <div class="practice-stats-summary" id="practiceStatsSummary">
-                <!-- Solved stats populated dynamically -->
+                
               </div>
               <div class="practice-filters-row">
                 <select id="practiceTopicFilter" class="practice-select">
@@ -495,20 +396,18 @@
               </div>
             </div>
 
-            <!-- Problem Cards List -->
             <div class="practice-problems-grid" id="practiceProblemsGrid">
-              <!-- Dynamically populated by practiceManager.js -->
+              
             </div>
           </div>
         </div>
 
-        <!-- TAB 3: PLACEMENT ROADMAP SECTION -->
         <div class="tab-pane" id="tab-overview">
           <div class="overview-grid">
             <div class="overview-card">
               <h3><i class="fa-solid fa-route" style="color: var(--accent-primary);"></i> Placement Roadmap & Preparation Phases</h3>
               <div class="roadmap-timeline" id="roadmapTimeline">
-                <!-- Populated dynamically by app.js -->
+                
               </div>
             </div>
           </div>
@@ -518,23 +417,17 @@
 
   </main>
 
-  <!-- ========================================================================
-       FOOTER
-       ======================================================================== -->
   <footer class="app-footer">
     <div>
-      <strong>PlacementHub</strong> &copy; 2025 &nbsp;•&nbsp; Built for campus placement excellence
+      <strong>PlacementHub</strong> &copy; 2026 &nbsp;•&nbsp; Built for campus placement excellence
     </div>
     <div class="footer-links">
       <span style="font-size:0.75rem; color: var(--text-muted);">Shortcuts: <kbd style="background: var(--bg-tertiary); padding: 0.15rem 0.4rem; border-radius: 4px; border: 1px solid var(--border-subtle);">N</kbd> Next &nbsp;<kbd style="background: var(--bg-tertiary); padding: 0.15rem 0.4rem; border-radius: 4px; border: 1px solid var(--border-subtle);">P</kbd> Prev &nbsp;<kbd style="background: var(--bg-tertiary); padding: 0.15rem 0.4rem; border-radius: 4px; border: 1px solid var(--border-subtle);">M</kbd> Mark &nbsp;<kbd style="background: var(--bg-tertiary); padding: 0.15rem 0.4rem; border-radius: 4px; border: 1px solid var(--border-subtle);">T</kbd> Theater</span>
     </div>
     </footer>
-    </div> <!-- /app-main-container -->
-  </div> <!-- /app-shell -->
+    </div> 
+  </div> 
 
-  <!-- ========================================================================
-       MODAL: ADD CUSTOM VIDEO / PLAYLIST LINK
-       ======================================================================== -->
   <div class="modal-backdrop" id="addVideoModal">
     <div class="modal-card">
       <div class="modal-header">
@@ -600,9 +493,6 @@
     </div>
   </div>
 
-  <!-- ========================================================================
-       MODAL: KEYBOARD SHORTCUTS
-       ======================================================================== -->
   <div class="modal-backdrop" id="shortcutsModal">
     <div class="modal-card">
       <div class="modal-header">
@@ -637,9 +527,6 @@
     </div>
   </div>
 
-  <!-- ========================================================================
-       MODAL: POMODORO FOCUS TIMER
-       ======================================================================== -->
   <div class="modal-backdrop" id="pomodoroModal">
     <div class="modal-card pomo-modal-card">
       <div class="modal-header">
@@ -678,9 +565,6 @@
     </div>
   </div>
 
-  <!-- ========================================================================
-       MODAL: SETTINGS & YOUTUBE API
-       ======================================================================== -->
   <div class="modal-backdrop" id="settingsModal">
     <div class="modal-card">
       <div class="modal-header">
@@ -727,10 +611,8 @@
     </div>
   </div>
 
-  <!-- Toast Notification Container -->
   <div class="toast-container" id="toastContainer"></div>
 
-  <!-- Mobile Bottom Navigation Bar (Visible on phones & small tablets) -->
   <nav class="mobile-bottom-bar" id="mobileBottomBar" aria-label="Mobile Navigation">
     <button class="mobile-bottom-tab active" onclick="window.toggleSideNav(true)" id="mTabTracks" aria-label="Open Course Tracks">
       <i class="fa-solid fa-layer-group"></i>
@@ -754,17 +636,10 @@
     </button>
   </nav>
 
-  <!-- Application Scripts (Version 6 Cache-Busted) -->
-  <script src="js/data.js?v=7"></script>
-  <script src="js/practiceData.js?v=7"></script>
-  <script src="js/player.js?v=7"></script>
-  <script src="js/playlistManager.js?v=7"></script>
-  <script src="js/notesManager.js?v=7"></script>
-  <script src="js/practiceManager.js?v=7"></script>
-  <script src="js/pomodoro.js?v=7"></script>
-  <script src="js/app.js?v=7"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/localforage/1.10.0/localforage.min.js"></script>
 
-  <!-- PWA Service Worker Registration & Live Auto-Update -->
+  <script type="module" src="js/app.js?v=8"></script>
+
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {

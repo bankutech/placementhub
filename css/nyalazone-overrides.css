@@ -1,0 +1,61 @@
+
+
+.app-header {
+    background: transparent !important;
+    backdrop-filter: none !important;
+    border-bottom: 1px solid transparent !important;
+    transition: background 0.3s ease, border-color 0.3s ease !important;
+}
+
+.app-header.scrolled {
+    background: var(--bg-glass-heavy) !important;
+    backdrop-filter: var(--backdrop-blur) !important;
+    border-bottom: 1px solid var(--border-subtle) !important;
+    box-shadow: var(--shadow-sm) !important;
+}
+
+.brand-icon-box {
+    background: var(--accent-primary) !important;
+    box-shadow: 0 0 15px var(--glow-primary) !important;
+}
+
+.animate-slide-up {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+}
+
+.animate-slide-up.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.track-chip.active {
+    background: var(--accent-primary-light) !important;
+    color: #fff !important;
+    border-color: var(--accent-primary) !important;
+    box-shadow: 0 0 16px var(--glow-primary) !important;
+}
+.track-chip.active i {
+    color: var(--accent-secondary) !important;
+}
+
+.side-nav-drawer {
+    background: var(--bg-secondary) !important;
+    border-right-color: var(--border-medium) !important;
+}
+
+.drawer-edge-tab {
+    background: var(--accent-primary) !important;
+    border-color: var(--border-medium) !important;
+    color: #fff !important;
+    box-shadow: 0 0 10px var(--glow-primary) !important;
+}
+.drawer-edge-tab:hover {
+    background: var(--accent-primary-hover) !important;
+}
+
+*:focus-visible {
+    outline: 2px solid var(--accent-primary) !important;
+    outline-offset: 2px !important;
+}

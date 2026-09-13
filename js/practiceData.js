@@ -1,10 +1,7 @@
-/* ==========================================================================
-   PLACEMENTHUB - CURATED PRACTICE PROBLEMS DATABASE (LEETCODE / GFG)
-   Categorized by Topic & Difficulty for High-Frequency Placement Interviews
-   ========================================================================== */
 
-const PRACTICE_PROBLEMS_DATA = [
-  // --- ARRAYS & VECTORS ---
+
+export const PRACTICE_PROBLEMS_DATA = [
+  
   {
     id: "prob-arr-01",
     title: "Two Sum",
@@ -66,7 +63,6 @@ const PRACTICE_PROBLEMS_DATA = [
     companies: ["Amazon", "Google", "Adobe", "Microsoft"]
   },
 
-  // --- STRINGS ---
   {
     id: "prob-str-01",
     title: "Valid Palindrome",
@@ -118,7 +114,6 @@ const PRACTICE_PROBLEMS_DATA = [
     companies: ["Paytm", "Accenture", "Infosys", "Cisco"]
   },
 
-  // --- TWO POINTERS & SLIDING WINDOW ---
   {
     id: "prob-tp-01",
     title: "3Sum",
@@ -150,7 +145,6 @@ const PRACTICE_PROBLEMS_DATA = [
     companies: ["Google", "Uber", "Meta", "Amazon"]
   },
 
-  // --- LINKED LISTS ---
   {
     id: "prob-ll-01",
     title: "Reverse a Linked List",
@@ -202,7 +196,6 @@ const PRACTICE_PROBLEMS_DATA = [
     companies: ["Amazon", "Microsoft", "Google", "Flipkart"]
   },
 
-  // --- STACKS & QUEUES ---
   {
     id: "prob-stk-01",
     title: "Valid Parentheses",
@@ -244,7 +237,6 @@ const PRACTICE_PROBLEMS_DATA = [
     companies: ["Amazon", "Microsoft", "Google"]
   },
 
-  // --- TREES & BINARY SEARCH TREES ---
   {
     id: "prob-tree-01",
     title: "Maximum Depth of Binary Tree",
@@ -306,7 +298,6 @@ const PRACTICE_PROBLEMS_DATA = [
     companies: ["Amazon", "Microsoft", "Meta"]
   },
 
-  // --- DYNAMIC PROGRAMMING ---
   {
     id: "prob-dp-01",
     title: "Climbing Stairs",
@@ -368,7 +359,6 @@ const PRACTICE_PROBLEMS_DATA = [
     companies: ["Google", "Amazon", "Meta", "Uber"]
   },
 
-  // --- GRAPHS ---
   {
     id: "prob-grp-01",
     title: "Number of Islands (BFS/DFS)",
@@ -410,7 +400,6 @@ const PRACTICE_PROBLEMS_DATA = [
     companies: ["Cisco", "Flipkart", "Microsoft"]
   },
 
-  // --- BIT MANIPULATION & MATH ---
   {
     id: "prob-bit-01",
     title: "Single Number (XOR Trick)",

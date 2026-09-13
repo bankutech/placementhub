@@ -1,9 +1,8 @@
-/* ==========================================================================
-   PLACEMENTHUB - PRACTICE PROBLEMS & CODING SHEETS CONTROLLER
-   Topic Filters, Difficulty Badges, Direct Problem Links & Solved Tracking
-   ========================================================================== */
 
-class PracticeManager {
+
+import { PRACTICE_PROBLEMS_DATA } from './practiceData.js';
+
+export class PracticeManager {
   constructor() {
     this.storageKey = 'placementhub_solved_probs_v2';
     this.solvedSet = this.loadSolvedState();
@@ -48,9 +47,9 @@ class PracticeManager {
     const statsContainer = document.getElementById('practiceStatsSummary');
     const topicSelect = document.getElementById('practiceTopicFilter');
 
-    if (!container || !window.PRACTICE_PROBLEMS_DATA) return;
+    if (!container || !PRACTICE_PROBLEMS_DATA) return;
 
-    const allProblems = window.PRACTICE_PROBLEMS_DATA;
+    const allProblems = PRACTICE_PROBLEMS_DATA;
     const totalProblems = allProblems.length;
     const solvedCount = allProblems.filter(p => this.solvedSet.has(p.id)).length;
     const solvedPercent = totalProblems > 0 ? Math.round((solvedCount / totalProblems) * 100) : 0;
@@ -67,7 +66,6 @@ class PracticeManager {
       `;
     }
 
-    // Populate topics in dropdown if empty
     if (topicSelect && topicSelect.options.length <= 1) {
       const topics = Array.from(new Set(allProblems.map(p => p.topic)));
       topics.forEach(t => {
@@ -78,7 +76,6 @@ class PracticeManager {
       });
     }
 
-    // Filter problems
     let filtered = allProblems;
 
     if (this.currentTopic !== 'All') {
@@ -148,8 +145,4 @@ class PracticeManager {
       `;
     }).join('');
   }
-}
-
-if (typeof window !== 'undefined') {
-  window.PracticeManager = PracticeManager;
 }
